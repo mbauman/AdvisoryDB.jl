@@ -1,0 +1,42 @@
+name: JSON Schema Validation
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # For git diff
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Install osv-linter
+        run: |
+          git clone https://github.com/ossf/osv-schema.git -b v1.6.7
+          cd ./osv-schema/tools/osv-linter 
+          go build -o ../../../osv-linter ./cmd/osv
+          cd ../../..
+          rm -rf osv-schema
+
+      - name: Validate JSON
+        run: |
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep .json) && : // Ignore errors
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Validating JSON files: $CHANGED_FILES"
+            ## osv-linter doesn't return error code for invalid JSON. So we should handle this case.
+            output=$(./osv-linter record lint $CHANGED_FILES 2>&1 || true)
+            if [ -n "$output" ]; then
+              echo "$output"
+              exit 1
+            fi
+          else
+            echo "No JSON files changed. Skipping validation."
+          fi
