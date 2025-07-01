@@ -1,0 +1,48 @@
+name: Fetch NVD Security Advisories
+
+on:
+  schedule:
+    # Run at 4 AM UTC every day
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  fetch-nvd-advisories:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Julia
+      uses: julia-actions/setup-julia@v1
+      with:
+        version: '1.9'
+    
+    - name: Install Julia dependencies
+      run: |
+        cd scripts
+        julia --project=. -e 'using Pkg; Pkg.instantiate()'
+    
+    - name: Run NVD advisory fetcher script
+      run: |
+        cd scripts
+        julia --project=. fetch_nvd_advisories.jl
+      env:
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+    
+    - name: Check for changes
+      id: git-check
+      run: |
+        git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
+    
+    - name: Commit and push changes
+      if: steps.git-check.outputs.changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add packages/
+        git commit -m "Update NVD security advisories - $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        git push
