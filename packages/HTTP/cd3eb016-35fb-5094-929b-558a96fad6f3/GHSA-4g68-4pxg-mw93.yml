@@ -67,7 +67,7 @@ affected:
             introduced: "0"
         type: "ECOSYSTEM"
     package:
-      name: "URIs.jl"
+      name: "URI.jl"
       ecosystem: "julia"
 references:
   - type: "ADVISORY"
