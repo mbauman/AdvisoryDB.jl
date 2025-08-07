@@ -238,12 +238,14 @@ end
 
 function get_packages(advisory)
     pkgs = Tuple{String,String}[]
+    println("looking for Julia packages in $(advisory.ghsa_id)")
     General = only(filter(x->x.uuid==Base.UUID("23338594-aafe-5451-b93e-139f81909106"), Pkg.Registry.reachable_registries()))
     if haskey(advisory, :vulnerabilities) && !isempty(advisory.vulnerabilities)
         for vuln in advisory.vulnerabilities
             lowercase(string(vuln.package.ecosystem)) == "julia" || continue
             if haskey(vuln, :package) && haskey(vuln.package, :name)
                 pkgname = chopsuffix(strip(vuln.package.name), ".jl")
+                println(" - looking for $pkgname in the General registry")
                 uuids = Pkg.Registry.uuids_from_name(General, pkgname)
                 if length(uuids) != 1
                     url = haskey(advisory, :html_url) ? advisory.html_url : ""
@@ -262,7 +264,7 @@ function get_packages(advisory)
                             """
                     )
                 else
-                    push!(pkgs, (pkgname, only(uuids)))
+                    push!(pkgs, (pkgname, string(only(uuids))))
                 end
             end
         end
