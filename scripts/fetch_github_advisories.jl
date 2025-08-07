@@ -4,6 +4,7 @@ using HTTP
 using JSON3
 using YAML
 using Dates
+using Pkg: Pkg
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
