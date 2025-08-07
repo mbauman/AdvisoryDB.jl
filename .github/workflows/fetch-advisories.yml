@@ -4,40 +4,46 @@ on:
   schedule:
     # Run at 3 AM UTC every day
     - cron: '0 3 * * *'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
+    # Allow manual triggering
+    inputs:
+      repo:
+        description: 'Fetch advisories for just one specific repository e.g., org/repo.jl'
+        required: false
+        type: string
 
 jobs:
   fetch-advisories:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Setup Julia
       uses: julia-actions/setup-julia@v1
       with:
         version: '1.9'
-    
+
     - name: Install Julia dependencies
       run: |
         cd scripts
         julia --project=. -e 'using Pkg; Pkg.instantiate()'
-    
+
     - name: Run advisory fetcher script
       run: |
         cd scripts
-        julia --project=. fetch_github_advisories.jl
+        julia --project=. fetch_github_advisories.jl ${{ inputs.repo }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Check for changes
       id: git-check
       run: |
         git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
-    
+
     - name: Commit and push changes
       if: steps.git-check.outputs.changes == 'true'
       run: |
