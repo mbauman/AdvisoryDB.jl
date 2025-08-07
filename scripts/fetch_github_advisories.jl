@@ -22,7 +22,7 @@ function build_headers()
     return headers
 end
 
-function create_issue(;kargs...)
+function create_issue(;kwargs...)
     HTTP.post(string(GITHUB_API_BASE, "/repos/", ENV["GITHUB_REPOSITORY"], "/issues"), build_headers(),
         sprint(JSON3.write, kwargs))
 end
@@ -259,7 +259,7 @@ function get_packages(advisory)
                 println(" - looking for $pkgname in the General registry")
                 uuids = get_uuids_in_general(pkgname)
                 if length(uuids) != 1
-                    println(" ⨯ found $(length(uuids)) for $pkgname")
+                    println(" ⨯ found $(length(uuids)) UUIDs for $pkgname")
                     url = haskey(advisory, :html_url) ? advisory.html_url : ""
                     create_issue(
                         title="Failed to find a registered $(pkgname) for $ghsa_id",
