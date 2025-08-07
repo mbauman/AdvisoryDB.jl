@@ -21,6 +21,11 @@ function build_headers()
     return headers
 end
 
+function create_issue(;kargs...)
+    HTTP.post(string(GITHUB_API_BASE, "/repos/", ENV["GITHUB_REPOSITORY"], "/issues"), build_headers(),
+        sprint(JSON3.write, kwargs))
+end
+
 function parse_link_header(link_header)
     links = Dict{String, String}()
 
@@ -230,37 +235,58 @@ function convert_to_osv(advisory)
     return osv
 end
 
-function get_first_package_name(advisory)
+function get_packages(advisory)
+    pkgs = Tuple{String,String}[]
+    General = only(filter(x->x.uuid==Base.UUID("23338594-aafe-5451-b93e-139f81909106"), Pkg.Registry.reachable_registries()))
     if haskey(advisory, :vulnerabilities) && !isempty(advisory.vulnerabilities)
-        first_vuln = advisory.vulnerabilities[1]
-        if haskey(first_vuln, :package) && haskey(first_vuln.package, :name)
-            return first_vuln.package.name
+        for vuln in advisory.vulnerabilities
+            lowercase(string(vuln.package.ecosystem)) == "julia" || continue
+            if haskey(vuln, :package) && haskey(vuln.package, :name)
+                pkgname = chopsuffix(strip(vuln.package.name), ".jl")
+                uuids = Pkg.Registry.uuids_from_name(General, pkgname)
+                if length(uuids) != 1
+                    url = haskey(advisory, :html_url) ? advisory.html_url : ""
+                    create_issue(
+                        title="Failed to find a registered $(pkgname) for $(advisory.ghsa_id)",
+                        body="""
+                            The advisory [$(advisory.ghsa_id)]($url) names **$pkgname** as an affected product from
+                            the Julia ecosystem, but $(isempty(uuids) ? "no" : "more than one") match was found
+                            in the General registry.
+
+                            The complete advisory is:
+
+                            ```json
+                            $(sprint(JSON3.write, advisory))
+                            ```
+                            """
+                    )
+                else
+                    push!(pkgs, (pkgname, only(uuids)))
+                end
+            end
         end
     end
-    return "unknown"
+    return pkgs
 end
 
 function write_advisory_files(advisories)
     packages_dir = "packages"
 
-    if !isdir(packages_dir)
-        mkdir(packages_dir)
-    end
-
     for advisory in advisories
         osv_data = convert_to_osv(advisory)
-        package_name = get_first_package_name(advisory)
+        for (package, uuid) in get_packages(advisory)
+            package_dir = joinpath(packages_dir, package, uuid)
+            if !isdir(package_dir)
+                mkpath(package_dir)
+            end
 
-        package_dir = joinpath(packages_dir, package_name)
-        if !isdir(package_dir)
-            mkdir(package_dir)
+            filename = "$(advisory.ghsa_id).yml"
+            filepath = joinpath(package_dir, filename)
+
+            println("Writing advisory: $filepath")
+            YAML.write_file(filepath, osv_data)
+
         end
-
-        filename = "$(advisory.ghsa_id).yml"
-        filepath = joinpath(package_dir, filename)
-
-        println("Writing advisory: $filepath")
-        YAML.write_file(filepath, osv_data)
     end
 
     println("Completed writing $(length(advisories)) advisories to disk")
