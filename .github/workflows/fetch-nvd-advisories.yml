@@ -23,11 +23,11 @@ jobs:
 
     - name: Install Julia dependencies
       run: |
-        julia --project=scripts -e 'using Pkg; Pkg.instantiate()'
+        julia --project=. -e 'using Pkg; Pkg.instantiate()'
 
     - name: Run NVD advisory fetcher script
       run: |
-        julia --project=scripts scripts/fetch_nvd_advisories.jl
+        julia --project=. scripts/fetch_nvd_advisories.jl
       env:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 

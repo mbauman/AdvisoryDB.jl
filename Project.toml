@@ -1,3 +1,8 @@
+name = "AdvisoryDB"
+uuid = "c2087171-788c-45e6-884c-aa841a74e7f5"
+authors = ["Matt Bauman <mbauman@juliahub.com>"]
+version = "0.1.0"
+
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
