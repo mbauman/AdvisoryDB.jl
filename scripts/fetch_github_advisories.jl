@@ -4,7 +4,7 @@ using HTTP
 using JSON3
 using YAML
 using Dates
-using Pkg: Pkg
+using TOML: TOML
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
@@ -236,25 +236,36 @@ function convert_to_osv(advisory)
     return osv
 end
 
+const ALL_PKGS = Pair{String,String}[]
+function get_uuids_in_general(pkgname)
+    if isempty(ALL_PKGS)
+        # This should really use Pkg APIs, but they are non-trivial and hang on GitHub Actions
+        registry = TOML.parsefile(download("https://github.com/JuliaRegistries/General/raw/refs/heads/master/Registry.toml"))
+        append!(ALL_PKGS, sort!([info["name"]=>uuid for (uuid, info) in registry["packages"]]))
+    end
+    idxs = searchsorted(ALL_PKGS, pkgname=>"", by=first)
+    return last.(getindex.((ALL_PKGS,), idxs))
+end
+
 function get_packages(advisory)
     pkgs = Tuple{String,String}[]
-    println("Looking for Julia packages in $(advisory.ghsa_id)")
-    General = only(filter(x->x.uuid==Base.UUID("23338594-aafe-5451-b93e-139f81909106"), Pkg.Registry.reachable_registries()))
+    ghsa_id = haskey(advisory, :ghsa_id) ? advisory.ghsa_id : "unknown GHSA"
+    println("Looking for Julia packages in $ghsa_id")
     if haskey(advisory, :vulnerabilities) && !isempty(advisory.vulnerabilities)
         for vuln in advisory.vulnerabilities
             if haskey(vuln, :package) && haskey(vuln.package, :name) && haskey(vuln.package, :ecosystem)
                 lowercase(string(vuln.package.ecosystem)) == "julia" || continue
                 pkgname = chopsuffix(strip(vuln.package.name), ".jl")
                 println(" - looking for $pkgname in the General registry")
-                uuids = Pkg.Registry.uuids_from_name(General, pkgname)
+                uuids = get_uuids_in_general(pkgname)
                 if length(uuids) != 1
                     println(" ⨯ found $(length(uuids)) for $pkgname")
                     url = haskey(advisory, :html_url) ? advisory.html_url : ""
                     create_issue(
-                        title="Failed to find a registered $(pkgname) for $(advisory.ghsa_id)",
+                        title="Failed to find a registered $(pkgname) for $ghsa_id",
                         body="""
-                            The advisory [$(advisory.ghsa_id)]($url) names **$pkgname** as an affected product from
-                            the Julia ecosystem, but $(isempty(uuids) ? "no" : "more than one") match was found
+                            The advisory [$ghsa_id]($url) names **$pkgname** as an affected product from the
+                            Julia ecosystem, but $(isempty(uuids) ? "no" : "more than one") match was found
                             in the General registry.
 
                             The complete advisory is:
@@ -265,8 +276,8 @@ function get_packages(advisory)
                             """
                     )
                 else
-                    println(" - found $pkgname => $(string(only(uuids)))")
-                    push!(pkgs, (pkgname, string(only(uuids))))
+                    println(" - found $pkgname => $(only(uuids))")
+                    push!(pkgs, (pkgname, only(uuids)))
                 end
             end
         end
