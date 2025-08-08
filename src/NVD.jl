@@ -164,7 +164,7 @@ function convert_nvd_to_osv(vuln)
     osv = Dict{String, Any}()
 
     # Required OSV fields
-    osv["schema_version"] = "1.6.0"
+    osv["schema_version"] = "1.6.7"
     osv["id"] = vuln.cve.id
     osv["modified"] = vuln.cve.lastModified
 

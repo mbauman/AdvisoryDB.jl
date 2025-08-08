@@ -1,10 +1,7 @@
 module GitHub
 
-#!/usr/bin/env julia
-
 using HTTP
 using JSON3
-using YAML
 using Dates
 using TOML: TOML
 
@@ -165,7 +162,7 @@ end
 function convert_to_osv(advisory)
     osv = Dict{String, Any}()
 
-    osv["schema_version"] = "1.6.0"
+    osv["schema_version"] = "1.6.7"
     osv["id"] = advisory.ghsa_id
     osv["modified"] = advisory.updated_at
 
@@ -298,12 +295,13 @@ function write_advisory_files(advisories)
                 mkpath(package_dir)
             end
 
-            filename = "$(advisory.ghsa_id).yml"
+            filename = "$(advisory.ghsa_id).json"
             filepath = joinpath(package_dir, filename)
 
             println("Writing advisory: $filepath")
-            YAML.write_file(filepath, osv_data)
-
+            open(filepath, "w") do f
+                JSON3.write(f, osv_data)
+            end
         end
     end
 
