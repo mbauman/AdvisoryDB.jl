@@ -23,7 +23,7 @@ end
 
 function create_issue(;kwargs...)
     HTTP.post(string(GITHUB_API_BASE, "/repos/", ENV["GITHUB_REPOSITORY"], "/issues"), build_headers(),
-        sprint(JSON3.write, kwargs))
+        sprint(JSON3.pretty, kwargs))
 end
 
 function parse_link_header(link_header)
@@ -277,7 +277,7 @@ function get_packages(advisory)
                             The complete advisory is:
 
                             ```json
-                            $(sprint(JSON3.write, advisory))
+                            $(sprint(JSON3.pretty, advisory))
                             ```
                             """
                     )
@@ -305,7 +305,7 @@ function write_advisory_files(advisories)
 
             println("Writing advisory: $filepath")
             open(filepath, "w") do f
-                JSON3.write(f, osv_data)
+                JSON3.pretty(f, osv_data)
             end
         end
     end
