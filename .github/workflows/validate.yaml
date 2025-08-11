@@ -1,8 +1,6 @@
 name: JSON Schema Validation
 on:
   pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
