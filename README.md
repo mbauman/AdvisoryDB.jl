@@ -6,17 +6,12 @@
 ## Overview
 
 The goal of this repository is two-fold:
-* Be a store of security advisories for packages in the Julia ecosystem
+* Be a store of security advisories for packages in the Julia ecosystem in [valid OSV schema](https://ossf.github.io/osv-schema/)
 * Provide tooling to find, identify, convert, and validate GitHub Security Advisories (GHSAs) and CVEs
 
 ### The data store
 
-Packages that are registered in the General registry and have vulnerabilities for released version(s) have those vulnerabilities stored in OSV-formatted YAML files named by their CVE id in the `packages/$package_name/$package_uuid/` path.
-
-> [!TOOD]
-> The exact path structure here may change. We may want to explicitly name the registry (and potentially support multiple?).
-> It's unclear if the UUID is necessary or even helpful, given that this is already scoped to a name in a registry, but
-> theoretically a registry could have multiple identically-named packages.  That's not allowed in the General registry, however.
+Packages that are registered in the General registry and have vulnerabilities for released version(s) have those vulnerabilities stored in OSV-formatted JSON files named by their source id in the `packages/General/$package_name/` path.
 
 ### The tooling
 
@@ -71,22 +66,3 @@ julia --project=. fetch_github_advisories.jl
 ```
 
 Or request a workflow run.
-
-## Output Structure
-
-Advisories are saved in the following structure:
-```
-packages/
-├── PackageName1/UUID1/
-│   └── CVE-xxxx-xxxx.yml
-├── PackageName2/UUID2/
-│   └── CVE-yyyy-yyyy.yml
-```
-
-Each YAML file contains the advisory in OSV format with fields like:
-- `id`: GitHub Security Advisory ID
-- `schema_version`: OSV schema version
-- `summary`: Brief description
-- `details`: Detailed vulnerability information
-- `affected`: Affected packages and version ranges
-- `references`: Links to additional information
