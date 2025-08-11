@@ -119,6 +119,27 @@ function fetch_advisories(hours::Int = DEFAULT_HOURS)
     return all_advisories
 end
 
+function fetch_org_advisories(org::String)
+    base_url = "$GITHUB_API_BASE/orgs/$org/security-advisories"
+    headers = build_headers()
+
+    params = [
+        "per_page" => "100"
+    ]
+
+    # Build URL with query parameters
+    query_string = join(["$(k)=$(HTTP.escapeuri(v))" for (k, v) in params], "&")
+    full_url = "$base_url?$query_string"
+
+    println("Fetching advisories from: $org")
+
+    all_advisories = fetch_all_pages(full_url, headers)
+    println("Fetched $(length(all_advisories)) total advisories across all pages")
+
+    return all_advisories
+end
+
+
 function fetch_repo_advisories(repo::String)
     base_url = "$GITHUB_API_BASE/repos/$repo/security-advisories"
     headers = build_headers()
@@ -317,8 +338,12 @@ function main()
     try
         println("Starting GitHub Security Advisory fetcher...")
         if !isempty(ARGS) && !isempty(ARGS[1])
-            # Fetch all advisories for a single repo (for manual triggering)
-            advisories = fetch_repo_advisories(ARGS[1])
+            # Fetch all advisories for an org or single repo (for manual triggering)
+            if contains(ARGS[1], "/")
+                advisories = fetch_repo_advisories(ARGS[1])
+            else
+                advisories = fetch_org_advisories(ARGS[1])
+            end
         else
             all_advisories = fetch_advisories()
             advisories = filter_julia_advisories(all_advisories)
