@@ -198,9 +198,16 @@ function convert_to_osv(advisory)
         for vuln in advisory.vulnerabilities
             if haskey(vuln, :package)
                 affected_entry = Dict{String, Any}()
+                pkgecosystem = vuln.package.ecosystem == "julia" ? "Julia" : vuln.package.ecosystem
+                pkgname = if pkgecosystem == "Julia"
+                    endswith(vuln.package.name, ".jl") && println(" ⚠ Package names should not include the .jl suffix")
+                    chopsuffix(vuln.package.name, ".jl")
+                else
+                    vuln.package.name
+                end
                 affected_entry["package"] = Dict(
-                    "ecosystem" => vuln.package.ecosystem,
-                    "name" => vuln.package.name
+                    "ecosystem" => pkgecosystem,
+                    "name" => pkgname
                 )
 
                 if haskey(vuln, :vulnerable_version_range)
@@ -285,15 +292,13 @@ function get_packages(advisory)
 end
 
 function write_advisory_files(advisories)
-    packages_dir = "packages"
+    packages_dir = "packages/General"
 
     for advisory in advisories
         osv_data = convert_to_osv(advisory)
         for (package, uuid) in get_packages(advisory)
-            package_dir = joinpath(packages_dir, package, uuid)
-            if !isdir(package_dir)
-                mkpath(package_dir)
-            end
+            package_dir = joinpath(packages_dir, package)
+            mkpath(package_dir)
 
             filename = "$(advisory.ghsa_id).json"
             filepath = joinpath(package_dir, filename)
