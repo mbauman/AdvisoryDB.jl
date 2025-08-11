@@ -23,7 +23,7 @@ jobs:
 
       - name: Install osv-linter
         run: |
-          git clone https://github.com/ossf/osv-schema.git -b v1.6.7
+          git clone https://github.com/JuliaComputing/osv-schema.git -b juliahub/julia
           cd ./osv-schema/tools/osv-linter
           go build -o ../../../osv-linter ./cmd/osv
           cd ../../..
