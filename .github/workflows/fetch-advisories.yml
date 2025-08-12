@@ -59,9 +59,5 @@ jobs:
       uses: peter-evans/create-pull-request@v7
       with:
         title: ${{ steps.git-check.outputs.verb }} ${{ steps.git-check.outputs.packages }}
-        body: ${{ inputs.repo != '' && inputs.repo != null
-          ? inputs.repo  + ': manual import of advisories: ' + steps.git-check.outputs.cves
-          : 'automated import of advisories: ' + steps.git-check.outputs.cves }}
-        branch: ${{ inputs.repo != '' && inputs.repo != null
-          ? inputs.repo
-          : steps.git-check.outputs.date }}
+        body: ${{ inputs.repo != '' && inputs.repo != null ? 'manual import of advisories from ' + inputs.repo + '--' + steps.git-check.outputs.cves : 'automated import of advisories --' + steps.git-check.outputs.cves }}
+        branch: ${{ inputs.repo != '' && inputs.repo != null ? inputs.repo : steps.git-check.outputs.date }}
