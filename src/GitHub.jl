@@ -267,7 +267,10 @@ function convert_to_osv(advisory)
                 if startswith(ghsa_range, "= ")
                     push!(versions, chopprefix(ghsa_range, "= "))
                 elseif startswith(ghsa_range, "<= ")
-                    push!(range_events, Dict("last_affected" => chopprefix(ghsa_range, "<= ")))
+                    # Entries in the events array can contain either last_affected or fixed events, but not both
+                    if !exists(vuln, :patched_versions)
+                        push!(range_events, Dict("last_affected" => chopprefix(ghsa_range, "<= ")))
+                    end
                 elseif startswith(ghsa_range, "< ")
                     push!(range_events, Dict("limit" => chopprefix(ghsa_range, "< ")))
                 elseif startswith(ghsa_range, ">= ")
