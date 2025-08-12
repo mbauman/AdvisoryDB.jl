@@ -28,8 +28,9 @@ println("Found $n Julia-related GHSA$(n==1 ? "" : "s")")
 
 mkpath(path)
 for advisory in advisories
+    osv = GitHub.convert_to_osv(advisory)
     p = joinpath(path, string(advisory.ghsa_id, ".json"))
-    JSON3.write(p, advisory)
+    JSON3.write(p, osv)
     println(" - created $p")
 end
 
