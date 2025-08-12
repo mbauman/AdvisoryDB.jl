@@ -22,9 +22,6 @@
               "introduced": "0"
             },
             {
-              "last_affected": "1.10.16"
-            },
-            {
               "fixed": "1.10.17"
             }
           ]
