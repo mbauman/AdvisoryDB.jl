@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.7.2",
+  "id": "GHSA-g2xx-229f-3qjm",
+  "modified": "2025-06-24T23:01:20Z",
+  "published": "2025-06-24T23:01:20Z",
+  "aliases": [
+    "CVE-2025-50178"
+  ],
+  "summary": " Lack of validation for user-provided fields in GitForge.jl",
+  "details": "### Description\r\n\r\nThere is a lack of input validation for user-provided values in certain functions. \r\n\r\nIn the `GitForge.get_repo()` function for GitHub, the user can provide any string for the `owner` and `repo fields`. These inputs are not validated or safely encoded and are sent directly to the server.\r\n\r\n### Impact\r\n\r\nThis means a user can add path traversal patterns like `../` in the input to access any other endpoints on `api.github.com` that were not intended.\r\n\r\n### Patches\r\n\r\nUsers should upgrade immediately to v0.4.3. All prior versions are vulnerable.\r\n\r\n### Workarounds\r\n\r\nNone\r\n\r\n### References\r\n\r\nFixed by: https://github.com/JuliaWeb/GitForge.jl/pull/50 (which is available in v0.4.3).\r\n\r\n### Credits\r\n\r\nThanks to *splitline* from the DEVCORE Research Team for reporting this issue.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "GitForge"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "0.4.3"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "ADVISORY",
+      "url": "https://github.com/JuliaWeb/GitForge.jl/security/advisories/GHSA-g2xx-229f-3qjm"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-20"
+    ],
+    "severity": "medium",
+    "state": "published"
+  }
+}
