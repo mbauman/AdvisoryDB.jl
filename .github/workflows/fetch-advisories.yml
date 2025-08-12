@@ -44,6 +44,12 @@ jobs:
       run: |
         julia --project=. -e 'using Pkg; Pkg.instantiate()'
 
+    - name: Install pipenv and Python dependencies
+      run: |
+        pip install pipenv==2025.0.3
+        cd osv-schema/tools/ghsa
+        pipenv sync
+
     - name: Run advisory fetcher script
       run: |
         julia --project=. scripts/fetch_github_advisories.jl /tmp/ghsa ${{ inputs.repo }}
