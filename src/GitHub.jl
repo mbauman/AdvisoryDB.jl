@@ -283,7 +283,7 @@ function convert_to_osv(advisory)
             end
             if exists(vuln, :patched_versions)
                 for patched_ver in (strip(r) for r in eachsplit(vuln.patched_versions, ","))
-                    push!(range_events, Dict("fixed" => chopprefix("= ", patched_ver)))
+                    push!(range_events, Dict("fixed" => chopprefix(patched_ver, "= ")))
                 end
             end
             affected_entry = Dict()
