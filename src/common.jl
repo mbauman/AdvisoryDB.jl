@@ -49,28 +49,13 @@ function get_packages(osv)
     return pkgs
 end
 
-function process_osv!(osv)
-    # Transform `osv` to conform with Julia standards
-
-    # Strip .jl suffixes, normalize ecosystem, and maybe add purls?
-    for vuln in get(osv, "affected", [])
-        haskey(vuln, "package") || continue
-        pkg = vuln["package"]
-        pkg["name"] = chopsuffix(pkg["name"], ".jl")
-        pkg["ecosystem"] = lowercase(pkg["ecosystem"]) == "julia" ? "Julia" : pkg["ecosystem"]
-        # TODO: Add purl?
-    end
-    return osv
-end
-
 function import_osv_files(path)
     packages_dir = "packages/General"
     for filename in readdir(path)
         endswith(filename, ".json") || continue
 
-        raw_osv_data = JSON3.read(joinpath(path, filename))
+        osv_data = JSON3.read(joinpath(path, filename))
 
-        osv_data = process_osv!(raw_osv_data)
         for (package, uuid) in get_packages(osv_data)
             package_dir = joinpath(packages_dir, package)
             mkpath(package_dir)
