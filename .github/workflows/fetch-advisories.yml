@@ -45,7 +45,19 @@ jobs:
       id: git-check
       run: |
         [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
+        [[ $(git ls-files --others --exclude-standard) ]] && echo "verb=added" >> $GITHUB_OUTPUT || echo "verb=updated" >> $GITHUB_OUTPUT
+        echo "packages=$(git ls-files --others --modified --exclude-standard \
+          | awk '/^packages\/General\/[^\/]+\/[^\/]+\.json$/ { split($0, parts, "/"); print parts[3] }' \
+          | sort -u | paste -sd, -)" >> $GITHUB_OUTPUT
+        echo "cves=$(git ls-files --others --modified --exclude-standard \
+          | awk '/^packages\/General\/[^\/]+\/[^\/]+\.json$/ { split($0, parts, "/"); print parts[4] }' \
+          | sort -u | paste -sd, -)" >> $GITHUB_OUTPUT
+        echo "date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
 
     - name: Create Pull Request
       if: steps.git-check.outputs.changes == 'true'
       uses: peter-evans/create-pull-request@v7
+      with:
+        title: '${{ steps.git-check.outputs.verb }} ${{ steps.git-check.outputs.packages }}'
+        body: ${{ inputs.repo && format('{0}: manual import of advisories: {1}', inputs.repo, steps.git-check.outputs.cves) || format('automated import of advisories: {0}', steps.git-check.outputs.cves }}
+        branch: ${{ inputs.repo && inputs.repo || steps.git-check.outputs.date}}
