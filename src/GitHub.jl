@@ -3,7 +3,6 @@ module GitHub
 using HTTP
 using JSON3
 using Dates
-using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
 const GITHUB_API_BASE = "https://api.github.com"
@@ -177,7 +176,6 @@ function filter_julia_advisories(advisories)
         end
     end
 
-    println("Found $(length(julia_advisories)) Julia ecosystem advisories")
     return julia_advisories
 end
 

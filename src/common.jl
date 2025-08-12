@@ -1,4 +1,5 @@
 using JSON3: JSON3
+using TOML: TOML
 
 const ALL_PKGS = Pair{String,String}[]
 function get_uuids_in_general(pkgname)
