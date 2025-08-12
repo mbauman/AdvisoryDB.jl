@@ -68,7 +68,7 @@ function import_osv_files(path)
     for filename in readdir(path)
         endswith(filename, ".json") || continue
 
-        raw_osv_data = JSON3.read(filename)
+        raw_osv_data = JSON3.read(joinpath(path, filename))
 
         osv_data = process_osv!(raw_osv_data)
         for (package, uuid) in get_packages(osv_data)
