@@ -28,7 +28,7 @@ println("Found $n Julia-related GHSA$(n==1 ? "" : "s")")
 
 mkpath(path)
 for advisory in advisories
-    JSON3.write(joinpath(p, string(advisory.ghsa_id, ".json")))
+    JSON3.write(joinpath(path, string(advisory.ghsa_id, ".json")))
 end
 
 # catch ex
