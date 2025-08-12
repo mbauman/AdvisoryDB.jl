@@ -15,8 +15,8 @@ function get_packages(osv)
     pkgs = Tuple{String,String}[]
     id = osv.id
     println("Looking for Julia packages in $id")
-    if haskey(advisory, :vulnerabilities) && !isempty(advisory.vulnerabilities)
-        for vuln in advisory.vulnerabilities
+    if haskey(osv, :affected) && !isempty(osv.affected)
+        for vuln in osv.affected
             if haskey(vuln, :package) && haskey(vuln.package, :name) && haskey(vuln.package, :ecosystem)
                 lowercase(string(vuln.package.ecosystem)) == "julia" || continue
                 pkgname = chopsuffix(strip(vuln.package.name), ".jl")
@@ -24,18 +24,17 @@ function get_packages(osv)
                 uuids = get_uuids_in_general(pkgname)
                 if length(uuids) != 1
                     println(" ⨯ found $(length(uuids)) UUIDs for $pkgname")
-                    url = haskey(advisory, :html_url) ? advisory.html_url : ""
                     create_issue(ENV["GITHUB_REPOSITORY"],
-                        title="Failed to find a registered $(pkgname) for $ghsa_id",
+                        title="Failed to find a registered $(pkgname) for $is",
                         body="""
-                            The advisory [$ghsa_id]($url) names **$pkgname** as an affected product from the
+                            The advisory $id names **$pkgname** as an affected product from the
                             Julia ecosystem, but $(isempty(uuids) ? "no" : "more than one") match was found
                             in the General registry.
 
-                            The complete advisory is:
+                            The complete OSV advisory is:
 
                             ```json
-                            $(sprint(JSON3.pretty, advisory))
+                            $(sprint((io,x)->JSON3.pretty(io, x, JSON3.AlignmentContext(indent=2)), osv))
                             ```
                             """
                     )
