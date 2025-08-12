@@ -51,6 +51,7 @@ end
 
 function import_osv_files(path)
     packages_dir = "packages/General"
+    n = 0
     for filename in readdir(path)
         endswith(filename, ".json") || continue
 
@@ -65,10 +66,11 @@ function import_osv_files(path)
 
             println("Writing advisory: $filepath")
             open(filepath, "w") do f
-                JSON3.pretty(f, osv_data)
+                JSON3.pretty(f, osv_data, JSON3.AlignmentContext(indent=2))
             end
+            n += 1
         end
     end
 
-    println("Completed writing $(length(advisories)) advisories to disk")
+    println("Completed writing $n advisories to disk")
 end
