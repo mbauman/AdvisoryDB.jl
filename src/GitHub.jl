@@ -4,6 +4,7 @@ using HTTP
 using JSON3
 using Dates
 using TOML: TOML
+using DataStructures: OrderedDict as Dict # watch out
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
@@ -179,5 +180,155 @@ function filter_julia_advisories(advisories)
     println("Found $(length(julia_advisories)) Julia ecosystem advisories")
     return julia_advisories
 end
+
+exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
+exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
+is_populated(::Nothing) = false
+is_populated(::Missing) = false
+is_populated(s::String) = !isempty(strip(s))
+is_populated(A::AbstractArray) = !isempty(A)
+is_populated(d::AbstractDict) = !isempty(d)
+
+function convert_to_osv(advisory)
+    osv = Dict{String, Any}()
+
+    osv["schema_version"] = "1.7.2"
+    osv["id"] = advisory.ghsa_id
+    osv["modified"] = advisory.updated_at
+    if exists(advisory, :published_at)
+        osv["published"] = advisory.published_at
+    end
+    if exists(advisory, :withdrawn_at)
+        osv["withdrawn"] = advisory.withdrawn_at
+    end
+    aliases = []
+    if exists(advisory, :cve_id)
+        push!(aliases, advisory.cve_id)
+    end
+    if !isempty(aliases)
+        osv["aliases"] = aliases
+    end
+    # No upstream information is represented in GHSA
+    # No structured related information is represented in GHSA
+    if exists(advisory, :summary)
+        osv["summary"] = advisory.summary
+    end
+    if exists(advisory, :description)
+        osv["details"] = advisory.description
+    end
+    # GitHub stores severities all over the place
+    severities = []
+    if exists(advisory, :cvss_severities, :cvss_v3, :vector_string)
+        push!(severities, Dict(
+            "type" => "CVSS_V3",
+            "score" => advisory.cvss_severities.cvss_v3.vector_string
+        ))
+    end
+    if exists(advisory, :cvss_severities, :cvss_v4, :vector_string)
+        push!(severities, Dict(
+            "type" => "CVSS_V4",
+            "score" => advisory.cvss_severities.cvss_v4.vector_string
+        ))
+    end
+    if exists(advisory, :cvss, :vector_string) &&
+            !(advisory.cvss.vector_string in getindex.(severities, "score"))
+        cvss_ver = match(r"^CVSS:([34])", vs)
+        isnothing(cvss_ver) && error("Unknown CVSS vector string: $(advisory.cvss.vector_string) in $(advisory.ghsa_id)")
+        push!(severities, Dict(
+            "type" => "CVSS_V$cvss_ver",
+            "score" => advisory.cvss.vector_string
+        ))
+    end
+    if !isempty(severities)
+        osv["severity"] = severities
+    end
+    # The OSV affected field is the trickiest one
+    affected = []
+    if exists(advisory, :vulnerabilities)
+        for vuln in advisory.vulnerabilities
+            exists(vuln, :package) || continue
+            (exists(vuln.package, :ecosystem) && exists(vuln.package, :name)) || error("a vulnerability in $(advisory.ghsa_id) does not have required ecosystem and name fields")
+            lowercase(vuln.package.ecosystem) == "julia" || continue
+            package = Dict{String, Any}()
+            package["ecosystem"] = "Julia"
+            package["name"] = chopsuffix(vuln.package.name, ".jl")
+            # package["purl"] # TODO (this is optional)
+            # GHSA does not have independent severity scores per affected package
+            # Versions are not easy in general. From OSV-Schema's convert_ghsa.py:
+            #   GHSA range format is described at:
+            #   https://docs.github.com/en/graphql/reference/objects#securityvulnerability
+            #   "= 0.2.0" denotes a single vulnerable version.
+            #   "<= 1.0.8" denotes a version range up to and including the specified version
+            #   "< 0.1.11" denotes a version range up to, but excluding, the specified version
+            #   ">= 4.3.0, < 4.3.5" denotes a version range with a known minimum and maximum version.
+            #   ">= 0.0.1" denotes a version range with a known minimum, but no known maximum.
+            #   (Undocumented) ">" is also a valid operator.
+            versions = String[]
+            range_events = Dict{String, String}[]
+            for ghsa_range in (strip(r) for r in eachsplit(vuln.vulnerable_version_range, ","))
+                if startswith(ghsa_range, "= ")
+                    push!(versions, chopprefix(ghsa_range, "= "))
+                elseif startswith(ghsa_range, "<= ")
+                    push!(range_events, Dict("last_affected" => chopprefix(ghsa_range, "<= ")))
+                elseif startswith(ghsa_range, "< ")
+                    push!(range_events, Dict("limit" => chopprefix(ghsa_range, "< ")))
+                elseif startswith(ghsa_range, ">= ")
+                    push!(range_events, Dict("introduced" => chopprefix(ghsa_range, ">= ")))
+                elseif startswith(ghsa_range, "> ")
+                    error("a vulnerability in $(advisory.ghsa_id) uses the undocumented > range syntax")
+                else
+                    error("a vulnerability in $(advisory.ghsa_id) uses an unsupported vulnerable range syntax")
+                end
+            end
+            if isempty(versions) && isempty(range_events)
+                push!(range_events, Dict("introduced" => "0"))
+            end
+            if exists(vuln, :patched_versions)
+                for patched_ver in (strip(r) for r in eachsplit(vuln.patched_versions, ","))
+                    push!(range_events, Dict("fixed" => chopprefix("= ", patched_ver)))
+                end
+            end
+            affected_entry = Dict()
+            affected_entry["package"] = package
+            if !isempty(versions)
+                affected_entry["versions"] = versions
+            end
+            if !isempty(range_events)
+                affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
+            end
+            push!(affected, affected_entry)
+        end
+    end
+    if !isempty(affected)
+        osv["affected"] = affected
+    end
+
+    references = []
+    if haskey(advisory, :html_url)
+        push!(references, Dict(
+            "type" => "ADVISORY",
+            "url" => advisory.html_url
+        ))
+    end
+    if !isempty(references)
+        osv["references"] = references
+    end
+
+    db = Dict()
+    if exists(advisory, :cwe_ids)
+        db["cwe_ids"] = collect(advisory.cwe_ids)
+    end
+    if exists(advisory, :severity)
+        db["severity"] = advisory.severity
+    end
+    if exists(advisory, :state)
+        db["state"] = advisory.state
+    end
+    if !isempty(db)
+        osv["database_specific"] = db
+    end
+    return osv
+end
+
 
 end
