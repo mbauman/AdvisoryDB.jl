@@ -60,7 +60,7 @@ jobs:
       run: |
         cd osv-schema/tools/ghsa
         mkdir -p $RUNNER_TEMP/osv
-        pipenv run python convert_ghsa.py -o $/osv $RUNNER_TEMP/ghsa/*.json
+        pipenv run python convert_ghsa.py -o $RUNNER_TEMP/osv $RUNNER_TEMP/ghsa/*.json
 
     - name: Import OSV files into `packages/General`
       run: |
