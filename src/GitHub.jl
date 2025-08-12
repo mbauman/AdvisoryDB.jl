@@ -278,8 +278,8 @@ function convert_to_osv(advisory)
                     error("a vulnerability in $(advisory.ghsa_id) uses an unsupported vulnerable range syntax")
                 end
             end
-            if isempty(versions) && isempty(range_events)
-                push!(range_events, Dict("introduced" => "0"))
+            if isempty(versions) && "introduced" ∉ Iterators.flatten(keys.(range_events))
+                pushfirst!(range_events, Dict("introduced" => "0"))
             end
             if exists(vuln, :patched_versions)
                 for patched_ver in (strip(r) for r in eachsplit(vuln.patched_versions, ","))
