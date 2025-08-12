@@ -6,9 +6,7 @@ using AdvisoryDB: GitHub, JSON3
 
 # try
 println("Starting GitHub Security Advisory fetcher...")
-if isempty(ARGS)
-    path = "/tmp/ghsa"
-end
+path = isempty(ARGS) ? "/tmp/ghsa" : ARGS[1]
 
 all_advisories = if length(ARGS) > 1 && !isempty(ARGS[2])
     # Fetch all advisories for a single repo (for manual triggering)
