@@ -52,19 +52,19 @@ jobs:
 
     - name: Run advisory fetcher script
       run: |
-        julia --project=. scripts/fetch_github_advisories.jl /tmp/ghsa ${{ inputs.repo }}
+        julia --project=. scripts/fetch_github_advisories.jl $RUNNER_TEMP/ghsa ${{ inputs.repo }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run GHSA -> OSV converter script
       run: |
         cd osv-schema/tools/ghsa
-        mkdir -p /tmp/osv
-        pipenv run python convert_ghsa.py -o /tmp/osv /tmp/ghsa/*.json
+        mkdir -p $RUNNER_TEMP/osv
+        pipenv run python convert_ghsa.py -o $/osv $RUNNER_TEMP/ghsa/*.json
 
     - name: Import OSV files into `packages/General`
       run: |
-        julia --project=. scripts/import_osv_files.jl /tmp/osv
+        julia --project=. scripts/import_osv_files.jl $RUNNER_TEMP/osv
 
     - name: Check for changes
       id: git-check
