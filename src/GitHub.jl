@@ -264,18 +264,18 @@ function convert_to_osv(advisory)
             versions = String[]
             range_events = Dict{String, String}[]
             for ghsa_range in (strip(r) for r in eachsplit(vuln.vulnerable_version_range, ","))
-                if startswith(ghsa_range, "= ")
-                    push!(versions, chopprefix(ghsa_range, "= "))
-                elseif startswith(ghsa_range, "<= ")
+                if startswith(ghsa_range, "=")
+                    push!(versions, strip(chopprefix(ghsa_range, "=")))
+                elseif startswith(ghsa_range, "<=")
                     # Entries in the events array can contain either last_affected or fixed events, but not both
                     if !exists(vuln, :patched_versions)
-                        push!(range_events, Dict("last_affected" => chopprefix(ghsa_range, "<= ")))
+                        push!(range_events, Dict("last_affected" => strip(chopprefix(ghsa_range, "<="))))
                     end
-                elseif startswith(ghsa_range, "< ")
-                    push!(range_events, Dict("limit" => chopprefix(ghsa_range, "< ")))
-                elseif startswith(ghsa_range, ">= ")
-                    push!(range_events, Dict("introduced" => chopprefix(ghsa_range, ">= ")))
-                elseif startswith(ghsa_range, "> ")
+                elseif startswith(ghsa_range, "<")
+                    push!(range_events, Dict("limit" => strip(chopprefix(ghsa_range, "<"))))
+                elseif startswith(ghsa_range, ">=")
+                    push!(range_events, Dict("introduced" => strip(chopprefix(ghsa_range, ">="))))
+                elseif startswith(ghsa_range, ">")
                     error("a vulnerability in $(advisory.ghsa_id) uses the undocumented > range syntax")
                 else
                     error("a vulnerability in $(advisory.ghsa_id) uses an unsupported vulnerable range syntax")
