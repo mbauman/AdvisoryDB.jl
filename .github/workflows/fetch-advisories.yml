@@ -39,7 +39,7 @@ jobs:
 
     - name: Import OSV files into `packages/General`
       run: |
-        julia --project=. scripts/import_osv_files.jl $RUNNER_TEMP/osv
+        julia --project=. scripts/import_osv_advisories.jl $RUNNER_TEMP/osv
 
     - name: Check for changes
       id: git-check
