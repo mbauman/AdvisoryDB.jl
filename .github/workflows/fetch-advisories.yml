@@ -59,4 +59,4 @@ jobs:
       uses: peter-evans/create-pull-request@v7
       with:
         title: ${{ steps.git-check.outputs.verb }} ${{ steps.git-check.outputs.packages }}
-        branch: ${{ inputs.repo != '' && inputs.repo != null ? inputs.repo : steps.git-check.outputs.date }}
+        branch: ${{ inputs.repo != '' && inputs.repo != null && inputs.repo || steps.git-check.outputs.date }}
