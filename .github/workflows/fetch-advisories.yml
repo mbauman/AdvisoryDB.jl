@@ -58,6 +58,6 @@ jobs:
       if: steps.git-check.outputs.changes == 'true'
       uses: peter-evans/create-pull-request@v7
       with:
-        title: '${{ steps.git-check.outputs.verb }} ${{ steps.git-check.outputs.packages }}'
-        body: ${{ inputs.repo && format('{0}: manual import of advisories: {1}', inputs.repo, steps.git-check.outputs.cves) || format('automated import of advisories: {0}', steps.git-check.outputs.cves }}
+        title: ${{ format('{0} {1}', steps.git-check.outputs.verb, steps.git-check.outputs.packages) }}
+        body: ${{ inputs.repo && format('{0}: manual import of advisories: {1}', inputs.repo, steps.git-check.outputs.cves) || format('automated import of advisories: {0}', steps.git-check.outputs.cves) }}
         branch: ${{ inputs.repo && inputs.repo || steps.git-check.outputs.date}}
