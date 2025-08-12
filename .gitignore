@@ -18,3 +18,4 @@ JuliaLocalPreferences.toml
 
 .claude
 .github_token
+osv-schema

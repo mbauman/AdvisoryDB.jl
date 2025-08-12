@@ -3,7 +3,7 @@ module GitHub
 using HTTP
 using JSON3
 using Dates
-using TOML: TOML
+using DataStructures: OrderedDict as Dict # watch out
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
@@ -21,9 +21,9 @@ function build_headers()
     return headers
 end
 
-function create_issue(;kwargs...)
-    HTTP.post(string(GITHUB_API_BASE, "/repos/", ENV["GITHUB_REPOSITORY"], "/issues"), build_headers(),
-        sprint(JSON3.pretty, kwargs))
+function create_issue(repo; kwargs...)
+    HTTP.post(string(GITHUB_API_BASE, "/repos/", repo, "/issues"), build_headers(),
+        sprint(JSON3.write, kwargs))
 end
 
 function parse_link_header(link_header)
@@ -119,6 +119,27 @@ function fetch_advisories(hours::Int = DEFAULT_HOURS)
     return all_advisories
 end
 
+function fetch_org_advisories(org::String)
+    base_url = "$GITHUB_API_BASE/orgs/$org/security-advisories"
+    headers = build_headers()
+
+    params = [
+        "per_page" => "100"
+    ]
+
+    # Build URL with query parameters
+    query_string = join(["$(k)=$(HTTP.escapeuri(v))" for (k, v) in params], "&")
+    full_url = "$base_url?$query_string"
+
+    println("Fetching advisories from: $org")
+
+    all_advisories = fetch_all_pages(full_url, headers)
+    println("Fetched $(length(all_advisories)) total advisories across all pages")
+
+    return all_advisories
+end
+
+
 function fetch_repo_advisories(repo::String)
     base_url = "$GITHUB_API_BASE/repos/$repo/security-advisories"
     headers = build_headers()
@@ -155,77 +176,132 @@ function filter_julia_advisories(advisories)
         end
     end
 
-    println("Found $(length(julia_advisories)) Julia ecosystem advisories")
     return julia_advisories
 end
+
+exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
+exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
+is_populated(::Nothing) = false
+is_populated(::Missing) = false
+is_populated(s::String) = !isempty(strip(s))
+is_populated(A::AbstractArray) = !isempty(A)
+is_populated(d::AbstractDict) = !isempty(d)
 
 function convert_to_osv(advisory)
     osv = Dict{String, Any}()
 
-    osv["schema_version"] = "1.6.7"
+    osv["schema_version"] = "1.7.2"
     osv["id"] = advisory.ghsa_id
     osv["modified"] = advisory.updated_at
-
-    if haskey(advisory, :published_at)
+    if exists(advisory, :published_at)
         osv["published"] = advisory.published_at
     end
-
-    if haskey(advisory, :summary)
-        osv["summary"] = advisory.summary
+    if exists(advisory, :withdrawn_at)
+        osv["withdrawn"] = advisory.withdrawn_at
     end
-
-    if haskey(advisory, :description)
-        osv["details"] = advisory.description
-    end
-
     aliases = []
-    if haskey(advisory, :cve_id) && advisory.cve_id !== nothing
+    if exists(advisory, :cve_id)
         push!(aliases, advisory.cve_id)
     end
     if !isempty(aliases)
         osv["aliases"] = aliases
     end
-
-    if haskey(advisory, :severity)
-        osv["severity"] = [Dict(
-            "type" => "CVSS_V3",
-            "score" => advisory.severity
-        )]
+    # No upstream information is represented in GHSA
+    # No structured related information is represented in GHSA
+    if exists(advisory, :summary)
+        osv["summary"] = advisory.summary
     end
-
-    if haskey(advisory, :vulnerabilities)
-        affected = []
+    if exists(advisory, :description)
+        osv["details"] = advisory.description
+    end
+    # GitHub stores severities all over the place
+    severities = []
+    if exists(advisory, :cvss_severities, :cvss_v3, :vector_string)
+        push!(severities, Dict(
+            "type" => "CVSS_V3",
+            "score" => advisory.cvss_severities.cvss_v3.vector_string
+        ))
+    end
+    if exists(advisory, :cvss_severities, :cvss_v4, :vector_string)
+        push!(severities, Dict(
+            "type" => "CVSS_V4",
+            "score" => advisory.cvss_severities.cvss_v4.vector_string
+        ))
+    end
+    if exists(advisory, :cvss, :vector_string) &&
+            !(advisory.cvss.vector_string in getindex.(severities, "score"))
+        cvss_ver = match(r"^CVSS:([34])", vs)
+        isnothing(cvss_ver) && error("Unknown CVSS vector string: $(advisory.cvss.vector_string) in $(advisory.ghsa_id)")
+        push!(severities, Dict(
+            "type" => "CVSS_V$cvss_ver",
+            "score" => advisory.cvss.vector_string
+        ))
+    end
+    if !isempty(severities)
+        osv["severity"] = severities
+    end
+    # The OSV affected field is the trickiest one
+    affected = []
+    if exists(advisory, :vulnerabilities)
         for vuln in advisory.vulnerabilities
-            if haskey(vuln, :package)
-                affected_entry = Dict{String, Any}()
-                pkgecosystem = vuln.package.ecosystem == "julia" ? "Julia" : vuln.package.ecosystem
-                pkgname = if pkgecosystem == "Julia"
-                    endswith(vuln.package.name, ".jl") && println(" ⚠ Package names should not include the .jl suffix")
-                    chopsuffix(vuln.package.name, ".jl")
+            exists(vuln, :package) || continue
+            (exists(vuln.package, :ecosystem) && exists(vuln.package, :name)) || error("a vulnerability in $(advisory.ghsa_id) does not have required ecosystem and name fields")
+            lowercase(vuln.package.ecosystem) == "julia" || continue
+            package = Dict{String, Any}()
+            package["ecosystem"] = "Julia"
+            package["name"] = chopsuffix(vuln.package.name, ".jl")
+            # package["purl"] # TODO (this is optional)
+            # GHSA does not have independent severity scores per affected package
+            # Versions are not easy in general. From OSV-Schema's convert_ghsa.py:
+            #   GHSA range format is described at:
+            #   https://docs.github.com/en/graphql/reference/objects#securityvulnerability
+            #   "= 0.2.0" denotes a single vulnerable version.
+            #   "<= 1.0.8" denotes a version range up to and including the specified version
+            #   "< 0.1.11" denotes a version range up to, but excluding, the specified version
+            #   ">= 4.3.0, < 4.3.5" denotes a version range with a known minimum and maximum version.
+            #   ">= 0.0.1" denotes a version range with a known minimum, but no known maximum.
+            #   (Undocumented) ">" is also a valid operator.
+            versions = String[]
+            range_events = Dict{String, String}[]
+            for ghsa_range in (strip(r) for r in eachsplit(vuln.vulnerable_version_range, ","))
+                if startswith(ghsa_range, "= ")
+                    push!(versions, chopprefix(ghsa_range, "= "))
+                elseif startswith(ghsa_range, "<= ")
+                    # Entries in the events array can contain either last_affected or fixed events, but not both
+                    if !exists(vuln, :patched_versions)
+                        push!(range_events, Dict("last_affected" => chopprefix(ghsa_range, "<= ")))
+                    end
+                elseif startswith(ghsa_range, "< ")
+                    push!(range_events, Dict("limit" => chopprefix(ghsa_range, "< ")))
+                elseif startswith(ghsa_range, ">= ")
+                    push!(range_events, Dict("introduced" => chopprefix(ghsa_range, ">= ")))
+                elseif startswith(ghsa_range, "> ")
+                    error("a vulnerability in $(advisory.ghsa_id) uses the undocumented > range syntax")
                 else
-                    vuln.package.name
+                    error("a vulnerability in $(advisory.ghsa_id) uses an unsupported vulnerable range syntax")
                 end
-                affected_entry["package"] = Dict(
-                    "ecosystem" => pkgecosystem,
-                    "name" => pkgname
-                )
-
-                if haskey(vuln, :vulnerable_version_range)
-                    affected_entry["ranges"] = [Dict(
-                        "type" => "ECOSYSTEM",
-                        "events" => [Dict(
-                            "introduced" => "0",
-                            "fixed" => vuln.vulnerable_version_range
-                        )]
-                    )]
-                end
-
-                push!(affected, affected_entry)
             end
+            if isempty(versions) && "introduced" ∉ Iterators.flatten(keys.(range_events))
+                pushfirst!(range_events, Dict("introduced" => "0"))
+            end
+            if exists(vuln, :patched_versions)
+                for patched_ver in (strip(r) for r in eachsplit(vuln.patched_versions, ","))
+                    push!(range_events, Dict("fixed" => chopprefix(patched_ver, "= ")))
+                end
+            end
+            affected_entry = Dict()
+            affected_entry["package"] = package
+            if !isempty(versions)
+                affected_entry["versions"] = versions
+            end
+            if !isempty(range_events)
+                affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
+            end
+            push!(affected, affected_entry)
         end
-        if !isempty(affected)
-            osv["affected"] = affected
-        end
+    end
+    if !isempty(affected)
+        osv["affected"] = affected
     end
 
     references = []
@@ -239,103 +315,21 @@ function convert_to_osv(advisory)
         osv["references"] = references
     end
 
+    db = Dict()
+    if exists(advisory, :cwe_ids)
+        db["cwe_ids"] = collect(advisory.cwe_ids)
+    end
+    if exists(advisory, :severity)
+        db["severity"] = advisory.severity
+    end
+    if exists(advisory, :state)
+        db["state"] = advisory.state
+    end
+    if !isempty(db)
+        osv["database_specific"] = db
+    end
     return osv
 end
 
-const ALL_PKGS = Pair{String,String}[]
-function get_uuids_in_general(pkgname)
-    if isempty(ALL_PKGS)
-        # This should really use Pkg APIs, but they are non-trivial and hang on GitHub Actions
-        registry = TOML.parsefile(download("https://github.com/JuliaRegistries/General/raw/refs/heads/master/Registry.toml"))
-        append!(ALL_PKGS, sort!([info["name"]=>uuid for (uuid, info) in registry["packages"]]))
-    end
-    idxs = searchsorted(ALL_PKGS, pkgname=>"", by=first)
-    return last.(getindex.((ALL_PKGS,), idxs))
-end
-
-function get_packages(advisory)
-    pkgs = Tuple{String,String}[]
-    ghsa_id = haskey(advisory, :ghsa_id) ? advisory.ghsa_id : "unknown GHSA"
-    println("Looking for Julia packages in $ghsa_id")
-    if haskey(advisory, :vulnerabilities) && !isempty(advisory.vulnerabilities)
-        for vuln in advisory.vulnerabilities
-            if haskey(vuln, :package) && haskey(vuln.package, :name) && haskey(vuln.package, :ecosystem)
-                lowercase(string(vuln.package.ecosystem)) == "julia" || continue
-                pkgname = chopsuffix(strip(vuln.package.name), ".jl")
-                println(" - looking for $pkgname in the General registry")
-                uuids = get_uuids_in_general(pkgname)
-                if length(uuids) != 1
-                    println(" ⨯ found $(length(uuids)) UUIDs for $pkgname")
-                    url = haskey(advisory, :html_url) ? advisory.html_url : ""
-                    create_issue(
-                        title="Failed to find a registered $(pkgname) for $ghsa_id",
-                        body="""
-                            The advisory [$ghsa_id]($url) names **$pkgname** as an affected product from the
-                            Julia ecosystem, but $(isempty(uuids) ? "no" : "more than one") match was found
-                            in the General registry.
-
-                            The complete advisory is:
-
-                            ```json
-                            $(sprint(JSON3.pretty, advisory))
-                            ```
-                            """
-                    )
-                else
-                    println(" - found $pkgname => $(only(uuids))")
-                    push!(pkgs, (pkgname, only(uuids)))
-                end
-            end
-        end
-    end
-    return pkgs
-end
-
-function write_advisory_files(advisories)
-    packages_dir = "packages/General"
-
-    for advisory in advisories
-        osv_data = convert_to_osv(advisory)
-        for (package, uuid) in get_packages(advisory)
-            package_dir = joinpath(packages_dir, package)
-            mkpath(package_dir)
-
-            filename = "$(advisory.ghsa_id).json"
-            filepath = joinpath(package_dir, filename)
-
-            println("Writing advisory: $filepath")
-            open(filepath, "w") do f
-                JSON3.pretty(f, osv_data)
-            end
-        end
-    end
-
-    println("Completed writing $(length(advisories)) advisories to disk")
-end
-
-function main()
-    try
-        println("Starting GitHub Security Advisory fetcher...")
-        if !isempty(ARGS) && !isempty(ARGS[1])
-            # Fetch all advisories for a single repo (for manual triggering)
-            advisories = fetch_repo_advisories(ARGS[1])
-        else
-            all_advisories = fetch_advisories()
-            advisories = filter_julia_advisories(all_advisories)
-        end
-
-        if isempty(advisories)
-            println("No Julia ecosystem advisories found in the specified time period.")
-            return
-        end
-
-        write_advisory_files(advisories)
-        println("Process completed successfully!")
-
-    catch e
-        println("Error: $e")
-        exit(1)
-    end
-end
 
 end

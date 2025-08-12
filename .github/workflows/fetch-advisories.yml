@@ -1,4 +1,4 @@
-name: Fetch GitHub Security Advisories
+name: Import GitHub Security Advisories
 
 on:
   schedule:
@@ -8,7 +8,7 @@ on:
     # Allow manual triggering
     inputs:
       repo:
-        description: 'Fetch advisories for just one specific repository e.g., org/repo.jl'
+        description: 'Fetch advisories for just one specific org or repository e.g., org/repo.jl'
         required: false
         type: string
 
@@ -25,7 +25,7 @@ jobs:
     - name: Setup Julia
       uses: julia-actions/setup-julia@v1
       with:
-        version: '1.9'
+        version: '1.11'
 
     - name: Install Julia dependencies
       run: |
@@ -33,9 +33,13 @@ jobs:
 
     - name: Run advisory fetcher script
       run: |
-        julia --project=. scripts/fetch_github_advisories.jl ${{ inputs.repo }}
+        julia --project=. scripts/fetch_github_advisories.jl $RUNNER_TEMP/osv ${{ inputs.repo }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Import OSV files into `packages/General`
+      run: |
+        julia --project=. scripts/import_osv_advisories.jl $RUNNER_TEMP/osv
 
     - name: Check for changes
       id: git-check
