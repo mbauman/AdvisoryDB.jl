@@ -1,0 +1,6 @@
+# A manual mapping between JLLs and their upstream CPEs. When specified without the `cpe`
+# prefix, all are assumed to be `VENDOR:PRODUCT`s under CPE's v2.3 applications schema:
+#   cpe:2.3:a:VENDOR:PRODUCT:*:*:*:*:*:*:*:*
+OpenBLAS_JLL = ["openblas_project:openblas"]
+OpenSSL_JLL = ["openssl:openssl"]
+DuckDB_JLL = ["duckdb:duckdb"]
