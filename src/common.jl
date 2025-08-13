@@ -1,10 +1,19 @@
 using JSON3: JSON3
 using TOML: TOML
 
+exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
+exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
+is_populated(::Nothing) = false
+is_populated(::Missing) = false
+is_populated(s::AbstractString) = !isempty(strip(s))
+is_populated(A::AbstractArray) = !isempty(A)
+is_populated(d::AbstractDict) = !isempty(d)
+is_populated(::Bool) = true
+
 const ALL_PKGS = Pair{String,String}[]
 function get_uuids_in_general(pkgname)
     if isempty(ALL_PKGS)
-        # This should really use Pkg APIs, but they are non-trivial and hang on GitHub Actions
+        # This should really use Pkg APIs, but they are non-trivial and were hanging on GitHub Actions?
         registry = TOML.parsefile(download("https://github.com/JuliaRegistries/General/raw/refs/heads/master/Registry.toml"))
         append!(ALL_PKGS, sort!([info["name"]=>uuid for (uuid, info) in registry["packages"]]))
     end

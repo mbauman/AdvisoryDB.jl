@@ -1,6 +1,8 @@
-# A manual mapping between JLLs and their upstream CPEs. When specified without the `cpe`
-# prefix, all are assumed to be `VENDOR:PRODUCT`s under CPE's v2.3 applications schema:
-#   cpe:2.3:a:VENDOR:PRODUCT:*:*:*:*:*:*:*:*
-OpenBLAS_JLL = ["openblas_project:openblas"]
-OpenSSL_JLL = ["openssl:openssl"]
-DuckDB_JLL = ["duckdb:duckdb"]
+# A manual mapping between upstream CPEs and their JLLs — only the first six parts.
+# When the version field is * or missing, it means that all versions of the JLLs track the
+# upstream version number exactly (ignoring +build suffixes). If the CPE includes a version
+# number, the Julia package must also (Pkg's Package_jll@1.2.3 syntax)
+"cpe:2.3:a:openblas_project:openblas" = "OpenBLAS_jll"
+"cpe:2.3:a:openssl:openssl" = "OpenSSL_jll"
+# "cpe:2.3:a:openssl:openssl:3.2.0" = "OpenSSL_jll@3.2.0"
+"cpe:2.3:a:duckdb:duckdb" = "DuckDB_jll"
