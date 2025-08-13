@@ -5,6 +5,11 @@ on:
     # Run at 4 AM UTC every day
     - cron: '0 4 * * *'
   workflow_dispatch: # Allow manual triggering
+    inputs:
+      arg:
+        description: 'Fetch advisories for just one specific CPE (e.g., `openssl:openssl`) or CVE'
+        required: false
+        type: string
 
 jobs:
   fetch-nvd-advisories:
@@ -18,8 +23,6 @@ jobs:
 
     - name: Setup Julia
       uses: julia-actions/setup-julia@v1
-      with:
-        version: '1.9'
 
     - name: Install Julia dependencies
       run: |
@@ -27,20 +30,19 @@ jobs:
 
     - name: Run NVD advisory fetcher script
       run: |
-        julia --project=. scripts/fetch_nvd_advisories.jl
+        julia --project=. scripts/fetch_nvd_advisories.jl $RUNNER_TEMP/osv ${{ inputs.repo }}
       env:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+
+    - name: Import OSV files into `packages/General`
+      run: |
+        julia --project=. scripts/import_osv_advisories.jl $RUNNER_TEMP/osv
 
     - name: Check for changes
       id: git-check
       run: |
         [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
 
-    - name: Commit and push changes
+    - name: Create Pull Request
       if: steps.git-check.outputs.changes == 'true'
-      run: |
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git add packages/
-        git commit -m "Update NVD security advisories - $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-        git push
+      uses: peter-evans/create-pull-request@v7

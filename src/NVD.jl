@@ -4,8 +4,10 @@ using HTTP
 using JSON3
 using YAML
 using Dates
+using DataStructures: OrderedDict as Dict # watch out
 
 const NVD_API_BASE = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+const NVD_CPE_API_BASE = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
 const DEFAULT_HOURS = 25
 
 function build_nvd_headers()
@@ -37,37 +39,17 @@ function fetch_nvd_page(url::String, headers::Vector{Pair{String, String}})
     return data
 end
 
-function fetch_nvd_vulnerabilities(hours::Int = DEFAULT_HOURS)
-    # Calculate time range
-    end_time = now(UTC)
-    start_time = end_time - Hour(hours)
-
-    # Format dates for NVD API (ISO 8601)
-    start_date = Dates.format(start_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
-    end_date = Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
-
-    headers = build_nvd_headers()
-    all_vulnerabilities = []
-
-    # Build initial URL with parameters
-    params = [
-        "lastModStartDate" => start_date,
-        "lastModEndDate" => end_date,
-        "resultsPerPage" => "2000",
-        "startIndex" => "0"
-    ]
-
-    query_string = join(["$(k)=$(HTTP.escapeuri(v))" for (k, v) in params], "&")
-    url = "$NVD_API_BASE?$query_string"
-
-    println("Fetching NVD vulnerabilities modified between $start_date and $end_date")
-
+function fetch_all_pages(base_url, headers, params, key)
+    haskey(params, "resultsPerPage") || (params["resultsPerPage"] = "2000")
+    haskey(params, "startIndex")     || (params["startIndex"]     = "0")
     # Fetch first page
-    data = fetch_nvd_page(url, headers)
-
-    if haskey(data, :vulnerabilities)
-        append!(all_vulnerabilities, data.vulnerabilities)
-        println("Fetched $(length(data.vulnerabilities)) vulnerabilities from first page")
+    query_string = join(["$(k)=$(HTTP.escapeuri(v))" for (k, v) in params], "&")
+    first_url = "$base_url?$query_string"
+    data = fetch_nvd_page(first_url, headers)
+    all_data = []
+    if haskey(data, key)
+        append!(all_data, getproperty(data, key))
+        println("Fetched $(length(getproperty(data, key))) vulnerabilities from first page")
 
         # Check if there are more results
         total_results = data.totalResults
@@ -81,27 +63,58 @@ function fetch_nvd_vulnerabilities(hours::Int = DEFAULT_HOURS)
             start_index += results_per_page
 
             # Update startIndex parameter
-            new_params = [
-                "lastModStartDate" => start_date,
-                "lastModEndDate" => end_date,
-                "resultsPerPage" => "2000",
-                "startIndex" => string(start_index)
-            ]
+            new_params = copy(params)
+            new_params["startIndex"] = string(parse(Int, params["startIndex"]) + parse(Int, params["resultsPerPage"]))
 
             query_string = join(["$(k)=$(HTTP.escapeuri(v))" for (k, v) in new_params], "&")
-            next_url = "$NVD_API_BASE?$query_string"
+            next_url = "$base_url?$query_string"
 
             data = fetch_nvd_page(next_url, headers)
 
-            if haskey(data, :vulnerabilities)
-                append!(all_vulnerabilities, data.vulnerabilities)
-                println("Fetched $(length(data.vulnerabilities)) vulnerabilities from page at index $start_index")
+            if haskey(data, key)
+                append!(all_data, getproperty(data, key))
+                println("Fetched $(length(getproperty(data, key))) vulnerabilities from page at index $start_index")
             end
         end
     end
 
-    println("Total NVD vulnerabilities fetched: $(length(all_vulnerabilities))")
-    return all_vulnerabilities
+    println("Total NVD vulnerabilities fetched: $(length(all_data))")
+    return all_data
+end
+
+function fetch_cve(cveId)
+    headers = build_nvd_headers()
+
+    # Build initial URL with parameters
+    params = Dict(
+        "cveId" => cveId,
+        "resultsPerPage" => "2000",
+        "startIndex" => "0"
+    )
+
+    return fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities)
+end
+
+function fetch_nvd_vulnerabilities(hours::Int = DEFAULT_HOURS)
+    # Calculate time range
+    end_time = now(UTC)
+    start_time = end_time - Hour(hours)
+
+    # Format dates for NVD API (ISO 8601)
+    start_date = Dates.format(start_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
+    end_date = Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
+
+    headers = build_nvd_headers()
+
+    # Build initial URL with parameters
+    params = Dict(
+        "lastModStartDate" => start_date,
+        "lastModEndDate" => end_date,
+        "resultsPerPage" => "2000",
+        "startIndex" => "0"
+    )
+
+    return fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities)
 end
 
 function filter_julia_vulnerabilities(vulnerabilities)
@@ -342,27 +355,6 @@ function write_nvd_advisory_files(vulnerabilities)
     end
 
     println("Completed writing $(length(vulnerabilities)) NVD advisories to disk")
-end
-
-function main()
-    try
-        println("Starting NVD vulnerability fetcher...")
-
-        all_vulnerabilities = fetch_nvd_vulnerabilities(200)
-        julia_vulnerabilities = filter_julia_vulnerabilities(all_vulnerabilities)
-
-        if isempty(julia_vulnerabilities)
-            println("No Julia-related vulnerabilities found in the specified time period.")
-            return
-        end
-
-        write_nvd_advisory_files(julia_vulnerabilities)
-        println("NVD process completed successfully!")
-
-    catch e
-        println("Error: $e")
-        exit(1)
-    end
 end
 
 end
