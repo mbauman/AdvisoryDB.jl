@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.7.2",
+  "id": "GHSA-w8jv-rg3h-fc68",
+  "modified": "2025-06-24T23:01:40Z",
+  "published": "2025-06-24T23:01:40Z",
+  "aliases": [
+    "CVE-2025-52480"
+  ],
+  "summary": "Argument injection in `gettreesha()` function in Registrator.jl",
+  "details": "### Impact\r\n\r\nIf the clone URL returned by GitHub is malicious (or can be injected using upstream vulnerabilities), an argument injection is possible in the `gettreesha()` function. This can then lead to a potential RCE.\r\n\r\n### Patches\r\n\r\nUsers should upgrade immediately to v1.9.5. All prior versions are vulnerable.\r\n\r\n### Workarounds\r\n\r\nNone\r\n\r\n### References\r\n\r\nFixed by: https://github.com/JuliaRegistries/Registrator.jl/pull/449 (which is available in v1.9.5).\r\n\r\n### Credits\r\n\r\nThanks to *splitline* from the DEVCORE Research Team for reporting this issue.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Registrator"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.9.5"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "ADVISORY",
+      "url": "https://github.com/JuliaRegistries/Registrator.jl/security/advisories/GHSA-w8jv-rg3h-fc68"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-88"
+    ],
+    "severity": "critical",
+    "state": "published"
+  }
+}
