@@ -1,6 +1,7 @@
 #!/usr/bin/env julia
 
 using AdvisoryDB: NVD
+using JSON3: JSON3
 
 println("Starting NVD vulnerability fetcher...")
 path = isempty(ARGS) ? mktempdir() : ARGS[1]
