@@ -30,7 +30,7 @@ jobs:
 
     - name: Run NVD advisory fetcher script
       run: |
-        julia --project=. scripts/fetch_nvd_advisories.jl $RUNNER_TEMP/osv ${{ inputs.repo }}
+        julia --project=. scripts/fetch_nvd_advisories.jl $RUNNER_TEMP/osv ${{ inputs.arg }}
       env:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 

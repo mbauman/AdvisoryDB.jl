@@ -212,7 +212,7 @@ function filter_julia_vulnerabilities(vulnerabilities)
     return julia_vulnerabilities
 end
 
-function convert_nvd_to_osv(vuln)
+function convert_to_osv(vuln)
     osv = Dict{String, Any}()
 
     # Required OSV fields
@@ -378,7 +378,7 @@ function write_nvd_advisory_files(vulnerabilities)
     end
 
     for vuln in vulnerabilities
-        osv_data = convert_nvd_to_osv(vuln)
+        osv_data = convert_to_osv(vuln)
         package_name = get_first_package_name_nvd(vuln)
 
         package_dir = joinpath(packages_dir, package_name)
