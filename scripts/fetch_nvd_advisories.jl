@@ -29,7 +29,7 @@ println("Found $n Julia-related CVE$(n==1 ? "" : "s") on NVD")
 mkpath(path)
 for advisory in advisories
     osv = NVD.convert_to_osv(advisory)
-    p = joinpath(path, string(osv.id, ".json"))
+    p = joinpath(path, string(osv["id"], ".json"))
     JSON3.write(p, osv)
     println(" - created $p")
 end
