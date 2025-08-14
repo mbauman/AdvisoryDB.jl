@@ -300,20 +300,23 @@ function convert_to_osv(vuln)
                 )
 
                 # Now the hard part: the version ranges.
-                events = []
-                if !exists(first(matches), :versionStartIncluding)
-                    push!(events, Dict("introduced" => "0"))
-                end
+                ranges = []
                 for m in matches
                     (!exists(m, :vulnerable) || !m.vulnerable) && continue
+                    events = []
                     if exists(m, :versionStartIncluding)
                         push!(events, Dict("introduced" => m.versionStartIncluding))
+                    else
+                        push!(events, Dict("introduced" => "0"))
                     end
                     if exists(m, :versionEndExcluding)
                         push!(events, Dict("fixed" => m.versionEndExcluding))
                     end
+                    push!(ranges, Dict("type"=>"SEMVER", "events"=>events))
                 end
-                affected_entry["ranges"] = Dict("type"=>"SEMVER", "events"=>events)
+                if !isempty(ranges)
+                    affected_entry["ranges"] = ranges
+                end
                 push!(affected, affected_entry)
             end
         end
