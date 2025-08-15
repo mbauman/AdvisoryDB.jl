@@ -5,6 +5,8 @@ using JSON3
 using Dates
 using DataStructures: OrderedDict as Dict # watch out
 
+using ..AdvisoryDB: exists
+
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
 
@@ -178,14 +180,6 @@ function filter_julia_advisories(advisories)
 
     return julia_advisories
 end
-
-exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
-exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
-is_populated(::Nothing) = false
-is_populated(::Missing) = false
-is_populated(s::String) = !isempty(strip(s))
-is_populated(A::AbstractArray) = !isempty(A)
-is_populated(d::AbstractDict) = !isempty(d)
 
 function convert_to_osv(advisory)
     osv = Dict{String, Any}()

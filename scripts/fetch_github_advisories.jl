@@ -4,9 +4,8 @@
 
 using AdvisoryDB: GitHub, JSON3
 
-# try
 println("Starting GitHub Security Advisory fetcher...")
-path = isempty(ARGS) ? "/tmp/ghsa" : ARGS[1]
+path = isempty(ARGS) ? mktempdir() : ARGS[1]
 
 all_advisories = if length(ARGS) > 1 && !isempty(ARGS[2])
     # Fetch all advisories for a single repo (for manual triggering)
@@ -20,7 +19,7 @@ advisories = GitHub.filter_julia_advisories(all_advisories)
 
 if isempty(advisories)
     println("No Julia ecosystem advisories found")
-    return
+    exit()
 end
 
 n = length(advisories)
@@ -33,8 +32,3 @@ for advisory in advisories
     JSON3.write(p, osv)
     println(" - created $p")
 end
-
-# catch ex
-#     # GitHub.create_issue
-#     exit(1)
-# end

@@ -8,7 +8,7 @@ on:
     # Allow manual triggering
     inputs:
       repo:
-        description: 'Fetch advisories for just one specific org or repository e.g., org/repo.jl'
+        description: 'Fetch advisories for just one specific repository e.g., org/Pkg.jl'
         required: false
         type: string
 
@@ -24,8 +24,6 @@ jobs:
 
     - name: Setup Julia
       uses: julia-actions/setup-julia@v1
-      with:
-        version: '1.11'
 
     - name: Install Julia dependencies
       run: |
