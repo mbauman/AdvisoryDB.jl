@@ -42,6 +42,7 @@ Base.show(io::IO, cpe::CPE) = show(io, string(cpe))
 globequal(a, b) = a == "*" || b == "*" || lowercase(a) == lowercase(b)
 matches(a::CPE, b::CPE) = all(Base.splat(globequal), zip(parts(a), parts(b)))
 matches(a::CPE) = Base.Fix1(matches, a)
+vendorproduct(a::CPE) = string(a.vendor, ":", a.product)
 
 ignoreglobequal(a, b) = a != "*" && b != "*" && a == b
 matchcount(a::CPE, b::CPE) = sum(Base.splat(ignoreglobequal), zip(parts(a), parts(b)))
@@ -54,7 +55,7 @@ function getmostspecific(dict::AbstractDict{CPE}, cpe::CPE)
     return dict[argmax(x->NVD.matchcount(cpe, x), keys(dict))]
 end
 
-const CPE_MAP = Dict{CPE,String}(CPE(k) => v for (k,v) in TOML.parsefile(joinpath(@__DIR__, "..", "cpe_equivalents.toml")))
+const CPE_MAP = Dict{CPE,String}() # CPE(k) => v for (k,v) in TOML.parsefile(joinpath(@__DIR__, "..", "cpe_equivalents.toml")))
 
 function build_nvd_headers()
     headers = [
@@ -95,7 +96,7 @@ function fetch_all_pages(base_url, headers, params, key)
     all_data = []
     if haskey(data, key)
         append!(all_data, getproperty(data, key))
-        println("Fetched $(length(getproperty(data, key))) vulnerabilities from first page")
+        println("Fetched $(length(getproperty(data, key))) results from first page")
 
         # Check if there are more results
         total_results = data.totalResults
@@ -119,12 +120,12 @@ function fetch_all_pages(base_url, headers, params, key)
 
             if haskey(data, key)
                 append!(all_data, getproperty(data, key))
-                println("Fetched $(length(getproperty(data, key))) vulnerabilities from page at index $start_index")
+                println("Fetched $(length(getproperty(data, key))) results from page at index $start_index")
             end
         end
     end
 
-    println("Total NVD vulnerabilities fetched: $(length(all_data))")
+    println("Total results fetched: $(length(all_data))")
     return all_data
 end
 
@@ -147,6 +148,7 @@ function fetch_cpe_matches(cpe)
     # Build initial URL with parameters
     params = Dict(
         "cpeMatchString" => string(cpe),
+
         "resultsPerPage" => "2000",
         "startIndex" => "0"
     )
