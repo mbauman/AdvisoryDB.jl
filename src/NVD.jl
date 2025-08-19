@@ -281,7 +281,8 @@ function convert_to_osv(vuln)
         end
     end
 
-    # Affected _Julia_ packages, connecting CPE data to the package
+    # Affected _Julia_ packages, connecting CPE data to the package.
+    # TODO: THIS IS BROKEN!
     affected = []
     if exists(vuln.cve, :configurations)
         for config in vuln.cve.configurations

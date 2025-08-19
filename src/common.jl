@@ -29,6 +29,7 @@ end
 function uuids_from_name(name, reg=get_registry())
     Pkg.Registry.uuids_from_name(reg, name)
 end
+registry_has_package(name, reg=get_registry()) = !isempty(uuids_from_name(reg, name))
 
 available_versions_for_uuid(uuid) = available_versions_for_uuid(Base.UUID(uuid))
 function available_versions_for_uuid(uuid::Base.UUID, reg=get_registry())
@@ -90,6 +91,35 @@ function upstream_versions_for_package(pkgname, version; force=false)
         TOML.print(f, cpe_map, sorted=true)
     end
     return results
+end
+
+const AVAILABLE_CPES = Pair{String,String}[]
+function available_cpes()
+    if isempty(AVAILABLE_CPES)
+        cpe_map = TOML.parsefile(joinpath(@__DIR__, "..", "cpe_map.toml"))
+        for (pkg, vers) in cpe_map
+            for cpe in unique(Iterators.flatten(keys.(values(vers))))
+                push!(AVAILABLE_CPES, cpe => pkg)
+            end
+        end
+        sort!(AVAILABLE_CPES)
+    end
+    return AVAILABLE_CPES
+end
+function related_julia_packages(description, vendorproducts)
+    pkgs = String[]
+    jlpkgs_mentioned = [m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)]
+    for (vendor, product) in vendorproducts
+        cpe = string("cpe:2.3:a:", vendor, ":", product)
+        append!(pkgs, available_cpes()[searchsorted(available_cpes(), cpe=>"", by=first)])
+        if (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
+            push!(pkgs, chopsuffix(product, ".jl"))
+        end
+        for pkg in jlpkgs_mentioned
+            pkg == chopsuffix(product, ".jl") && registry_has_package(pkg) && push!(pkgs, pkg)
+        end
+    end
+    return unique(pkgs)
 end
 
 # TODO: use the above Pkg machinery for this, too
