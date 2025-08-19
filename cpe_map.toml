@@ -69,6 +69,120 @@
 [LibSSH2_jll."1.9.1+4"]
 "cpe:2.3:a:libssh2:libssh2" = "1.9.0"
 
+[OpenBLAS32_jll."0.3.10+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.10"
+
+[OpenBLAS32_jll."0.3.10+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.10"
+
+[OpenBLAS32_jll."0.3.10+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.10"
+
+[OpenBLAS32_jll."0.3.10+3"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.10"
+
+[OpenBLAS32_jll."0.3.12+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.12"
+
+[OpenBLAS32_jll."0.3.12+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.12"
+
+[OpenBLAS32_jll."0.3.13+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.13"
+
+[OpenBLAS32_jll."0.3.13+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.13"
+
+[OpenBLAS32_jll."0.3.13+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.13"
+
+[OpenBLAS32_jll."0.3.13+3"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.13"
+
+[OpenBLAS32_jll."0.3.13+4"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.13"
+
+[OpenBLAS32_jll."0.3.13+5"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.13"
+
+[OpenBLAS32_jll."0.3.13+6"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.13"
+
+[OpenBLAS32_jll."0.3.17+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.17"
+
+[OpenBLAS32_jll."0.3.20+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.20"
+
+[OpenBLAS32_jll."0.3.21+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.21"
+
+[OpenBLAS32_jll."0.3.22+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.22"
+
+[OpenBLAS32_jll."0.3.23+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.23"
+
+[OpenBLAS32_jll."0.3.23+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.23"
+
+[OpenBLAS32_jll."0.3.23+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.23"
+
+[OpenBLAS32_jll."0.3.23+3"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.23"
+
+[OpenBLAS32_jll."0.3.24+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.24"
+
+[OpenBLAS32_jll."0.3.25+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.25"
+
+[OpenBLAS32_jll."0.3.26+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.26"
+
+[OpenBLAS32_jll."0.3.26+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.26"
+
+[OpenBLAS32_jll."0.3.26+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.26"
+
+[OpenBLAS32_jll."0.3.27+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.27"
+
+[OpenBLAS32_jll."0.3.27+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.27"
+
+[OpenBLAS32_jll."0.3.28+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.28"
+
+[OpenBLAS32_jll."0.3.28+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.28"
+
+[OpenBLAS32_jll."0.3.28+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.28"
+
+[OpenBLAS32_jll."0.3.28+3"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.28"
+
+[OpenBLAS32_jll."0.3.29+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.29"
+
+[OpenBLAS32_jll."0.3.9+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9"
+
+[OpenBLAS32_jll."0.3.9+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9"
+
+[OpenBLAS32_jll."0.3.9+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9"
+
+[OpenBLAS32_jll."0.3.9+3"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9"
+
+[OpenBLAS32_jll."0.3.9+4"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9"
+
 [OpenBLAS_jll."0.3.10+0"]
 "cpe:2.3:a:openblas_project:openblas" = "0.3.10"
 
