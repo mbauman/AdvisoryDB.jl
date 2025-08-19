@@ -54,7 +54,7 @@ end
 
 
 function readme_for_pkg(name, uuid, version; reg=get_registry())
-    # We intentionally side-step the package resolver here, but still lean on Pkg for robust downloads
+    # We intentionally side-step the package resolver here, but still lean on the Pkg server
     tree_hash = reg[uuid].info.version_info[version].git_tree_sha1
     server, _ = Pkg.Registry.pkg_server_registry_info()
     tarball = download("$server/package/$uuid/$tree_hash")

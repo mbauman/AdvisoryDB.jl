@@ -30,16 +30,16 @@ raptor_jll = [
 #  - Old versions do not list source information in their readmes at all
 #  - Some upstream URLs might not be parseable with a single 1-capture-group regex
 [overrides.libpng_jll."1.6.37+0"]
-"cpe:2.3:a:libpng:libpng" = "1.6.37" # GUESS
+"cpe:2.3:a:libpng:libpng" = "1.6.37" # Yggdrasil b394928d031644daa355c3f564c1b32370cea62c-a7ee13b0bb644bda92ffd89f6e040df0d41f1041
 
 [overrides.libpng_jll."1.6.37+1"]
-"cpe:2.3:a:libpng:libpng" = "1.6.37" # GUESS
+"cpe:2.3:a:libpng:libpng" = "1.6.37" # Yggdrasil b394928d031644daa355c3f564c1b32370cea62c-a7ee13b0bb644bda92ffd89f6e040df0d41f1041
 
 [overrides.libpng_jll."1.6.37+2"]
-"cpe:2.3:a:libpng:libpng" = "1.6.37" # GUESS
+"cpe:2.3:a:libpng:libpng" = "1.6.37" # Yggdrasil b394928d031644daa355c3f564c1b32370cea62c-a7ee13b0bb644bda92ffd89f6e040df0d41f1041
 
 [overrides.libpng_jll."1.6.37+3"]
-"cpe:2.3:a:libpng:libpng" = "1.6.37" # GUESS
+"cpe:2.3:a:libpng:libpng" = "1.6.37" # Yggdrasil b394928d031644daa355c3f564c1b32370cea62c-a7ee13b0bb644bda92ffd89f6e040df0d41f1041
 
 [overrides.OpenSSL_jll."1.1.1+0"]
 "cpe:2.3:a:openssl:openssl" = "1.1.1c" # Yggdrasil @ebdaf7658e27460335553e10ff9cfb333a1b468d
@@ -97,3 +97,9 @@ raptor_jll = [
 
 [overrides.OpenBLAS_jll."0.3.9+4"]
 "cpe:2.3:a:openblas_project:openblas" = "0.3.9" # GUESS
+
+[overrides.LibSSH2_jll."1.9.0+0"]
+"cpe:2.3:a:libssh2:libssh2" = "1.9.0" # Yggdrasil @5ce732e5417e2cfccd5e93337ccd51153aec72c6-611eea058bc096bfbb50019cef9abbd77db859c8
+
+[overrides.LibSSH2_jll."1.9.0+1"]
+"cpe:2.3:a:libssh2:libssh2" = "1.9.0" # Yggdrasil @5ce732e5417e2cfccd5e93337ccd51153aec72c6-611eea058bc096bfbb50019cef9abbd77db859c8
