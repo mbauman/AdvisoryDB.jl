@@ -1,6 +1,8 @@
 using JSON3: JSON3
 using TOML: TOML
 using Pkg
+using Tar: Tar
+using CodecZlib: GzipDecompressorStream
 using DataStructures: OrderedDict as Dict
 
 exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
@@ -34,16 +36,29 @@ function available_versions_for_uuid(uuid::Base.UUID, reg=get_registry())
     return sort(collect(keys(info.version_info)))
 end
 
+function untar_readmes(tar_gz::AbstractString)
+    data = String[]
+    buf = Vector{UInt8}(undef, Tar.DEFAULT_BUFFER_SIZE)
+    io = IOBuffer()
+    open(tar_gz) do compressed_tar
+        tar = GzipDecompressorStream(compressed_tar)
+        Tar.read_tarball(x->contains(lowercase(x.path), "readme"), tar; buf=buf) do hdr, _
+            if hdr.type == :file
+                Tar.read_data(tar, io; size=hdr.size, buf=buf)
+                push!(data, String(take!(io)))
+            end
+        end
+    end
+    return join(data, "\n")
+end
+
+
 function readme_for_pkg(name, uuid, version; reg=get_registry())
     # We intentionally side-step the package resolver here, but still lean on Pkg for robust downloads
-    env= Pkg.Types.EnvCache(mktempdir())
     tree_hash = reg[uuid].info.version_info[version].git_tree_sha1
-    env.manifest.deps[uuid] = Pkg.Types.PackageEntry(;name, uuid, version, tree_hash)
-    ctx = Pkg.Types.Context(env = env, registries=[reg])
-    Pkg.Operations.download_source(ctx)
-    src_path = Pkg.Operations.find_installed(name, uuid, tree_hash)
-    readmes = filter(contains("readme")∘lowercase, readdir(src_path))
-    return join((read(joinpath(src_path, file), String) for file in readmes), "\n")
+    server, _ = Pkg.Registry.pkg_server_registry_info()
+    tarball = download("$server/package/$uuid/$tree_hash")
+    return untar_readmes(tarball)
 end
 
 const CPE_CONFIG = Ref{Dict{String,Any}}()

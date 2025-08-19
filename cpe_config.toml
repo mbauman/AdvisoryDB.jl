@@ -49,3 +49,51 @@ raptor_jll = [
 
 [overrides.OpenSSL_jll."1.1.1+2"]
 "cpe:2.3:a:openssl:openssl" = "1.1.1c" # Yggdrasil @888a01798166abfd42d0e3e40c51b9c30aae229d
+
+[overrides.OpenBLAS_jll."0.3.5+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.5" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+3"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+4"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+5"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+6"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+7"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+8"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.7+9"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.7" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.9+0"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.9+1"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.9+2"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.9+3"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9" # GUESS
+
+[overrides.OpenBLAS_jll."0.3.9+4"]
+"cpe:2.3:a:openblas_project:openblas" = "0.3.9" # GUESS
