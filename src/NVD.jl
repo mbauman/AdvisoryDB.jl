@@ -6,7 +6,7 @@ using Dates
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: exists
+using ..AdvisoryDB: AdvisoryDB, exists
 
 const NVD_API_BASE = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 const NVD_CPE_API_BASE = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
@@ -42,7 +42,7 @@ Base.show(io::IO, cpe::CPE) = show(io, string(cpe))
 globequal(a, b) = a == "*" || b == "*" || lowercase(a) == lowercase(b)
 matches(a::CPE, b::CPE) = all(Base.splat(globequal), zip(parts(a), parts(b)))
 matches(a::CPE) = Base.Fix1(matches, a)
-vendorproduct(a::CPE) = string(a.vendor, ":", a.product)
+vendorproduct(a::CPE) = (a.vendor, a.product)
 
 ignoreglobequal(a, b) = a != "*" && b != "*" && a == b
 matchcount(a::CPE, b::CPE) = sum(Base.splat(ignoreglobequal), zip(parts(a), parts(b)))
@@ -72,9 +72,6 @@ end
 
 function fetch_nvd_page(url::String, headers::Vector{Pair{String, String}})
     println("Fetching: $url")
-
-    # Sleep for rate limiting (6 seconds recommended by NVD)
-    sleep(6)
 
     response = HTTP.get(url, headers)
 
@@ -116,6 +113,8 @@ function fetch_all_pages(base_url, headers, params, key)
             query_string = join(["$(k)=$(HTTP.escapeuri(v))" for (k, v) in new_params], "&")
             next_url = "$base_url?$query_string"
 
+            # Sleep for rate limiting (6 seconds recommended by NVD)
+            sleep(6)
             data = fetch_nvd_page(next_url, headers)
 
             if haskey(data, key)
@@ -139,7 +138,7 @@ function fetch_cve(cveId)
         "startIndex" => "0"
     )
 
-    return fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities)
+    return only(fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities))
 end
 
 function fetch_cpe_matches(cpe)
@@ -178,40 +177,66 @@ function fetch_nvd_vulnerabilities(hours::Int = DEFAULT_HOURS)
     return fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities)
 end
 
+function vendor_product_versions(vuln)
+    vpvs = Tuple{String,String,String}[]
+    (exists(vuln, :cve) && exists(vuln.cve, :configurations)) || return vpvs
+    for config in vuln.cve.configurations
+        exists(config, :nodes) || continue
+        for node in config.nodes
+            exists(node, :children) && error("don't know what to do here")
+            exists(node, :cpeMatch) || continue
+            negate = get(node, :negate, false)
+            for cpe_match in node.cpeMatch
+                exists(cpe_match, :criteria) || continue
+                vulnerable = get(cpe_match, :vulnerable, true) ⊻ negate
+                vulnerable || continue
+                vp = vendorproduct(CPE(cpe_match.criteria))
+                lb = if exists(cpe_match, :versionStartIncluding)
+                    string(">= ", cpe_match.versionStartIncluding)
+                elseif exists(cpe_match, :versionStartExcluding)
+                    string("> ", cpe_match.versionStartIncluding)
+                else missing end
+                ub = if exists(cpe_match, :versionEndIncluding)
+                    string("<= ", cpe_match.versionEndIncluding)
+                elseif exists(cpe_match, :versionEndExcluding)
+                    string("< ", cpe_match.versionEndExcluding)
+                else missing end
+                version = join(skipmissing([lb,ub]), ", ")
+                push!(vpvs, (vp..., version))
+            end
+        end
+    end
+    return unique!(vpvs)
+end
+
+related_julia_packages(vuln) = AdvisoryDB.related_julia_packages(english_description(vuln), vendor_product_versions(vuln))
+
 function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
 
     for vuln in vulnerabilities
-        if exists(vuln, :cve) && exists(vuln.cve, :configurations)
-            # Look for Julia-related CPE entries or descriptions
-            is_julia_related = false
-
-            # Check configurations for upstream CPE entries
-            for config in vuln.cve.configurations
-                if exists(config, :nodes)
-                    for node in config.nodes
-                        if exists(node, :cpeMatch)
-                            for cpe_match in node.cpeMatch
-                                if exists(cpe_match, :criteria)
-                                    if hasmatchingkey(CPE_MAP, CPE(cpe_match.criteria))
-                                        is_julia_related = true
-                                        break
-                                    end
-                                end
-                            end
-                        end
-                        is_julia_related && break
-                    end
-                end
-                is_julia_related && break
-            end
-            if is_julia_related
-                push!(julia_vulnerabilities, vuln)
-            end
+        if !isempty(related_julia_packages(vuln))
+            push!(julia_vulnerabilities, vuln)
         end
     end
 
     return julia_vulnerabilities
+end
+
+function english_description(vuln)
+    if exists(vuln, :cve) && exists(vuln.cve, :descriptions)
+        for desc in vuln.cve.descriptions
+            if exists(desc, :lang) && desc.lang == "en" && exists(desc, :value)
+                return string(desc.value)
+            end
+        end
+    end
+    return ""
+end
+
+function version_string(node)
+    # Output a GHSA-like version string for a given configuration node
+
 end
 
 function convert_to_osv(vuln)
@@ -232,27 +257,22 @@ function convert_to_osv(vuln)
     # No related tags (beyond references)
 
     # Summary and details from descriptions, using English only
-    if exists(vuln.cve, :descriptions)
-        for desc in vuln.cve.descriptions
-            if exists(desc, :lang) && desc.lang == "en" && exists(desc, :value)
-                description = desc.value
-                flat_description = replace(description, r"\s+"=>" ")
-                # Use first sentence as summary, full text as details
-                if length(flat_description) > 100
-                    summary_end = findfirst(". ", flat_description)
-                    if summary_end !== nothing
-                        osv["summary"] = flat_description[1:summary_end[1]]
-                        osv["details"] = description
-                    else
-                        osv["summary"] = flat_description[1:min(100, length(description))] * "..."
-                        osv["details"] = description
-                    end
-                else
-                    osv["summary"] = flat_description
-                    osv["details"] = description
-                end
-                break
+    description = english_description(vuln)
+    if !isempty(description)
+        flat_description = replace(description, r"\s+"=>" ")
+        # Use first sentence as summary, full text as details
+        if length(flat_description) > 100
+            summary_end = findfirst(". ", flat_description)
+            if summary_end !== nothing
+                osv["summary"] = flat_description[1:summary_end[1]]
+                osv["details"] = description
+            else
+                osv["summary"] = flat_description[1:min(100, length(description))] * "..."
+                osv["details"] = description
             end
+        else
+            osv["summary"] = flat_description
+            osv["details"] = description
         end
     end
 

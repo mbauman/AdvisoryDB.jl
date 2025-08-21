@@ -7,9 +7,9 @@ println("Starting NVD vulnerability fetcher...")
 path = isempty(ARGS) ? mktempdir() : ARGS[1]
 
 all_vulnerabilities = if length(ARGS) > 1 && !isempty(ARGS[2])
-    # Fetch all advisories for a single repo (for manual triggering)
+    # Fetch a single CVE
     if startswith(lowercase(ARGS[2]), "cve")
-        NVD.fetch_cve(ARGS[2])
+        [NVD.fetch_cve(ARGS[2])]
     else
         error("unsupported argument to workflow")
     end

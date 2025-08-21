@@ -6,7 +6,7 @@ using Dates: Dates, DateTime, @dateformat_str
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: exists, related_julia_packages
+using ..AdvisoryDB: AdvisoryDB, exists
 
 # https://euvd.enisa.europa.eu/apidoc
 const API_BASE = "https://euvdservices.enisa.europa.eu/api"
@@ -114,11 +114,13 @@ function fetch_vulnerabilities()
     return fetch_all_pages(string(API_BASE, "/search"), headers, params)
 end
 
+related_julia_packages(vuln) = AdvisoryDB.related_julia_packages(vuln.description, vendor_product_versions(vuln))
+
 function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
 
     for vuln in vulnerabilities
-        if !isempty(related_julia_packages(vuln.description, vendor_product_versions(vuln)))
+        if !isempty(related_julia_packages(vuln))
             push!(julia_vulnerabilities, vuln)
         end
     end
@@ -126,7 +128,7 @@ function filter_julia_vulnerabilities(vulnerabilities)
     return julia_vulnerabilities
 end
 
-parse_euvd_datetime(str) = DateTime(str, dateformat"u d, y, H:M:S p") * "Z" # TODO: WHAT'S THE TIMEZONE??
+parse_euvd_datetime(str) = string(DateTime(str, dateformat"u d, y, H:M:S p")) * "Z" # TODO: WHAT'S THE TIMEZONE??
 function convert_to_osv(vuln)
     osv = Dict{String, Any}()
 
@@ -143,7 +145,7 @@ function convert_to_osv(vuln)
     # Aliases are typically missing GHSAs; those could come from references.
     aliases = String[]
     if exists(vuln, :aliases)
-        append!(aliases, split(vuln.aliases, "\n"))
+        append!(aliases, strip.(split(vuln.aliases, "\n"; keepempty=false)))
     end
     if !isempty(aliases)
         osv["aliases"] = aliases
@@ -181,34 +183,48 @@ function convert_to_osv(vuln)
 
     # Affected _Julia_ packages, connecting CPE data to the package.
     affected = []
-    julia_packages = related_julia_packages(vuln.description, vendor_product_versions(vuln))
+    vpv = vendor_product_versions(vuln)
+    julia_packages = related_julia_packages(vuln.description, vpv)
     if isempty(julia_packages)
         error("cannot convert an unrelated vulnerability to OSV. These should be filtered.")
     end
-    for pkg in julia_packages
-        # There are two cases; either the advisory is about the Julia package itself or its about an upstream component
-        affected_entry = Dict{String, Any}()
-        affected_entry["package"] = Dict(
-            "ecosystem" => "Julia",
-            "name" => pkg
-        )
-        # The hard part is getting the version ranges right
-        versions = String[]
-        range_events = Dict{String, String}[]
-        # EUVD doesn't document its version range syntax. It appears to be
-        # comma-separated, uses < or ≤, might omit the LHS of the operator, might only be a single version.
-        # There may also be multiple repetitions of the same product. Oooof.
-
-        # I first must subset out all the vuln.enisaIdProduct[]s that match the given package
-        # (either directly or through a CPE match). Then I must only consider those verions
-        # Then if it's a CPE equivalent, I must remap those version numbers.
-        if !isempty(versions)
-            affected_entry["versions"] = versions
+    # There are two cases; either the advisory is about the Julia package itself or its about an upstream component
+    affected_entries = Dict(pkg => Dict{String,Any}("package"=>Dict("ecosystem"=>"Julia","name"=>pkg)) for pkg in julia_packages)
+    for (vendor, product, version) in vpv
+        for pkg in related_julia_packages(vuln.description, [(vendor, product)])
+            entry = affected_entries[pkg]
+            # The hard part is getting the version ranges right
+            versions = get(entry, "versions", String[])
+            range_events = get(entry, "_range_events", Dict{String,String}[]) # To be fixed up later; this needs to be nested
+            for range in strip.(split(version, ","))
+                isempty(range) && continue
+                # EUVD's version strings are a disaster. If we're lucky, we get a clear < or ≤ operator with bounds
+                # Sometimes this is comma separated, but that's rare.
+                m = match(r"^\s*(\S+)?\s*([<≤])\s*(\S+)\s*$", range)
+                isnothing(m) && contains(range, r"[<≤]") && error("failed to parse range $range")
+                if isnothing(m)
+                    push!(versions, range)
+                else
+                    lb, op, ub = m.captures
+                    push!(range_events, Dict("introduced" => something(lb, "0")))
+                    push!(range_events, Dict((op=='<' ? "fixed" : "last_affected") => ub))
+                end
+            end
+            if !isempty(versions)
+                entry["versions"] = versions
+            end
+            if !isempty(range_events)
+                entry["_range_events"] = range_events
+            end
         end
-        if !isempty(range_events)
-            affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
+    end
+    affected = []
+    for (pkg, entry) in affected_entries
+        if haskey(entry, "_range_events")
+            entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>entry["_range_events"])]
+            delete!(entry, "_range_events")
         end
-        push!(affected, affected_entry)
+        push!(affected, entry)
     end
     if !isempty(affected)
         osv["affected"] = affected
