@@ -40,7 +40,7 @@ elseif contains(input, ":")
                     continue # This qualifies as "good" information
                 end
             end
-            advisories[(vuln.cve.id, pkg)] = versioninfo
+            advisories[(vuln_id, pkg)] = versioninfo
         end
     end
 else

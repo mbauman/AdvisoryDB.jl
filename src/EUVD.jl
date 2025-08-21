@@ -19,7 +19,7 @@ function vpzip(vendors,products)
     length(vendors) == length(products) || throw(ArgumentError("vendor and product length must be compatible"))
     zip(vendors,products)
 end
-vendor_product_versions(vuln) = [(v.vendor.name, p.product.name, p.product_version) for (v,p) in vpzip(vuln.enisaIdVendor, vuln.enisaIdProduct)]
+vendor_product_versions(vuln) = [(get(get(v, :vendor, Dict()), :name, ""), get(get(p, :product, Dict), :name, ""), get(p, :product_version, "")) for (v,p) in vpzip(vuln.enisaIdVendor, vuln.enisaIdProduct)]
 
 function build_headers()
     headers = [

@@ -1,4 +1,12 @@
-# Test
-
-[CVE-2022-1292]
-OpenSSL_jll = ["< 1.1.16+0"]
+# # This file contains a table of advisories and the packages to which they apply.")
+#
+# The schema is relatively simple:
+#   - Advisories are the top-level keys by ID
+#       - if multiple aliases exist, prefer CVE over GHSA over EUVD
+#   - Each advisory has Julia package names as its keys (without .jl suffix)
+#   - The value for a particular advisory[package] is either:
+#       - An array of GitHub Security Advisory style version ranges to which the advisory applies
+#       - A string detailing _why_ a given advisory does not apply
+#
+# This file is semi-automatically updated by suggested pull requests. By marking a package with an
+# exception string, you prevent further automatic updates from suggesting the advisory apply.

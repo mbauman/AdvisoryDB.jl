@@ -43,6 +43,18 @@ globequal(a, b) = a == "*" || b == "*" || lowercase(a) == lowercase(b)
 matches(a::CPE, b::CPE) = all(Base.splat(globequal), zip(parts(a), parts(b)))
 matches(a::CPE) = Base.Fix1(matches, a)
 vendorproduct(a::CPE) = (a.vendor, a.product)
+function cpeversion(a::CPE)
+    a.version == "*" && return missing
+    update = a.update == "*" ? "" : a.update == "-" ? "-" : string("-", a.update)
+    rest = string(
+        a.edition == "*" ? "" : a.edition,
+        a.language == "*" ? "" : a.language,
+        a.sw_edition == "*" ? "" : a.sw_edition,
+        a.target_sw == "*" ? "" : a.target_sw,
+        a.target_hw == "*" ? "" : a.target_hw,
+        a.other == "*" ? "" : a.other,)
+    return string(a.version, update, isempty(rest) ? "" : string("+", rest))
+end
 
 ignoreglobequal(a, b) = a != "*" && b != "*" && a == b
 matchcount(a::CPE, b::CPE) = sum(Base.splat(ignoreglobequal), zip(parts(a), parts(b)))
@@ -190,7 +202,14 @@ function vendor_product_versions(vuln)
                 exists(cpe_match, :criteria) || continue
                 vulnerable = get(cpe_match, :vulnerable, true) ⊻ negate
                 vulnerable || continue
-                vp = vendorproduct(CPE(cpe_match.criteria))
+                cpe = CPE(cpe_match.criteria)
+                vp = vendorproduct(cpe)
+                ver = cpeversion(cpe)
+                if !ismissing(ver)
+                    # We have an exact version number embedded into the CPE
+                    push!(vpvs, (vp..., "= $ver"))
+                    continue
+                end
                 lb = if exists(cpe_match, :versionStartIncluding)
                     string(">= ", cpe_match.versionStartIncluding)
                 elseif exists(cpe_match, :versionStartExcluding)
@@ -202,6 +221,7 @@ function vendor_product_versions(vuln)
                     string("< ", cpe_match.versionEndExcluding)
                 else missing end
                 version = join(skipmissing([lb,ub]), ", ")
+
                 push!(vpvs, (vp..., version))
             end
         end

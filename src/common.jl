@@ -30,9 +30,17 @@ VersionIshNumber(str) = VersionIshNumber(strip(str), version_parts(strip(str)))
 Base.tryparse(::Type{VersionIshNumber}, str) = VersionIshNumber(str)
 Base.:(==)(a::VersionIshNumber, b::VersionIshNumber) = a.str == b.str
 Base.hash(a::VersionIshNumber, h::UInt) = hash(a.str, hash(0x30eeab00fd453583, h))
-Base.:(<)(a::VersionIshNumber, b::VersionIshNumber) = a.parts < b.parts
-Base.:(<=)(a::VersionIshNumber, b::VersionIshNumber) = a.parts <= b.parts
-Base.isless(a::VersionIshNumber, b::VersionIshNumber) = isless(a.parts, b.parts)
+function Base.isless(a::VersionIshNumber, b::VersionIshNumber)
+    # By splitting parts, we can _mostly_ lean on lexicographic comparison. But
+    # parts that start with a `-` are special; they typically count as pre-releases
+    # of a given version and should sort _before_ the matched part. We've already
+    # swapped them to `\0` here.
+    matched_len = min(length(a.parts), length(b.parts))
+    return isless(a.parts[1:matched_len], b.parts[1:matched_len]) ||
+           (a.parts[1:matched_len] == b.parts[1:matched_len] && (
+                isless(length(a.parts), length(b.parts)) ||
+                startswith(a.parts[matched_len+1], "\0")))
+end
 function Base.show(io::IO, a::VersionIshNumber)
     show(io, typeof(a))
     print(io, "(")
@@ -50,7 +58,9 @@ explode_digits(x) = something(explode_int(tryparse(Int, x)), x)
 # For somewhat coherent version sorting in the absence of real semver
 function version_parts(verstr)
     parts = split(verstr, r"(?=[\-.])") # Keep the splitter itself as part of the comparison
-    return [join(explode_digits(subpart) for subpart in split(part, r"(?<=\d)(?=[^\d])|(?<=[^\d])(?=\d)")) for part in parts]
+    exploded_parts = [join(explode_digits(subpart) for subpart in split(part, r"(?<=\d)(?=[^\d])|(?<=[^\d])(?=\d)")) for part in parts]
+    # Parts that start with - are special; they must sort before everything else
+    return replace.(exploded_parts, r"^-"=>"\0")
 end
 
 struct VersionRange{V<:Union{VersionNumber, VersionIshNumber}}
