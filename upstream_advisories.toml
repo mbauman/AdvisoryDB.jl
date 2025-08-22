@@ -12,4 +12,4 @@
 # exception string, you prevent further automatic updates from suggesting the advisory apply.
 
 [CVE-2021-3712]
-OpenSSL_jll = ["< 1.1.1+2", "< 1.1.13+0"]
+OpenSSL_jll = ["< 1.1.13+0"]
