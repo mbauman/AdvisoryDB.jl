@@ -132,17 +132,19 @@ function main()
     advisory_str = n_total == 1 ? "advisory" : "advisories"
     println(io, "title=[automatic] $verb $n_total $advisory_str for $pkg_str")
     haystack_results_str = join(info["haystack_total"], ", ", " and ")
-    version_trouble_str = isempty(info["version_trouble"]) ? "" :
+    troubled_versions = filter(((k,v),)->v==["*"], advisories)
+    troubled_info_strs = ["* $vuln. " * join(last.(split.(filter(startswith(vuln), info["version_trouble"]), ":", limit=2)), "; ") for ((vuln,pkg), _) in troubled_versions]
+    version_trouble_str = isempty(troubled_versions) ? "" :
         """
 
-        Versioning trouble was reported for $(length(info["version_trouble"])) advisories:
-        $(join("* " .* info["version_trouble"], "\n"))
+        Versioning trouble was reported for $(length(troubled_versions)) advisories:
+        $(join(troubled_info_strs, "\n"))
         """
     skips_str = isempty(info["skips"]) ? "" :
         """
 
         There were $(length(info["skips"])) advisories skipped for the following reasons:
-        $(join("* " .* info["version_trouble"], "\n"))
+        $(join("* " .* info["skips"], "\n"))
         """
     println(io, """
         body<<BODY_EOF
@@ -150,8 +152,7 @@ function main()
         $version_trouble_str
         $skips_str
 
-        The version ranges tagged here should be confirmed or adjusted, and if the particular advisory is not applicable to a given package, its value
-        should instead be a string detailing the rationale.
+        The version ranges tagged here should be confirmed or adjusted, and if the particular advisory is not applicable to a given package, its value should instead be a string detailing the rationale.
         BODY_EOF""")
     seekstart(io)
     foreach(println, eachline(io)) # Also log to stdout
