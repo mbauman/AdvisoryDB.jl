@@ -1,4 +1,4 @@
-name: Identify related upstream advisories
+name: Search for upstream advisories
 
 on:
   schedule:
@@ -12,7 +12,7 @@ on:
         type: string
 
 jobs:
-  fetch-advisories:
+  identify-advisories:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,6 +40,7 @@ jobs:
       run: |
         [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
         echo "date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
+        echo "branch=auto-$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
 
     - name: Create Pull Request
       if: steps.git-check.outputs.changes == 'true'
@@ -47,4 +48,4 @@ jobs:
       with:
         title: ${{ steps.identify.outputs.title }}
         body: ${{ steps.identify.outputs.body }}
-        branch: ${{ inputs.repo != '' && inputs.repo != null && inputs.repo || steps.git-check.outputs.date }}
+        branch: ${{ inputs.haystack != '' && inputs.haystack != null && inputs.haystack || steps.git-check.outputs.branch }}
