@@ -1,0 +1,51 @@
+name: Import GitHub Security Advisories
+
+on:
+  schedule:
+    # Run at 3 AM UTC every day
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      haystack:
+        description: 'Search through a specific haystack: either a specific advisory ID (CVE or EUVD or GHSA), or a vendor:product search'
+        required: false
+        type: string
+
+jobs:
+  fetch-advisories:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Julia
+      uses: julia-actions/setup-julia@v1
+
+    - name: Install Julia dependencies
+      run: |
+        julia --project=. -e 'using Pkg; Pkg.instantiate()'
+
+    - name: Run identification script
+      id: identify
+      run: |
+        julia --project=. scripts/identify_upstream_advisories.jl ${{ inputs.haystack }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_OUTPUT: ${{ GITHUB_OUTPUT }}
+
+    - name: Check for changes
+      id: git-check
+      run: |
+        [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
+        echo "date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
+
+    - name: Create Pull Request
+      if: steps.git-check.outputs.changes == 'true'
+      uses: peter-evans/create-pull-request@v7
+      with:
+        title: ${{ steps.identify.outputs.title }}
+        body: ${{ steps.identify.outputs.body }}
+        branch: ${{ inputs.repo != '' && inputs.repo != null && inputs.repo || steps.git-check.outputs.date }}

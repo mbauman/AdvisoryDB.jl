@@ -4,29 +4,46 @@ using AdvisoryDB: AdvisoryDB, NVD, EUVD, GitHub, VersionRange
 using TOML: TOML
 
 function main()
+
     upstream_advisories = TOML.parsefile(joinpath(@__DIR__, "..", "upstream_advisories.toml"))
     input = ARGS[1]
     advisories = Dict{Tuple{String,String},Any}()
+    info = Dict{String,Any}()
+    info["haystack"] = input
+    info["haystack_total"] = String[]
+    info["version_trouble"] = String[]
+    info["skips"] = String[]
     if startswith(input, "CVE")
         vuln = NVD.fetch_cve(input)
         pkgs = NVD.related_julia_packages(vuln)
+        push!(info["haystack_total"], "1 advisory from NVD")
         for (pkg, versioninfo) in pkgs
             advisories[(vuln.cve.id, pkg)] = versioninfo
         end
     elseif startswith(input, "EUVD")
-        error("todo")
+        vuln = EUVD.fetch_esina(input)
+        pkgs = EUVD.related_julia_packages(vuln)
+        push!(info["haystack_total"], "1 advisory from EUVD")
+        vuln_id = EUVD.vuln_id(vuln)
+        for (pkg, versioninfo) in pkgs
+            advisories[(vuln_id, pkg)] = versioninfo
+        end
     elseif startswith(input, "GHSA")
+        push!(info["haystack_total"], "1 advisory from GitHub Advisory DB")
         error("todo")
     elseif contains(input, ":")
         _, vendor, product = rsplit(":"*input, ":", limit=3, keepempty=true)
+        info["haystack"] = "search $vendor/$product"
         # Start with NVD; typically the best information but may be limited
         # The hardest part here is that we cannot search without a version number
         cpe = "cpe:2.3:a:$vendor:$product"
         nvds = NVD.fetch_cpe_matches(cpe, AdvisoryDB.upstream_versions_used_by_cpe(cpe))
+        push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
             pkgs = NVD.related_julia_packages(vuln)
             for (pkg, versioninfo) in pkgs
                 if startswith(pkg, "cpe:") && contains(pkg, "|")
+                    push!(info["version_trouble"], "$(vuln.cve.id): NVD returns unknown upstream versions for $pkg: $versioninfo")
                     pkg = split(pkg, "|")[2]
                     versioninfo = ["*"]
                     # TODO: Add debug information to the message body
@@ -36,18 +53,19 @@ function main()
         end
         # Add EUVD
         euvds = EUVD.fetch_product_matches(vendor, product)
+        push!(info["haystack_total"], "$(length(euvds)) advisories from EUVD")
+        nvd_fixups = 0
         for vuln in euvds
             pkgs = EUVD.related_julia_packages(vuln)
-            vuln_id = get(filter(startswith("CVE-"),  split(get(vuln, :aliases, ""))), 1,
-                    get(filter(startswith("GHSA-"), split(get(vuln, :aliases, ""))), 1, vuln.id))
+            vuln_id = EUVD.vuln_id(vuln)
             for (pkg, versioninfo) in pkgs
                 if startswith(pkg, "cpe:") && contains(pkg, "|")
+                    push!(info["version_trouble"], "$vuln_id: EUVD returns unknown upstream versions for $pkg: $versioninfo")
                     pkg = split(pkg, "|")[2]
                     versioninfo = ["*"]
-                    # TODO: Add debug information to the message body
                 end
                 if haskey(advisories, (vuln_id, pkg))
-                    # We need to decide who has better information; EUVD or CVE
+                    # We need to decide who has better information; EUVD or NVD. Trust NVD more if there's something there.
                     cve_info = advisories[(vuln_id, pkg)]
                     if !isempty(cve_info) && cve_info != [""] && cve_info != ["*"] && !isnothing(tryparse(AdvisoryDB.VersionRange{VersionNumber}, cve_info[1]))
                         continue # This qualifies as "good" information
@@ -57,37 +75,46 @@ function main()
                 # It's worth going back to see if we can pick up better information from there
                 # one-by-one
                 if versioninfo == ["*"] && vuln_id ∉ (x->x.cve.id).(nvds)
-                    sleep(6)
-                    vuln = NVD.fetch_cve(vuln_id)
-                    pkgs = NVD.related_julia_packages(vuln)
-                    for (nvd_pkg, nvd_info) in pkgs
-                        pkg == nvd_pkg || continue
-                        versioninfo = nvd_info # Can't be worse!
+                    try
+                        sleep(6)
+                        vuln = NVD.fetch_cve(vuln_id)
+                        pkgs = NVD.related_julia_packages(vuln)
+                        for (nvd_pkg, nvd_info) in pkgs
+                            pkg == nvd_pkg || continue
+                            versioninfo = nvd_info # Can't be worse!
+                            nvd_fixups += 1
+                        end
+                    catch ex
+                        @info ex
                     end
                 end
                 advisories[(vuln_id, pkg)] = versioninfo
             end
         end
+        push!(info["haystack_total"], "another $nvd_fixups advisories EUVD flagged fixed up by NVD")
     else
-        error("unknown argument")
+        error("todo: implement fetching recent updates")
     end
 
+    n_created = 0
+    n_updated = 0
     for ((advisory_id, pkg), version_ranges) in advisories
         # TODO: Skip known aliases where **we** are the issuing advisory database
         saved_advisory = get!(upstream_advisories, advisory_id, Dict{String,Any}())
         if haskey(saved_advisory, pkg)
             if saved_advisory[pkg] isa String
-                @info "Skipping $advisory_id for $pkg because it is marked '$(saved_advisory[pkg])'"
+                push!(info["skips"], "$advisory_id: skipped because it is marked '$(saved_advisory[pkg])'")
                 continue
             else
-                # TODO: What should the behavior be if something already exists? I suppose the most common style of automatic update would be where
-                # a package releases a new "fixed" version. Should I try to detect that?  Should I union? How would I prevent the automatic updates
-                # from continuoually suggesting something bad? Perhaps the most common case that's manually fixed would be where we get back a "*".
-                if all(==("*"), version_ranges)
-                    @info "Skipping overwriting $advisory_id for $pkg because the computed version range is $version_ranges; we have $(saved_advisory[pkg]) saved"
+                # We haved saved information. Avoid overwriting it _unless_ we very specifically asked for this very advisory explicitly
+                if input != advisory_id
+                    push!(info["skips"], "$advisory_id: skipped overwriting the existing $pkg=>$(saved_advisory[pkg]) with $version_ranges because we didn't explicitly ask for this advisory")
                     continue
                 end
             end
+            n_updated += 1
+        else
+            n_created += 1
         end
         # This is a partial order sort, but these should be non-overlapping
         # TODO: Merge overlapping ranges here before saving them — they may overlap in cases where the Julia package
@@ -95,16 +122,50 @@ function main()
         saved_advisory[pkg] = sort(version_ranges, by=x->something(tryparse(VersionRange{VersionNumber}, x), x), lt=<)
     end
 
+    # Nice logging information for the possible
+    io = open(get(ENV, "GITHUB_OUTPUT", tempname()), "a+")
+    verb = n_updated > 0 && n_created == 0 ? "Update" :
+           n_updated == 0 && n_created > 0 ? "Newly tag" : "Modify"
+    unique_pkgs = unique(last.(keys(advisories)))
+    pkg_str = length(unique_pkgs) <= 3 ? join(unique_pkgs, ", ", " and ") : "$(length(unique_pkgs)) packages"
+    n_total = n_updated+n_created
+    advisory_str = n_total == 1 ? "advisory" : "advisories"
+    println(io, "title=[automatic] $verb $n_total $advisory_str for $pkg_str")
+    haystack_results_str = join(info["haystack_total"], ", ", " and ")
+    version_trouble_str = isempty(info["version_trouble"]) ? "" :
+        """
+
+        Versioning trouble was reported for $(length(info["version_trouble"])) advisories:
+        $(join("* " .* info["version_trouble"], "\n"))
+        """
+    skips_str = isempty(info["skips"]) ? "" :
+        """
+
+        There were $(length(info["skips"])) advisories skipped for the following reasons:
+        $(join("* " .* info["version_trouble"], "\n"))
+        """
+    println(io, """
+        body<<BODY_EOF
+        This action searched `$(info["haystack"])`, checking $haystack_results_str for relevancy. It identified $n_total $advisory_str as being related to the Julia package(s): $(join("**" .* unique_pkgs .* "**", ", ", ", and ")).
+        $version_trouble_str
+        $skips_str
+
+        The version ranges tagged here should be confirmed or adjusted, and if the particular advisory is not applicable to a given package, its value
+        should instead be a string detailing the rationale.
+        BODY_EOF""")
+    seekstart(io)
+    foreach(println, eachline(io)) # Also log to stdout
+
     open(joinpath(@__DIR__, "..", "upstream_advisories.toml"),"w+") do f
         println(f, """
-            # # This file contains a table of advisories and the packages to which they apply.")
+            ### This file contains a table of advisories and the packages to which they apply ###
             #
             # The schema is relatively simple:
             #   - Advisories are the top-level keys by ID
             #       - if multiple aliases exist, prefer CVE over GHSA over EUVD
-            #   - Each advisory has Julia package names as its keys (without .jl suffix)
+            #   - Each advisory entry has Julia package names (without .jl suffix) as its keys
             #   - The value for a particular advisory[package] is either:
-            #       - An array of GitHub Security Advisory style version ranges to which the advisory applies
+            #       - A list of GitHub Security Advisory style version ranges to which the advisory applies
             #       - A string detailing _why_ a given advisory does not apply
             #
             # This file is semi-automatically updated by suggested pull requests. By marking a package with an

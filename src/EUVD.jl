@@ -128,6 +128,9 @@ function filter_julia_vulnerabilities(vulnerabilities)
     return julia_vulnerabilities
 end
 
+vuln_id(vuln) = get(filter(startswith("CVE-"),  split(get(vuln, :aliases, ""))), 1,
+                get(filter(startswith("GHSA-"), split(get(vuln, :aliases, ""))), 1, vuln.id))
+
 parse_euvd_datetime(str) = string(DateTime(str, dateformat"u d, y, H:M:S p")) * "Z" # TODO: WHAT'S THE TIMEZONE??
 function convert_to_osv(vuln)
     osv = Dict{String, Any}()
