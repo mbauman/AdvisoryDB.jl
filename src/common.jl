@@ -38,8 +38,8 @@ function Base.isless(a::VersionIshNumber, b::VersionIshNumber)
     matched_len = min(length(a.parts), length(b.parts))
     return isless(a.parts[1:matched_len], b.parts[1:matched_len]) ||
            (a.parts[1:matched_len] == b.parts[1:matched_len] && (
-                isless(length(a.parts), length(b.parts)) ||
-                startswith(a.parts[matched_len+1], "\0")))
+                length(a.parts) <= length(b.parts) ||
+                startswith(a.parts[matched_len+1], "\0"))) # This was a -
 end
 function Base.show(io::IO, a::VersionIshNumber)
     show(io, typeof(a))
@@ -101,7 +101,7 @@ function Base.tryparse(::Type{VersionRange{V}}, arg::AbstractString) where {V}
         return VersionRange{V}(typemin(V), typemax(V), true, true)
     elseif startswith(str, "=")
         # An exact version number
-        v = tryparse(V, strip(chopprefix("=", str)))
+        v = tryparse(V, strip(chopprefix(str, "=")))
         isnothing(v) && return nothing
         return VersionRange{V}(v, v, true, true)
     elseif startswith(str, r"[<≤]")
@@ -139,15 +139,18 @@ end
 has_lower_bound(r::VersionRange{T}) where {T} = !(r.lb == typemin(T) && r.lbinclusive)
 has_upper_bound(r::VersionRange{T}) where {T} = !(r.ub == typemax(T) && r.ubinclusive)
 function Base.print(io::IO, r::VersionRange)
-    if has_lower_bound(r)
-        print(io, r.lbinclusive ? ">=" : ">", " ", r.lb)
-    end
-    if has_upper_bound(r)
-        has_lower_bound(r) && print(io, ", ")
-        print(io, r.ubinclusive ? "<=" : "<", " ", string(r.ub))
-    end
-    if !has_lower_bound(r) && !has_upper_bound(r)
+    if r.lb == r.ub && r.lbinclusive && r.ubinclusive
+        print(io, "= ", r.lb)
+    elseif !has_lower_bound(r) && !has_upper_bound(r)
         print(io, "*")
+    else
+        if has_lower_bound(r)
+            print(io, r.lbinclusive ? ">=" : ">", " ", r.lb)
+        end
+        if has_upper_bound(r)
+            has_lower_bound(r) && print(io, ", ")
+            print(io, r.ubinclusive ? "<=" : "<", " ", string(r.ub))
+        end
     end
 end
 
@@ -231,6 +234,19 @@ function upstream_versions_for_package(pkgname, version; force=false)
     return results
 end
 
+function upstream_versions_used_by_cpe(cpe)
+    cpe_map = TOML.parsefile(joinpath(@__DIR__, "..", "cpe_map.toml"))
+    versions = String[]
+    for (_, pkgversions) in cpe_map
+        for (_, cpes) in pkgversions
+            for (k, v) in cpes
+                k == cpe && push!(versions, v)
+            end
+        end
+    end
+    return unique(versions)
+end
+
 const AVAILABLE_CPES = Pair{String,String}[]
 function available_cpes()
     if isempty(AVAILABLE_CPES)
@@ -270,11 +286,18 @@ function related_julia_packages(description, vendorproductversions)
                     # in between the extremes to be outside the range, but we don't care. We'll assume all versions within
                     # the extremese are vulnerable.
                     firstidx = findfirst(in(r), VersionIshNumber.(last.(versionmap)))
-                    isnothing(firstidx) && continue # No vulnerable versions were ever registered
-                    lastidx = something(findlast(in(r), VersionIshNumber.(last.(versionmap))))
-                    firstversion = firstidx == firstindex(versionmap) ? typemin(VersionNumber) : VersionNumber(versionmap[firstidx][1])
-                    lastversion  = lastidx+1 >  lastindex(versionmap) ? typemax(VersionNumber) : VersionNumber(versionmap[lastidx+1][1])
-                    push!(pkgs, pkg => string(VersionRange(firstversion, lastversion, true, false)))
+                    if isnothing(firstidx)
+                        # No vulnerable versions were ever registered
+                        # Theoretically, we could simply avoid returning anything related to advisory
+                        # but it's helpful to know that we evaluated it to be not applicable. Further
+                        # downstream tooling can omit generating the advisories.
+                        push!(pkgs, pkg => string(VersionRange(v"0-", VersionNumber(first(first(versionmap))), true, false)))
+                    else
+                        lastidx = something(findlast(in(r), VersionIshNumber.(last.(versionmap))))
+                        firstversion = firstidx == firstindex(versionmap) ? typemin(VersionNumber) : VersionNumber(versionmap[firstidx][1])
+                        lastversion  = lastidx+1 >  lastindex(versionmap) ? typemax(VersionNumber) : VersionNumber(versionmap[lastidx+1][1])
+                        push!(pkgs, pkg => string(VersionRange(firstversion, lastversion, true, false)))
+                    end
                 end
             end
         elseif (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
@@ -298,7 +321,7 @@ function related_julia_packages(description, vendorproductversions)
     end
     # Combine all versions for a given package into an array
     unique_pkg_names = unique(first.(pkgs))
-    return [p => last.(pkgs[first.(pkgs) .== p]) for p in unique_pkg_names]
+    return [p => unique(last.(pkgs[first.(pkgs) .== p])) for p in unique_pkg_names]
 end
 
 # TODO: use the above Pkg machinery for this, too
