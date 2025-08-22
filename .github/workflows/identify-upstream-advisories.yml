@@ -1,4 +1,4 @@
-name: Import GitHub Security Advisories
+name: Identify related upstream advisories
 
 on:
   schedule:
