@@ -17,5 +17,5 @@ LocalPreferences.toml
 JuliaLocalPreferences.toml
 
 .claude
-.github_token
+.*_token
 osv-schema

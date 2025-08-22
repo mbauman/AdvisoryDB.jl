@@ -5,6 +5,8 @@ using JSON3
 using Dates
 using DataStructures: OrderedDict as Dict # watch out
 
+using ..AdvisoryDB: exists
+
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
 
@@ -179,14 +181,6 @@ function filter_julia_advisories(advisories)
     return julia_advisories
 end
 
-exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
-exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
-is_populated(::Nothing) = false
-is_populated(::Missing) = false
-is_populated(s::String) = !isempty(strip(s))
-is_populated(A::AbstractArray) = !isempty(A)
-is_populated(d::AbstractDict) = !isempty(d)
-
 function convert_to_osv(advisory)
     osv = Dict{String, Any}()
 
@@ -252,15 +246,6 @@ function convert_to_osv(advisory)
             package["name"] = chopsuffix(vuln.package.name, ".jl")
             # package["purl"] # TODO (this is optional)
             # GHSA does not have independent severity scores per affected package
-            # Versions are not easy in general. From OSV-Schema's convert_ghsa.py:
-            #   GHSA range format is described at:
-            #   https://docs.github.com/en/graphql/reference/objects#securityvulnerability
-            #   "= 0.2.0" denotes a single vulnerable version.
-            #   "<= 1.0.8" denotes a version range up to and including the specified version
-            #   "< 0.1.11" denotes a version range up to, but excluding, the specified version
-            #   ">= 4.3.0, < 4.3.5" denotes a version range with a known minimum and maximum version.
-            #   ">= 0.0.1" denotes a version range with a known minimum, but no known maximum.
-            #   (Undocumented) ">" is also a valid operator.
             versions = String[]
             range_events = Dict{String, String}[]
             for ghsa_range in (strip(r) for r in eachsplit(vuln.vulnerable_version_range, ","))

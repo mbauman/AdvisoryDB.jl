@@ -4,12 +4,17 @@ authors = ["Matt Bauman <mbauman@juliahub.com>"]
 version = "0.1.0"
 
 [deps]
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
-YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
+Tar = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 
 [compat]
+CodecZlib = "0.7.8"
 DataStructures = "0.19.0"
+Pkg = "1.11.0"
+Tar = "1.10.0"
