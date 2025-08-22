@@ -34,7 +34,6 @@ jobs:
         julia --project=. scripts/identify_upstream_advisories.jl ${{ inputs.haystack }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_OUTPUT: ${{ GITHUB_OUTPUT }}
 
     - name: Check for changes
       id: git-check
