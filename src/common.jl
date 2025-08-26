@@ -190,7 +190,7 @@ end
 
 function osv_events(rngs)
     allunique(r->r.ubinclusive, filter(has_upper_bound, rngs)) || throw(ArgumentError("OSV schema doesn't support mixed inclusive/exclusive upper bounds"))
-    return Iterators.flatten(osv_events(rng) for rng in sort(rngs))
+    return collect(Iterators.flatten(osv_events(rng) for rng in sort(rngs)))
 end
 function osv_events(rng::VersionRange)
     events = []
