@@ -295,21 +295,22 @@ function version_string(node)
 
 end
 
-function convert_to_osv(vuln)
+function convert_to_osv(vuln, package_versioninfo = nothing)
     osv = Dict{String, Any}()
 
     # Required OSV fields
     osv["schema_version"] = "1.7.2"
-    osv["id"] = vuln.cve.id
-    osv["modified"] = vuln.cve.lastModified * "Z"
+    osv["id"] = "JLVE-0000"
+    osv["published"] = AdvisoryDB.now()
+    osv["modified"] = AdvisoryDB.now()
 
-    # Optional fields
-    if exists(vuln.cve, :published)
-        osv["published"] = vuln.cve.published * "Z"
-    end
-    # No withdrawn information?
-    # No structured aliases. Could potentially search through references, but it's messy
-    # No upstream information
+    # NVD does not include withdrawn information
+
+    # The vuln id _either_ becomes an alias **or** an upstream advisory.
+    # NVD does not provide its own structured alias/upstream info.
+    # TODO: I think some vulns may be slightly better described as "upstream", but it's not obvious to me
+    osv["aliases"] = [vuln.cve.id]
+
     # No related tags (beyond references)
 
     # Summary and details from descriptions, using English only
@@ -357,48 +358,17 @@ function convert_to_osv(vuln)
         end
     end
 
-    # Affected _Julia_ packages, connecting CPE data to the package.
-    # TODO: THIS IS BROKEN!
+    # Affected _Julia_ packages, either explicitly passed
+    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(vuln) : [package_versioninfo]
     affected = []
-    if exists(vuln.cve, :configurations)
-        for config in vuln.cve.configurations
-            exists(config, :nodes) || continue
-            for node in config.nodes
-                exists(node, :cpeMatch) || continue
-                matches = filter(m->exists(m, :criteria) && hasmatchingkey(CPE_MAP, CPE(m.criteria)), node.cpeMatch)
-                isempty(matches) && continue
-                exists(node, :negate) && node.negate && error("I don't know how to handle negated version ranges")
-                exists(node, :operator) && node.operator == "AND" && length(matches) > 1 && error("I don't know how to combine multiple AND nodes")
-                packages = unique(split(getmostspecific(CPE_MAP, CPE(k.criteria)), '@', limit=2)[1] for k in matches)
-                length(packages) == 1 || error("I don't know how to handle multiple packages in the same configuration node")
-                package = only(packages)
-                affected_entry = Dict{String, Any}()
-                affected_entry["package"] = Dict(
-                    "ecosystem" => "Julia",
-                    "name" => package
-                )
-
-                # Now the hard part: the version ranges.
-                ranges = []
-                for m in matches
-                    (!exists(m, :vulnerable) || !m.vulnerable) && continue
-                    events = []
-                    if exists(m, :versionStartIncluding)
-                        push!(events, Dict("introduced" => m.versionStartIncluding))
-                    else
-                        push!(events, Dict("introduced" => "0"))
-                    end
-                    if exists(m, :versionEndExcluding)
-                        push!(events, Dict("fixed" => m.versionEndExcluding))
-                    end
-                    push!(ranges, Dict("type"=>"SEMVER", "events"=>events))
-                end
-                if !isempty(ranges)
-                    affected_entry["ranges"] = ranges
-                end
-                push!(affected, affected_entry)
-            end
-        end
+    for (package, versioninfo) in package_versioninfos
+        affected_entry = Dict{String, Any}()
+        affected_entry["package"] = Dict(
+            "ecosystem" => "Julia",
+            "name" => package
+        )
+        ranges = AdvisoryDB.osv_events(AdvisoryDB.VersionRange{VersionNumber}.(versioninfo))
+        push!(affected, affected_entry)
     end
     if !isempty(affected)
         osv["affected"] = affected
@@ -472,7 +442,9 @@ function write_nvd_advisory_files(vulnerabilities)
         filepath = joinpath(package_dir, filename)
 
         println("Writing NVD advisory: $filepath")
-        JSON3.pretty(filepath, osv_data)
+        open(filepath, "w") do f
+            JSON3.pretty(f, osv_data)
+        end
     end
 
     println("Completed writing $(length(vulnerabilities)) NVD advisories to disk")

@@ -12,9 +12,11 @@ JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 Tar = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
 
 [compat]
 CodecZlib = "0.7.8"
 DataStructures = "0.19.0"
 Pkg = "1.11.0"
 Tar = "1.10.0"
+TimeZones = "1.22.0"

@@ -4,7 +4,6 @@ using AdvisoryDB: AdvisoryDB, NVD, EUVD, GitHub, VersionRange
 using TOML: TOML
 
 function main()
-
     upstream_advisories = TOML.parsefile(joinpath(@__DIR__, "..", "upstream_advisories.toml"))
     input = ARGS[1]
     advisories = Dict{Tuple{String,String},Any}()
@@ -43,7 +42,7 @@ function main()
             pkgs = NVD.related_julia_packages(vuln)
             for (pkg, versioninfo) in pkgs
                 if startswith(pkg, "cpe:") && contains(pkg, "|")
-                    push!(info["version_trouble"], "$(vuln.cve.id): NVD returns unknown upstream versions for $pkg: $versioninfo")
+                    push!(info["version_trouble"], "$(vuln.cve.id): [NVD](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) has upstream versions for $pkg: $versioninfo")
                     pkg = split(pkg, "|")[2]
                     versioninfo = ["*"]
                     # TODO: Add debug information to the message body
@@ -60,7 +59,7 @@ function main()
             vuln_id = EUVD.vuln_id(vuln)
             for (pkg, versioninfo) in pkgs
                 if startswith(pkg, "cpe:") && contains(pkg, "|")
-                    push!(info["version_trouble"], "$vuln_id: EUVD returns unknown upstream versions for $pkg: $versioninfo")
+                    push!(info["version_trouble"], "$vuln_id: [EUVD](https://euvd.enisa.europa.eu/vulnerability/$(vuln.id)) has upstream versions for $pkg: $versioninfo")
                     pkg = split(pkg, "|")[2]
                     versioninfo = ["*"]
                 end
@@ -99,7 +98,7 @@ function main()
     n_created = 0
     n_updated = 0
     for ((advisory_id, pkg), version_ranges) in advisories
-        # TODO: Skip known aliases where **we** are the issuing advisory database
+        # TODO: Skip known aliases where **we** are the originating advisory database
         saved_advisory = get!(upstream_advisories, advisory_id, Dict{String,Any}())
         if haskey(saved_advisory, pkg)
             if saved_advisory[pkg] isa String
@@ -107,7 +106,7 @@ function main()
                 continue
             else
                 # We haved saved information. Avoid overwriting it _unless_ we very specifically asked for this very advisory explicitly
-                if input != advisory_id
+                if input != advisory_id # TODO: this should also support EUVDs that have a CVE alias; it doesn't right now.
                     push!(info["skips"], "$advisory_id: skipped overwriting the existing $pkg=>$(saved_advisory[pkg]) with $version_ranges because we didn't explicitly ask for this advisory")
                     continue
                 end

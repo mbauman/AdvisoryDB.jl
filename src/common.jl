@@ -4,6 +4,8 @@ using Pkg: Pkg, Registry
 using Tar: Tar
 using CodecZlib: GzipDecompressorStream
 using DataStructures: OrderedDict as Dict
+using Dates: Dates
+using TimeZones: TimeZones
 
 exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
 exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
@@ -13,6 +15,8 @@ is_populated(s::AbstractString) = !isempty(strip(s))
 is_populated(A::AbstractArray) = !isempty(A)
 is_populated(d::AbstractDict) = !isempty(d)
 is_populated(::Any) = true
+
+now() = replace(Dates.format(Dates.now(TimeZones.utc_tz), TimeZones.ISOZonedDateTimeFormat), "+00:00"=>"Z") # RFC3339
 
 """
     VersionIshNumber
@@ -153,7 +157,23 @@ function Base.print(io::IO, r::VersionRange)
         end
     end
 end
-
+function osv_events(rngs)
+    allunique(r->r.ubinclusive, filter(has_upper_bound, rngs)) || throw(ArgumentError("OSV schema doesn't support mixed inclusive/exclusive upper bounds"))
+    return Iterators.flatten(osv_events(rng) for rng in sort(rngs))
+end
+function osv_events(rng::VersionRange)
+    events = []
+    rng.lbinclusive || throw(ArgumentError("OSV schema doesn't support exclusive lower bounds; they must be normalized to the (inclusive) first-introduced version"))
+    push!(events, Dict("introduced"=>has_lower_bound(rng) ? string(rng.lb) : "0"))
+    if has_upper_bound(rng)
+        if rng.ubinclusive
+            push!(events, Dict("last_affected"=>string(rng.ub)))
+        else
+            push!(events, Dict("fixed" => string(rng.ub)))
+        end
+    end # Otherwise we lean on the implicit "limit" = "*" event
+    return events
+end
 
 function get_registry(reg=Registry.RegistrySpec(name="General", uuid = "23338594-aafe-5451-b93e-139f81909106"); depot=Pkg.depots1())
     name = joinpath(depot, "registries", reg.name)
@@ -405,4 +425,77 @@ function import_osv_files(path)
     end
 
     println("Completed writing $n advisories to disk")
+end
+
+"""
+    corresponding_jlve_id(package, id, aliases=String[])
+
+Given a Julia package and an upstream advisory id and an optional list of (aliases),
+return the path to the corresponding JLVE advisory if it exists and `nothing` otherwise.
+"""
+function corresponding_jlve_id(package, id, aliases=String[])
+    # The obvious cases are those where the upstream advisory has a JLVE alias
+    startswith(id, "JLVE-") && return id
+    alias_idx = findfirst(startswith("JLVE-"), aliases)
+    !isnothing(alias_idx) && return aliases[alias_idx]
+
+    # Or the JLVE might have been created from the upstream advisory (or one of its aliases)
+    # So search all published package JLVEs for their alias information
+    path = joinpath(@__DIR__, "..", "packages", "General", package)
+    isdir(path) || return nothing
+    jlve_aliases = Dict{String, String}()
+    for f in readdir(path)
+        jlve, ext = splitext(f)
+        ext == ".json" || (@warn "unexpected extension $ext in $path/$f"; continue)
+        for alias in get(JSON3.read(joinpath(path, f)), :aliases, String[])
+            jlve_aliases[alias] = jlve
+        end
+    end
+    # And then search for the first match
+    for alias in vcat(id, sort(aliases))
+        haskey(jlve_aliases, alias) && return jlve_aliases[alias]
+    end
+    return nothing
+end
+
+function create!(pkg, osv)
+    pkg_path = joinpath(@__DIR__, "..", "packages", "General", pkg)
+    mkpath(pkg_path)
+    open(joinpath(pkg_path, string("JLVE-0000-", string(rand(UInt64), base=36, pad=13), ".json")), "w") do f
+        JSON3.pretty(f, osv, JSON3.AlignmentContext(indent=2))
+    end
+end
+
+function update!(jlve_path::AbstractString, osv)
+    jlve = copy(JSON3.read(jlve_path))
+    updated = false
+    for key in union(keys(jlve), Symbol.(keys(osv)))
+        key in (:id, :modified, :published) && continue
+        if haskey(osv, key) && (get(jlve, key, nothing) != osv[key])
+            jlve[key] = osv[string(key)]
+            updated = true
+        end
+    end
+    if updated
+        jlve[:modified] = now()
+        open(jlve_path, "w") do f
+            JSON3.pretty(f, jlve, JSON3.AlignmentContext(indent=2))
+        end
+    end
+    return updated
+end
+
+function fetch_advisory(advisory_id, package_verisioninfo=nothing)
+    if startswith(advisory_id, "CVE-")
+        vuln = NVD.fetch_cve(advisory_id)
+        return NVD.convert_to_osv(vuln, package_verisioninfo)
+    elseif startswith(advisory_id, "EUVD-")
+        vuln = EUVD.fetch_esina(advisory_id)
+        return EUVD.convert_to_osv(vuln, package_verisioninfo)
+    elseif startswith(advisory_id, "GHSA-")
+        vuln = GHSA.fetch_ghsa(advisory_id)
+        return GHSA.convert_to_osv(vuln, package_verisioninfo)
+    else
+        throw(ArgumentError("unknown advisory prefix for $advisory_id"))
+    end
 end
