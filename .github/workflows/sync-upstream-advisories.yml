@@ -19,6 +19,13 @@ jobs:
     - name: Setup Julia
       uses: julia-actions/setup-julia@v1
 
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^1.16.4'
+      env:
+        GONOPROXY: github.com/google/osv
+
     - name: Install Julia dependencies
       run: |
         julia --project=. -e 'using Pkg; Pkg.instantiate()'
@@ -39,9 +46,6 @@ jobs:
 
     - name: Auto-assign IDs if required
       if: steps.git-check.outputs.additions == 'true'
-      uses: actions/setup-go@v2
-      with:
-        go-version: '^1.16.4'
       run: |
         go install github.com/google/osv/vulnfeeds/cmd/ids@latest
         ids -dir=./packages -prefix JLVE -format json
