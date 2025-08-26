@@ -106,7 +106,7 @@ function main()
                 continue
             else
                 # We haved saved information. Avoid overwriting it _unless_ we very specifically asked for this very advisory explicitly
-                if input != advisory_id # TODO: this should also support EUVDs that have a CVE alias; it doesn't right now.
+                if input != advisory_id && saved_advisory[pkg] != version_ranges # TODO: this should also support EUVDs that have a CVE alias; it doesn't right now.
                     push!(info["skips"], "$advisory_id: skipped overwriting the existing $pkg=>$(saved_advisory[pkg]) with $version_ranges because we didn't explicitly ask for this advisory")
                     continue
                 end
