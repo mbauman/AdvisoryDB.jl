@@ -189,7 +189,7 @@ function merge_ranges(ranges)
 end
 
 function osv_events(rngs)
-    allunique(r->r.ubinclusive, filter(has_upper_bound, rngs)) || throw(ArgumentError("OSV schema doesn't support mixed inclusive/exclusive upper bounds"))
+    allequal(r->r.ubinclusive, filter(has_upper_bound, rngs)) || throw(ArgumentError("OSV schema doesn't support mixed inclusive/exclusive upper bounds"))
     return collect(Iterators.flatten(osv_events(rng) for rng in sort(rngs)))
 end
 function osv_events(rng::VersionRange)
