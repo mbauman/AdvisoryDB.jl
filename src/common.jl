@@ -85,7 +85,9 @@ end
 function Base.:(>)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionIshNumber}}
     return (r.ubinclusive ? x > r.ub : x >= r.ub)
 end
-Base.:(<)(a::VersionRange, b::VersionRange) = a.lb < b.lb || (a.lb == b.lb && !a.lbinclusive < !b.lbinclusive) || (a.lb == b.lb && a.ub < b.ub)
+Base.:(==)(a::VersionRange, b::VersionRange) = (==)((a.lb, a.lbinclusive, a.ub, a.ubinclusive), (b.lb, b.lbinclusive, b.ub, b.ubinclusive))
+Base.hash(a::VersionRange, h::UInt) = hash((a.lb, a.lbinclusive, a.ub, a.ubinclusive), hash(0x80ebd9334ee9e2b1, h))
+Base.isless(a::VersionRange, b::VersionRange) = isless((a.lb, !a.lbinclusive, a.ub, a.ubinclusive), (b.lb, !b.lbinclusive, b.ub, b.ubinclusive))
 Base.tryparse(::Type{VersionRange}, x::AbstractString) = tryparse(VersionRange{VersionIshNumber}, x)
 function Base.tryparse(::Type{VersionRange{V}}, arg::AbstractString) where {V}
     # This supports parsing both GitHub and EUVD-like range syntaxes.
@@ -157,6 +159,35 @@ function Base.print(io::IO, r::VersionRange)
         end
     end
 end
+# Simple helpers for sorting correctly
+lower_bound_tuple(r::VersionRange) = (r.lb, !r.lbinclusive) # inclusive lower bounds are smaller than exclusive ones — they include a smaller version than their exclusive counterparts
+upper_bound_tuple(r::VersionRange) = (r.ub, r.ubinclusive)  # whereas inclusive upper bounds are bigger — they include a bigger version
+function overlaps(a::VersionRange, b::VersionRange)
+    smaller, bigger = a < b ? (a, b) : (b, a)
+    # Ranges order by lower bound then upper bound, so the "smaller" range overlaps the "bigger" one if:
+    # their lower bounds are the same, or the upper bound of the smaller one reaches into the bigger one
+    return (lower_bound_tuple(smaller) == lower_bound_tuple(bigger) ||
+            upper_bound_tuple(smaller) >= lower_bound_tuple(bigger))
+end
+function merge_ranges(ranges)
+    ranges = issorted(ranges) ? ranges : sort(ranges)
+    new_ranges = []
+    rng = ranges[1]
+    for i in 2:length(ranges)
+        # Incrementally widen `rng` to "gobble up" any subsequent ranges it overlaps or _touches_, if at least one endpoint is inclusive)
+        if overlaps(rng, ranges[i]) || (rng.ub == ranges[i].lb && (rng.ubinclusive || ranges[i].lbinclusive))
+            ubtuple = max(upper_bound_tuple(rng), upper_bound_tuple(ranges[i]))
+            rng = VersionRange(rng.lb, ubtuple[1], rng.lbinclusive, ubtuple[2])
+        else
+            push!(new_ranges, rng)
+            rng = ranges[i]
+        end
+        i += 1
+    end
+    push!(new_ranges, rng)
+    return new_ranges
+end
+
 function osv_events(rngs)
     allunique(r->r.ubinclusive, filter(has_upper_bound, rngs)) || throw(ArgumentError("OSV schema doesn't support mixed inclusive/exclusive upper bounds"))
     return Iterators.flatten(osv_events(rng) for rng in sort(rngs))
@@ -339,9 +370,10 @@ function related_julia_packages(description, vendorproductversions)
             end
         end
     end
-    # Combine all versions for a given package into an array
+    # Combine all versions for a given package into an array, merging ranges if we have real Julia package VersionNumbers
     unique_pkg_names = unique(first.(pkgs))
-    return [p => unique(last.(pkgs[first.(pkgs) .== p])) for p in unique_pkg_names]
+    merge_versionranges = xs->map(string, merge_ranges(map(VersionRange{VersionNumber}, xs)))
+    return [p => (startswith(p, "cpe:") ? unique : merge_versionranges)(last.(pkgs[first.(pkgs) .== p])) for p in unique_pkg_names]
 end
 
 # TODO: use the above Pkg machinery for this, too
