@@ -367,7 +367,8 @@ function convert_to_osv(vuln, package_versioninfo = nothing)
             "ecosystem" => "Julia",
             "name" => package
         )
-        ranges = AdvisoryDB.osv_events(AdvisoryDB.VersionRange{VersionNumber}.(versioninfo))
+        range_events = AdvisoryDB.osv_events(AdvisoryDB.VersionRange{VersionNumber}.(versioninfo))
+        affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
         push!(affected, affected_entry)
     end
     if !isempty(affected)
