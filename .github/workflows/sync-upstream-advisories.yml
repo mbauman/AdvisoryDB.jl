@@ -48,7 +48,7 @@ jobs:
       if: steps.git-check.outputs.additions == 'true'
       run: |
         go install github.com/google/osv/vulnfeeds/cmd/ids@latest
-        ids -dir=./packages -prefix JLVE -format json
+        ids -dir=./packages -prefix DONOTUSEJLSEC -format json
       env:
         GONOPROXY: github.com/google/osv
 

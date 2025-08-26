@@ -428,32 +428,32 @@ function import_osv_files(path)
 end
 
 """
-    corresponding_jlve_id(package, id, aliases=String[])
+    corresponding_jlsec_id(package, id, aliases=String[])
 
 Given a Julia package and an upstream advisory id and an optional list of (aliases),
-return the path to the corresponding JLVE advisory if it exists and `nothing` otherwise.
+return the path to the corresponding JLSEC advisory if it exists and `nothing` otherwise.
 """
-function corresponding_jlve_id(package, id, aliases=String[])
-    # The obvious cases are those where the upstream advisory has a JLVE alias
-    startswith(id, "JLVE-") && return id
-    alias_idx = findfirst(startswith("JLVE-"), aliases)
+function corresponding_jlsec_id(package, id, aliases=String[])
+    # The obvious cases are those where the upstream advisory has a JLSEC alias
+    startswith(id, "DONOTUSEJLSEC-") && return id
+    alias_idx = findfirst(startswith("DONOTUSEJLSEC-"), aliases)
     !isnothing(alias_idx) && return aliases[alias_idx]
 
-    # Or the JLVE might have been created from the upstream advisory (or one of its aliases)
-    # So search all published package JLVEs for their alias information
+    # Or the JLSEC might have been created from the upstream advisory (or one of its aliases)
+    # So search all published package JLSECs for their alias information
     path = joinpath(@__DIR__, "..", "packages", "General", package)
     isdir(path) || return nothing
-    jlve_aliases = Dict{String, String}()
+    jlsec_aliases = Dict{String, String}()
     for f in readdir(path)
-        jlve, ext = splitext(f)
+        jlsec, ext = splitext(f)
         ext == ".json" || (@warn "unexpected extension $ext in $path/$f"; continue)
         for alias in get(JSON3.read(joinpath(path, f)), :aliases, String[])
-            jlve_aliases[alias] = jlve
+            jlsec_aliases[alias] = jlsec
         end
     end
     # And then search for the first match
     for alias in vcat(id, sort(aliases))
-        haskey(jlve_aliases, alias) && return jlve_aliases[alias]
+        haskey(jlsec_aliases, alias) && return jlsec_aliases[alias]
     end
     return nothing
 end
@@ -461,25 +461,25 @@ end
 function create!(pkg, osv)
     pkg_path = joinpath(@__DIR__, "..", "packages", "General", pkg)
     mkpath(pkg_path)
-    open(joinpath(pkg_path, string("JLVE-0000-", string(rand(UInt64), base=36, pad=13), ".json")), "w") do f
+    open(joinpath(pkg_path, string("DONOTUSEJLSEC-0000-", string(rand(UInt64), base=36, pad=13), ".json")), "w") do f
         JSON3.pretty(f, osv, JSON3.AlignmentContext(indent=2))
     end
 end
 
-function update!(jlve_path::AbstractString, osv)
-    jlve = copy(JSON3.read(jlve_path))
+function update!(jlsec_path::AbstractString, osv)
+    jlsec = copy(JSON3.read(jlsec_path))
     updated = false
-    for key in union(keys(jlve), Symbol.(keys(osv)))
+    for key in union(keys(jlsec), Symbol.(keys(osv)))
         key in (:id, :modified, :published) && continue
-        if haskey(osv, key) && (get(jlve, key, nothing) != osv[key])
-            jlve[key] = osv[string(key)]
+        if haskey(osv, key) && (get(jlsec, key, nothing) != osv[key])
+            jlsec[key] = osv[string(key)]
             updated = true
         end
     end
     if updated
-        jlve[:modified] = now()
-        open(jlve_path, "w") do f
-            JSON3.pretty(f, jlve, JSON3.AlignmentContext(indent=2))
+        jlsec[:modified] = now()
+        open(jlsec_path, "w") do f
+            JSON3.pretty(f, jlsec, JSON3.AlignmentContext(indent=2))
         end
     end
     return updated

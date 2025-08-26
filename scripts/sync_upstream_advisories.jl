@@ -15,14 +15,14 @@ function main()
         for (pkg, versioninfo) in applicable_packages
             versioninfo isa String && continue
             osv = AdvisoryDB.fetch_advisory(advisory_id, pkg => versioninfo)
-            jlve_id = AdvisoryDB.corresponding_jlve_id(pkg, advisory_id, get(osv, :aliases, String[]))
-            if isnothing(jlve_id)
+            jlsec_id = AdvisoryDB.corresponding_jlsec_id(pkg, advisory_id, get(osv, :aliases, String[]))
+            if isnothing(jlsec_id)
                 AdvisoryDB.create!(pkg, osv)
                 n_published += 1
                 push!(used_pkgs, pkg)
                 push!(used_advisories, advisory_id)
             else
-                did_update = AdvisoryDB.update!(joinpath(packages_dir, pkg, jlve_id * ".json"), osv)
+                did_update = AdvisoryDB.update!(joinpath(packages_dir, pkg, jlsec_id * ".json"), osv)
                 if did_update
                     n_updated += 1
                     push!(used_pkgs, pkg)

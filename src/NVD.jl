@@ -300,7 +300,7 @@ function convert_to_osv(vuln, package_versioninfo = nothing)
 
     # Required OSV fields
     osv["schema_version"] = "1.7.2"
-    osv["id"] = "JLVE-0000"
+    osv["id"] = "DONOTUSEJLSEC-0000"
     osv["published"] = AdvisoryDB.now()
     osv["modified"] = AdvisoryDB.now()
 
