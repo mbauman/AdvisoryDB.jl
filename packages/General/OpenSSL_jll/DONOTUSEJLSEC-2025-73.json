@@ -1,0 +1,64 @@
+{
+  "modified": "2025-08-27T01:37:18Z",
+  "published": "2025-08-27T01:37:18Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-73",
+  "aliases": [
+    "CVE-2023-0216"
+  ],
+  "summary": "An invalid pointer dereference on read can be triggered when an application tries to load malformed PKCS7 data with the d2i_PKCS7(), d2i_PKCS7_bio() or d2i_PKCS7_fp() functions.",
+  "details": "An invalid pointer dereference on read can be triggered when an\napplication tries to load malformed PKCS7 data with the\nd2i_PKCS7(), d2i_PKCS7_bio() or d2i_PKCS7_fp() functions.\n\nThe result of the dereference is an application crash which could\nlead to a denial of service attack. The TLS implementation in OpenSSL\ndoes not call this function however third party applications might\ncall these functions on untrusted data.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "3.0.8+0"
+            },
+            {
+              "fixed": "3.0.9+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=934a04f0e775309cadbef0aa6b9692e1b12a76c6"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202402-08"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230207.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=934a04f0e775309cadbef0aa6b9692e1b12a76c6"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202402-08"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230207.txt"
+    }
+  ]
+}

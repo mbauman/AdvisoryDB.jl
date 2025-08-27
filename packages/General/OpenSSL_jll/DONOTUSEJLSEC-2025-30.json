@@ -1,0 +1,76 @@
+{
+  "modified": "2025-08-27T01:37:14Z",
+  "published": "2025-08-27T01:37:14Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-30",
+  "aliases": [
+    "CVE-2016-7053"
+  ],
+  "summary": "In OpenSSL 1.1.0 before 1.1.0c, applications parsing invalid CMS structures can crash with a NULL pointer dereference.",
+  "details": "In OpenSSL 1.1.0 before 1.1.0c, applications parsing invalid CMS structures can crash with a NULL pointer dereference. This is caused by a bug in the handling of the ASN.1 CHOICE type in OpenSSL 1.1.0 which can result in a NULL value being passed to the structure callback if an attempt is made to free certain invalid encodings. Only CHOICE structures using a callback which do not handle NULL value are affected.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.1+2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "http://www.securityfocus.com/bid/94244"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securitytracker.com/id/1037261"
+    },
+    {
+      "type": "WEB",
+      "url": "https://h20566.www2.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03744en_us"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20161110.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securityfocus.com/bid/94244"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securitytracker.com/id/1037261"
+    },
+    {
+      "type": "WEB",
+      "url": "https://h20566.www2.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03744en_us"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20161110.txt"
+    }
+  ]
+}

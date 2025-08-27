@@ -1,0 +1,60 @@
+{
+  "modified": "2025-08-27T01:37:11Z",
+  "published": "2025-08-27T01:37:11Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-68",
+  "aliases": [
+    "CVE-2022-3996"
+  ],
+  "summary": "If an X.509 certificate contains a malformed policy constraint and policy processing is enabled, then a write lock will be taken twice recursively.",
+  "details": "If an X.509 certificate contains a malformed policy constraint and\npolicy processing is enabled, then a write lock will be taken twice\nrecursively.  On some operating systems (most widely: Windows) this\nresults in a denial of service when the affected process hangs.  Policy\nprocessing being enabled on a publicly facing server is not considered\nto be a common setup.\n\nPolicy processing is enabled by passing the `-policy'\nargument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()' function.\n\nUpdate (31 March 2023): The description of the policy processing enablement\nwas corrected based on CVE-2023-0466.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.1+2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/openssl/openssl/commit/7725e7bfe6f2ce8146b6552b44e0d226be7638e7"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20221213.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/openssl/openssl/commit/7725e7bfe6f2ce8146b6552b44e0d226be7638e7"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20230203-0003/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20221213.txt"
+    }
+  ]
+}

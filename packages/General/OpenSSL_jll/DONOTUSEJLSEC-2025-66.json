@@ -1,0 +1,316 @@
+{
+  "modified": "2025-08-27T01:37:17Z",
+  "published": "2025-08-27T01:37:17Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-66",
+  "aliases": [
+    "CVE-2018-0739"
+  ],
+  "summary": "Constructed ASN.1 types with a recursive definition (such as can be found in PKCS7) could eventually exceed the stack given malicious input with excessive recursion.",
+  "details": "Constructed ASN.1 types with a recursive definition (such as can be found in PKCS7) could eventually exceed the stack given malicious input with excessive recursion. This could result in a Denial Of Service attack. There are no such structures used within SSL/TLS that come from untrusted sources so this is considered safe. Fixed in OpenSSL 1.1.0h (Affected 1.1.0-1.1.0g). Fixed in OpenSSL 1.0.2o (Affected 1.0.2b-1.0.2n).",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.1+2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:M/Au:N/C:N/I:N/A:P"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "http://www.oracle.com/technetwork/security-advisory/cpuapr2018-3678067.html"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.oracle.com/technetwork/security-advisory/cpujul2018-4258247.html"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securityfocus.com/bid/103518"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securityfocus.com/bid/105609"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securitytracker.com/id/1040576"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2018:3090"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2018:3221"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2018:3505"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:0366"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:0367"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:1711"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:1712"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=2ac4c6f7b2b2af20c0e2b0ba05367e454cd11b33"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=9310d45087ae546e27e61ddf8f6367f29848220d"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2018/03/msg00033.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://nodejs.org/en/blog/vulnerability/march-2018-security-releases/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/201811-21"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202007-53"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20180330-0002/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20180726-0002/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://securityadvisories.paloaltonetworks.com/Home/Detail/133"
+    },
+    {
+      "type": "WEB",
+      "url": "https://usn.ubuntu.com/3611-1/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://usn.ubuntu.com/3611-2/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2018/dsa-4157"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2018/dsa-4158"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20180327.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpujan2019-5072801.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2018-04"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2018-06"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2018-07"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.oracle.com/technetwork/security-advisory/cpuapr2018-3678067.html"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.oracle.com/technetwork/security-advisory/cpujul2018-4258247.html"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securityfocus.com/bid/103518"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securityfocus.com/bid/105609"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.securitytracker.com/id/1040576"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2018:3090"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2018:3221"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2018:3505"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:0366"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:0367"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:1711"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/errata/RHSA-2019:1712"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=2ac4c6f7b2b2af20c0e2b0ba05367e454cd11b33"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=9310d45087ae546e27e61ddf8f6367f29848220d"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2018/03/msg00033.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://nodejs.org/en/blog/vulnerability/march-2018-security-releases/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/201811-21"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202007-53"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20180330-0002/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20180726-0002/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://securityadvisories.paloaltonetworks.com/Home/Detail/133"
+    },
+    {
+      "type": "WEB",
+      "url": "https://usn.ubuntu.com/3611-1/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://usn.ubuntu.com/3611-2/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2018/dsa-4157"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2018/dsa-4158"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20180327.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpujan2019-5072801.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2018-04"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2018-06"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2018-07"
+    }
+  ]
+}
