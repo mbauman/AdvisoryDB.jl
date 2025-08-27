@@ -432,9 +432,6 @@
 [OpenSSL_jll."1.1.17+0"]
 "cpe:2.3:a:openssl:openssl" = "1.1.1q"
 
-[OpenSSL_jll."1.1.18+0"]
-"cpe:2.3:a:openssl:openssl" = "1.1.1r"
-
 [OpenSSL_jll."1.1.19+0"]
 "cpe:2.3:a:openssl:openssl" = "1.1.1s"
 
