@@ -59,6 +59,7 @@ jobs:
         git config --local user.name "github-actions[bot]"
         git add packages/
         git commit -m "${{ steps.sync.outputs.title }}"
+        git push
 
     - name: Create Pull Request if not already on a PR
       if: steps.git-check.outputs.changes == 'true' && github.event_name != 'pull_request_review'
