@@ -225,8 +225,8 @@ registry_has_package(name, reg=get_registry()) = !isempty(uuids_from_name(reg, n
 
 available_versions_for_uuid(uuid) = available_versions_for_uuid(Base.UUID(uuid))
 function available_versions_for_uuid(uuid::Base.UUID, reg=get_registry())
-    info = Registry.registry_info(reg[uuid])
-    return sort(collect(keys(info.version_info)))
+    version_info = Registry.registry_info(reg[uuid]).version_info
+    return sort([version for (version, info) in version_info if !info.yanked])
 end
 
 function untar_readmes(tar_gz::AbstractString)
