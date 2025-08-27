@@ -11,10 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout repository (if on main)
+      if: github.event_name != 'pull_request_review'
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Checkout PR branch (if on PR)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
 
     - name: Setup Julia
       uses: julia-actions/setup-julia@v1
@@ -55,7 +63,6 @@ jobs:
     - name: Commit sync changes directly to the PR
       if: steps.git-check.outputs.changes == 'true' && github.event_name == 'pull_request_review'
       run: |
-        git checkout ${{ github.ref_name }}
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add packages/
