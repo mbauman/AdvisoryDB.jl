@@ -55,6 +55,7 @@ jobs:
     - name: Commit sync changes directly to the PR
       if: steps.git-check.outputs.changes == 'true' && github.event_name == 'pull_request_review'
       run: |
+        git checkout ${{ github.ref_name }}
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add packages/
