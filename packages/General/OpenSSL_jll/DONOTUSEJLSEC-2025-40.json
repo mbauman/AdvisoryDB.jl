@@ -1,0 +1,56 @@
+{
+  "modified": "2025-08-27T02:51:02Z",
+  "published": "2025-08-27T02:51:02Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-40",
+  "aliases": [
+    "CVE-2022-3786"
+  ],
+  "summary": "A buffer overrun can be triggered in X.509 certificate verification, specifically in name constraint checking.",
+  "details": "A buffer overrun can be triggered in X.509 certificate verification, specifically in name constraint checking. Note that this occurs after certificate chain signature verification and requires either a CA to have signed a malicious certificate or for an application to continue certificate verification despite failure to construct a path to a trusted issuer. An attacker can craft a malicious email address in a certificate to overflow an arbitrary number of bytes containing the `.' character (decimal 46) on the stack. This buffer overflow could result in a crash (causing a denial of service). In a TLS client, this can be triggered by connecting to a malicious server. In a TLS server, this can be triggered if the server requests client authentication and a malicious client connects.\n\n",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.1+2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c42165b5706e42f67ef8ef4c351a9a4c5d21639a"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20221101.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c42165b5706e42f67ef8ef4c351a9a4c5d21639a"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20221101.txt"
+    }
+  ]
+}
