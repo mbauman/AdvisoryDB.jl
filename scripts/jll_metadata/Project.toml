@@ -1,0 +1,6 @@
+[deps]
+BinaryBuilder = "12aac903-9f7c-5d81-afc2-d9565ea332ae"
+BinaryBuilderBase = "7f725544-6523-48cd-82d1-3fa08ff4056e"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"

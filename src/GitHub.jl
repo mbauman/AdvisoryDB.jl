@@ -28,6 +28,15 @@ function create_issue(repo; kwargs...)
         sprint(JSON3.write, kwargs))
 end
 
+function get_releases(owner, repo)
+    response = HTTP.get(string(GITHUB_API_BASE, "/repos/", owner, "/", repo, "/releases"), build_headers())
+    if response.status != 200
+        error("Failed to fetch advisories: HTTP $(response.status)")
+    end
+
+    return JSON3.read(response.body)
+end
+
 function parse_link_header(link_header)
     links = Dict{String, String}()
 
