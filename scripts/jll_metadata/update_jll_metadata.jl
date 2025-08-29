@@ -193,7 +193,15 @@ end
 
 function update_metadata(force = false)
     toml_path = joinpath(@__DIR__, "..", "..", "jll_metadata.toml")
-    toml = (!isfile(toml_path) || force) ? Dict{String,Any}() : TOML.parsefile(toml_path)
+    toml = try
+        force && error
+        t = TOML.parsefile(toml_path)
+        @info "updating toml with $(length(t)) entries"
+        t
+    catch
+        @info "starting from scratch"
+        Dict{String,Any}()
+    end
     for (uuid, pkgentry) in jlls()
         if !haskey(toml, pkgentry.name)
             try
