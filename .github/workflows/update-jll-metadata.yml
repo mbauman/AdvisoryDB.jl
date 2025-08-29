@@ -36,11 +36,6 @@ jobs:
       run: |
         [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
 
-    - name: Check for changes
-      id: git-check
-      run: |
-        [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
-
     - name: Commit and push changes
       if: steps.git-check.outputs.changes == 'true'
       run: |
