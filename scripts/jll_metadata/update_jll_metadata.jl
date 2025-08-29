@@ -54,7 +54,7 @@ commit_and_path_from_readme(::Nothing) = nothing, nothing
 function commit_and_path_from_readme(readme)
     m = match(r"originating \[`build_tarballs\.jl`\]\(https://github\.com/JuliaPackaging/Yggdrasil/blob/([^/]+)/(.*\.jl)\)", readme)
     isnothing(m) && return nothing, nothing
-    return (m.captures[1], m.captures[2])
+    return (m.captures[1], joinpath(yggy, m.captures[2]))
 end
 function find_commit_date_from_tree_sha(owner, repo, tree_sha)
     url = string(GITHUB_API_BASE, "/repos/", owner, "/", repo, "/commits?per_page=100")
@@ -137,6 +137,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 buildscript = string(only(matches))
                 @info "found $buildscript by name match"
             end
+            @info "using $buildscript @ $commit"
             # Now we can evaluate the buildscript at the time of this release's publication
             # but with `build_tarballs` shadowed to simply log the sources and products:
             m = Module(gensym())
@@ -223,4 +224,6 @@ function update_metadata(force = false)
     return toml
 end
 
-update_metadata()
+if abspath(PROGRAM_FILE) == @__FILE__
+    update_metadata()
+end
