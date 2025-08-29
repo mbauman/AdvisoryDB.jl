@@ -1,4 +1,5 @@
 [deps]
+Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 BinaryBuilder = "12aac903-9f7c-5d81-afc2-d9565ea332ae"
 BinaryBuilderBase = "7f725544-6523-48cd-82d1-3fa08ff4056e"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
