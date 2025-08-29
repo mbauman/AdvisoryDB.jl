@@ -1,0 +1,46 @@
+name: Update JLL metadata
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run at 1 AM UTC every day
+    - cron: '0 1 * * *'
+
+jobs:
+  update-jll-metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Julia v1.7 for BinaryBuilder
+      uses: julia-actions/setup-julia@v1
+      with:
+        version: '1.7'
+
+    - name: Install Julia dependencies
+      run: |
+        julia --project=./scripts/jll_metadata -e 'using Pkg; Pkg.instantiate()'
+
+    - name: Update JLL metadata
+      run: |
+        julia --project=. scripts/jll_metadata/update_jll_metadata.jl
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check for changes
+      id: git-check
+      run: |
+        [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
+
+    - name: Commit and push changes
+      if: steps.git-check.outputs.changes == 'true'
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add .
+        git commit -m "Update JLL metadata - $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        git push
