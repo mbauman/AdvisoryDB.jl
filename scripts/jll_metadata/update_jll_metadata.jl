@@ -211,6 +211,7 @@ function update_metadata(force = false)
                 merge!(toml[pkgentry.name], updates)
             catch ex
                 @error "error getting metadata for $(pkgentry.name) at some versions" ex missing_versions
+                ex isa HTTP.Exceptions.StatusError && break
             end
         end
     end
