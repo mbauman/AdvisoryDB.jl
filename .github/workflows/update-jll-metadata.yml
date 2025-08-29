@@ -27,7 +27,7 @@ jobs:
 
     - name: Update JLL metadata
       run: |
-        julia --project=. scripts/jll_metadata/update_jll_metadata.jl
+        julia --project=./scripts/jll_metadata scripts/jll_metadata/update_jll_metadata.jl
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
