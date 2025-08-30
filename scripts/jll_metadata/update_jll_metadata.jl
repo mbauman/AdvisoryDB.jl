@@ -169,7 +169,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 end
                 include($buildscript)
             end
-            sources, products
+            unique(sources), unique(products)
         end
 
         product_names(x::BinaryBuilder.LibraryProduct) = x.libnames
