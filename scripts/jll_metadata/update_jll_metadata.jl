@@ -136,6 +136,9 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     name_match_re = string(raw"^\s*build_tarballs([^,]+,\s*\"", jllname, raw"\"")
                     matches = filter(endswith("build_tarballs.jl"), split(read(ignorestatus(`grep -l -r $name_match_re $yggy`), String)))
                 end
+                if length(matches) != 1
+                    error("no unique match for $jllname @ $commit, got $matches")
+                end
                 buildscript = string(only(matches))
                 @info "found $buildscript by name match"
             end
