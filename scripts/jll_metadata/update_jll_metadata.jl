@@ -148,7 +148,12 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 # Patch up support for old LibraryProduct syntax
                 BinaryBuilder.BinaryBuilderBase.LibraryProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = LibraryProduct([prefix*name], var, args...; kwargs...)
                 # LLVM_jll does strange things with fancytoys.jl
-                get_addable_spec(name::String, version::VersionNumber) = string(name, "@", string(version))
+                get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
+                # Support old Pkg platforms
+                struct Linux end; Linux(args...; kwargs...) = Linux()
+                const MacOS = Linux
+                const Windows = Linux
+                const FreeBSD = Linux
                 function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
                     append!($sources, sources)
                     if products isa AbstractVector
