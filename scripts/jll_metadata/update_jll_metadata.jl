@@ -109,7 +109,6 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
     github_releases = get_releases(org, repo)
 
     metadata = Dict{String,Any}()
-    versions_meta = get!(metadata, "versions", Dict{String,Any}())
     for (version, versioninfo) in versions
         commit_from_readme, path_from_readme = commit_and_path_from_readme(get_readme(org, repo, string(versioninfo.git_tree_sha1)))
         releasetags = filter(r->endswith(r.tag_name, string(version)), github_releases)
@@ -181,7 +180,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         source_info(x::BinaryBuilder.DirectorySource) = Dict(
             "patches"=>string("https://github.com/JuliaPackaging/Yggdrasil/blob/", commit, "/", chopprefix(joinpath(dirname(buildscript), x.path), yggy)))
         srcs = source_info.(sources)
-        version_meta = get!(versions_meta, string(version), Dict{String,Any}())
+        version_meta = get!(metadata, string(version), Dict{String,Any}())
         !isempty(libs) && (version_meta["libraries"] = libs)
         !isempty(exes) && (version_meta["executables"] = exes)
         !isempty(files) && (version_meta["files"] = files)
