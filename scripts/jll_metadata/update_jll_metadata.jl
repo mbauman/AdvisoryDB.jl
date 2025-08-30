@@ -56,12 +56,15 @@ function commit_and_path_from_readme(readme)
     isnothing(m) && return nothing, nothing
     return (m.captures[1], joinpath(yggy, m.captures[2]))
 end
+const COMMIT_INFO = Dict{Tuple{String,String,String},Any}()
 function find_commit_date_from_tree_sha(owner, repo, tree_sha)
     url = string(GITHUB_API_BASE, "/repos/", owner, "/", repo, "/commits?per_page=100")
     while true
         commits = HTTP.get(url, build_headers())
         for commit in JSON3.read(commits.body)
-            info = JSON3.read(HTTP.get(string(GITHUB_API_BASE, "/repos/", owner, "/", repo, "/commits/", commit.sha), build_headers()).body)
+            info = get!(COMMIT_INFO, (owner,repo,commit.sha)) do
+                JSON3.read(HTTP.get(string(GITHUB_API_BASE, "/repos/", owner, "/", repo, "/commits/", commit.sha), build_headers()).body)
+            end
             if strip(info.commit.tree.sha) == tree_sha
                 return info.commit.committer.date
             end
