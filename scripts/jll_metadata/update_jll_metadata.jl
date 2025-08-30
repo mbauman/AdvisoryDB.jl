@@ -179,7 +179,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         source_info(x::Union{BinaryBuilder.ArchiveSource, BinaryBuilder.FileSource}) = Dict("url"=>x.url, "hash"=>x.hash)
         source_info(x::BinaryBuilder.GitSource) = Dict("repo"=>x.url, "hash"=>x.hash)
         source_info(x::BinaryBuilder.DirectorySource) = Dict(
-            "patches"=>string("https://github.com/JuliaPackaging/Yggdrasil/blob/", commit, "/", chopprefix(yggy, joinpath(dirname(buildscript), x.path))))
+            "patches"=>string("https://github.com/JuliaPackaging/Yggdrasil/blob/", commit, "/", chopprefix(joinpath(dirname(buildscript), x.path), yggy)))
         srcs = source_info.(sources)
         version_meta = get!(versions_meta, string(version), Dict{String,Any}())
         !isempty(libs) && (version_meta["libraries"] = libs)
@@ -194,7 +194,7 @@ end
 function update_metadata(force = false)
     toml_path = joinpath(@__DIR__, "..", "..", "jll_metadata.toml")
     toml = try
-        force && error
+        force && error()
         t = TOML.parsefile(toml_path)
         @info "updating toml with $(length(t)) entries"
         t
@@ -204,6 +204,7 @@ function update_metadata(force = false)
     end
     for (uuid, pkgentry) in jlls()
         if !haskey(toml, pkgentry.name)
+            @info "populating $(pkgentry.name) from scratch"
             try
                 toml[pkgentry.name] = metadata_for_jll(pkgentry)
             catch ex
@@ -214,6 +215,8 @@ function update_metadata(force = false)
             version_info = Registry.registry_info(pkgentry).version_info
             reg_versions = string.(keys(version_info))
             missing_versions = setdiff(reg_versions, toml_versions)
+            isempty(missing_versions) && continue
+            @info "updating $(pkgentry.name) for $missing_versions"
             try
                 updates = metadata_for_jll(pkgentry, filter(((k,v),)->string(k) in missing_versions, version_info))
                 merge!(toml[pkgentry.name], updates)
