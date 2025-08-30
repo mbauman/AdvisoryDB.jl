@@ -131,7 +131,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 matches = filter(endswith("build_tarballs.jl"), split(read(ignorestatus(`grep -l -r $name_match_re $yggy`), String)))
                 if isempty(matches)
                     # look for a literal passed to the build_tarballs command directly
-                    name_match_re = string(raw"^\s*build_tarballs\([^,]+,\s*\"", jllname, raw"\"")
+                    name_match_re = string(raw"^\s*build_tarballs([^,]+,\s*\"", jllname, raw"\"")
                     matches = filter(endswith("build_tarballs.jl"), split(read(ignorestatus(`grep -l -r $name_match_re $yggy`), String)))
                 end
                 buildscript = string(only(matches))
@@ -209,6 +209,7 @@ function update_metadata(force = false)
                 toml[pkgentry.name] = metadata_for_jll(pkgentry)
             catch ex
                 @error "error getting metadata for $(pkgentry.name)" ex
+                ex isa HTTP.Exceptions.StatusError && break
             end
         else
             toml_versions = keys(toml[pkgentry.name])
