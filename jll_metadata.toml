@@ -21561,6 +21561,13 @@ libraries = ["libmpir"]
     hash = "52f63459cf3f9478859de29e00357f004050ead70b45913f2c2269d9708675bb"
     url = "https://mpir.org/mpir-3.0.0.tar.bz2"
 
+[MPIR_jll."3.0.2+0"]
+libraries = ["libmpir"]
+
+    [[MPIR_jll."3.0.2+0".sources]]
+    hash = "cdd444aedfcbb190f00328526ef278428702d56e"
+    repo = "https://github.com/wbhart/mpir"
+
 [MPSolve_jll."3.2.1+0"]
 libraries = ["libmps"]
 
