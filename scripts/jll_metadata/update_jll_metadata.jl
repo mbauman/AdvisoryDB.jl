@@ -157,7 +157,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 # LLVM_jll does strange things with fancytoys.jl
                 get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
                 # Ignore github archive errors
-                BinaryBuilderBase.check_github_archive(url::String) = nothing
+                BinaryBuilder.BinaryBuilderBase.check_github_archive(url::String) = nothing
                 # Support old Pkg platforms
                 using Pkg.BinaryPlatforms
                 ARGS = []
