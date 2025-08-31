@@ -184,6 +184,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         # Old binary builders toggled between gits and archives based on endswith(.git)
         # https://github.com/JuliaPackaging/BinaryBuilder.jl/blob/2b2c87be8a9ce47070d4ba92c91a3d0f4d4af2fc/src/wizard/obtain_source.jl#L95
         source_info(x::Pair{String, String}) = endswith(x[1], ".git") ? Dict("repo"=>x[1], "hash"=>x[2]) : Dict("url"=>x[1], "hash"=>x[2])
+        source_info(x::AbstractString) = source_info(BinaryBuilder.DirectorySource(x))
         source_info(x::Union{BinaryBuilder.ArchiveSource, BinaryBuilder.FileSource}) = Dict("url"=>x.url, "hash"=>x.hash)
         source_info(x::BinaryBuilder.GitSource) = Dict("repo"=>x.url, "hash"=>x.hash)
         source_info(x::BinaryBuilder.DirectorySource) = Dict(
