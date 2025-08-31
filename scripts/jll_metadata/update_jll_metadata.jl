@@ -159,7 +159,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 # Ignore github archive errors
                 BinaryBuilder.BinaryBuilderBase.check_github_archive(url::String) = nothing
                 # Support old Pkg platforms
-                using Pkg.BinaryPlatforms
+                using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD
                 ARGS = []
                 function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
                     append!($sources, sources)
