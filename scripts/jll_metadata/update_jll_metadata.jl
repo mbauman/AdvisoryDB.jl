@@ -156,8 +156,11 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 BinaryBuilder.BinaryBuilderBase.ExecutableProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = ExecutableProduct([prefix*name], var, args...; kwargs...)
                 # LLVM_jll does strange things with fancytoys.jl
                 get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
+                # Ignore github archive errors
+                BinaryBuilderBase.check_github_archive(url::String) = nothing
                 # Support old Pkg platforms
                 using Pkg.BinaryPlatforms
+                ARGS = []
                 function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
                     append!($sources, sources)
                     if products isa AbstractVector
