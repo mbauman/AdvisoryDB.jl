@@ -127,7 +127,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
             # First look to the
             commit = @something commit_from_readme strip(read(`git rev-list -n 1 --before=$(release_published_at) master`, String))
             run(pipeline(`git checkout $commit`, stdout=Base.devnull))
-            buildscript = @something path_from_readme joinpath(yggy, jllname[1:1], jllname, "build_tarballs.jl")
+            buildscript = @something path_from_readme joinpath(yggy, uppercase(jllname[1:1]), jllname, "build_tarballs.jl")
             if !isfile(buildscript)
                 name_match_re = string(raw"^\s*name\s*=\s*\"", jllname, raw"\"\s*$")
                 matches = filter(endswith("build_tarballs.jl"), split(read(ignorestatus(`grep -l -r $name_match_re $yggy`), String)))
@@ -214,7 +214,7 @@ function update_metadata(force = false)
         @info "starting from scratch"
         Dict{String,Any}()
     end
-    for (uuid, pkgentry) in jlls()
+    for (uuid, pkgentry) in reverse(jlls())
         if !haskey(toml, pkgentry.name)
             @info "populating $(pkgentry.name) from scratch"
             try
