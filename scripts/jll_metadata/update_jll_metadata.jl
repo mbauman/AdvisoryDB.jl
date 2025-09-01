@@ -97,7 +97,7 @@ function chopprefix(s::Union{String, SubString{String}},
 end
 
 const yggy = mktempdir()
-run(`git clone https://github.com/JuliaPackaging/Yggdrasil.git $yggy`, stdout=Base.devnull)
+run(pipeline(`git clone https://github.com/JuliaPackaging/Yggdrasil.git $yggy`, stdout=Base.devnull))
 
 jlls(reg = get_registry()) = filter(((k,v),)->endswith(v.name, "_jll"), reg.pkgs)
 
@@ -126,7 +126,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         sources, products = cd(yggy) do
             # First look to the
             commit = @something commit_from_readme strip(read(`git rev-list -n 1 --before=$(release_published_at) master`, String))
-            run(`git checkout $commit`, stdout=Base.devnull)
+            run(pipeline(`git checkout $commit`, stdout=Base.devnull))
             buildscript = @something path_from_readme joinpath(yggy, jllname[1:1], jllname, "build_tarballs.jl")
             if !isfile(buildscript)
                 name_match_re = string(raw"^\s*name\s*=\s*\"", jllname, raw"\"\s*$")
