@@ -221,7 +221,7 @@ function update_metadata(force = false)
                 toml[pkgentry.name] = metadata_for_jll(pkgentry)
             catch ex
                 @error "error getting metadata for $(pkgentry.name)" ex
-                ex isa HTTP.Exceptions.StatusError && break
+                ex isa HTTP.Exceptions.StatusError && ex.status == 403 && break
             end
         else
             toml_versions = keys(toml[pkgentry.name])
@@ -235,7 +235,7 @@ function update_metadata(force = false)
                 merge!(toml[pkgentry.name], updates)
             catch ex
                 @error "error getting metadata for $(pkgentry.name) at some versions" ex missing_versions
-                ex isa HTTP.Exceptions.StatusError && break
+                ex isa HTTP.Exceptions.StatusError && ex.status == 403 && break
             end
         end
     end
