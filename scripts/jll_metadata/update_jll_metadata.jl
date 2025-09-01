@@ -214,7 +214,7 @@ function update_metadata(force = false)
         @info "starting from scratch"
         Dict{String,Any}()
     end
-    for (uuid, pkgentry) in reverse(jlls())
+    for (uuid, pkgentry) in reverse(collect(jlls()))
         if !haskey(toml, pkgentry.name)
             @info "populating $(pkgentry.name) from scratch"
             try
