@@ -126,7 +126,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         sources, products = cd(yggy) do
             # First look to the
             commit = @something commit_from_readme strip(read(`git rev-list -n 1 --before=$(release_published_at) master`, String))
-            run(pipeline(`git checkout $commit`, stdout=Base.devnull))
+            run(pipeline(`git checkout $commit`, stdout=Base.devnull, stderr=Base.devnull))
             buildscript = @something path_from_readme joinpath(yggy, uppercase(jllname[1:1]), jllname, "build_tarballs.jl")
             if !isfile(buildscript)
                 name_match_re = string(raw"^\s*name\s*=\s*\"", jllname, raw"\"\s*$")
@@ -161,6 +161,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 # Support old Pkg platforms
                 using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD
                 ARGS = []
+                expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
                 function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
                     append!($sources, sources)
                     if products isa AbstractVector
