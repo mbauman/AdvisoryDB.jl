@@ -181,9 +181,9 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         product_names(x::BinaryBuilder.FrameworkProduct) = x.libraryproduct.libnames
         product_names(x::BinaryBuilder.ExecutableProduct) = x.binnames
         product_names(x::BinaryBuilder.FileProduct) = x.paths
-        libs = collect(Iterators.flatten(product_names.(filter(x->isa(x,Union{BinaryBuilder.LibraryProduct,BinaryBuilder.FrameworkProduct}), products))))
-        exes = collect(Iterators.flatten(product_names.(filter(x->isa(x,BinaryBuilder.ExecutableProduct), products))))
-        files = collect(Iterators.flatten(product_names.(filter(x->isa(x,BinaryBuilder.FileProduct), products))))
+        libs = unique(collect(Iterators.flatten(product_names.(filter(x->isa(x,Union{BinaryBuilder.LibraryProduct,BinaryBuilder.FrameworkProduct}), products)))))
+        exes = unique(collect(Iterators.flatten(product_names.(filter(x->isa(x,BinaryBuilder.ExecutableProduct), products)))))
+        files = unique(collect(Iterators.flatten(product_names.(filter(x->isa(x,BinaryBuilder.FileProduct), products)))))
 
         # Old binary builders toggled between gits and archives based on endswith(.git)
         # https://github.com/JuliaPackaging/BinaryBuilder.jl/blob/2b2c87be8a9ce47070d4ba92c91a3d0f4d4af2fc/src/wizard/obtain_source.jl#L95
