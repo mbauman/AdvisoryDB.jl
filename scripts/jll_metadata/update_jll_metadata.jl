@@ -154,6 +154,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 # Patch up support for old LibraryProduct syntax
                 BinaryBuilder.BinaryBuilderBase.LibraryProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = LibraryProduct([prefix*name], var, args...; kwargs...)
                 BinaryBuilder.BinaryBuilderBase.ExecutableProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = ExecutableProduct([prefix*name], var, args...; kwargs...)
+                BinaryBuilder.BinaryBuilderBase.FileProduct(prefix::String, name::String, args...; kwargs...) = FileProduct([prefix*name], args...; kwargs...)
                 # LLVM_jll does strange things with fancytoys.jl
                 get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
                 # Ignore github archive errors
