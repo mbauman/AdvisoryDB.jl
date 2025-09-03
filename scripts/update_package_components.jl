@@ -17,12 +17,14 @@ function main()
     for (proj, info) in project_info
         # Look for JLLs whose sources match this project
         url_regexes = get(info, "url_regexes", String[])
-        matches = Dict{Tuple{String,String},String}()
+        matches = Dict{Tuple{String,String},Any}()
         for (jllname, jllversion, url) in jll_urls
-            ms = match.(Regex.(url_regexes, "i"), url)
-            all(isnothing, ms) && continue
-            m = something(ms...)
-            matches[(jllname, jllversion)] = m.captures[1]
+            ms = filter(!isnothing, match.(Regex.(url_regexes, "i"), url))
+            isempty(ms) && continue
+            # In most cases, there's only one upstream version. But this supports arrays for multiple captures
+            # we also append to a previously-found match from a prior URL, if it's there
+            captures = unique(vcat((x->x.captures[1]).(ms), get(matches, (jllname, jllversion), String[])))
+            matches[(jllname, jllversion)] = length(captures) == 1 ? captures[1] : captures
         end
         matching_jlls = unique(first.(keys(matches)))
         for jll in matching_jlls
@@ -31,19 +33,22 @@ function main()
             for missing_version in setdiff(all_versions, matching_versions)
                 source_urls = (x->x[3]).(jll_urls[first.(jll_urls) .== jll .&& (x->x[2]).(jll_urls) .== missing_version])
                 source_repo = (x->x[3]).(jll_repos[first.(jll_repos) .== jll .&& (x->x[2]).(jll_repos) .== missing_version])
-                @info "$proj: no versions captured for $jll@$missing_version" source_urls source_repo
+                url_str = isempty(source_urls) ? "" : "; Source urls:\n    " * join(source_urls, "\n    ")
+                @info "$proj: no versions captured for $jll@$missing_version$url_str" source_repo
             end
             jll_toml = get!(toml, jll, Dict{String, Any}())
             for version in all_versions
                 jll_toml_versioninfo = get!(jll_toml, version, Dict{String,Any}())
-                haskey(jll_toml_versioninfo, proj) && continue
+                haskey(jll_toml_versioninfo, proj) && jll_toml_versioninfo[proj] != "*" && continue
                 jll_toml_versioninfo[proj] = get(matches, (jll, version), "*")
             end
         end
     end
 
     open(package_components_path, "w") do f
-        TOML.print(f, toml, sorted=true, by=x->something(tryparse(VersionNumber, x), x), inline_tables=IdSet{Dict{String,Any}}(Iterators.flatten(values(v) for v in values(toml))))
+        TOML.print(f, toml, sorted=true,
+            by=x->something(tryparse(VersionNumber, x), x),
+            inline_tables=IdSet{Dict{String,Any}}(vertable for jlltable in values(toml) for vertable in values(jlltable) if length(values(vertable)) <= 2))
     end
     return toml
 end

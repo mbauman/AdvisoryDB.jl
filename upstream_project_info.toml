@@ -30,7 +30,7 @@ cpe = "cpe:2.3:a:openssl:openssl"
 
 [cairo]
 url_regexes = [
-    'https://cairographics\.org/releases/cairo-(.*)\.tar',
+    'https://(?:www\.)?cairographics\.org/releases/cairo-(.*)\.tar',
 ]
 cpe = "cpe:2.3:a:cairographics:cairo"
 
@@ -78,6 +78,7 @@ url_regexes = [
     'https://anaconda\.org/intel/intel-openmp/[^/]+/download/[^/]+/intel-openmp-(.*)-intel',
     'https://anaconda\.org/intel/openmp/[^/]+/download/[^/]+/openmp-(.*)-intel',
     'https://conda\.anaconda\.org/intel/[^/]+/intel-openmp-(.*)-intel',
+    'https://software\.repos\.intel\.com/python/conda/[^/]+/intel-openmp-(.*)-intel',
 ]
 cpe = "cpe:2.3:a:intel:openmp"
 
@@ -188,6 +189,20 @@ commits.'e6325351ceee58cf56f58bdce61b38907805544f' = "1.6.4"
 commits.'8a871d13b7f4e186b8ad943ae5a7fcf30be52e67' = "1.6.1"
 # There are more, but stopping there...
 cpe = "cpe:2.3:a:libgit2:libgit2"
+
+[git]
+url_regexes = [
+    'https://mirrors\.edge\.kernel\.org/pub/software/scm/git/git-(.*)\.tar',
+    'https://github\.com/git-for-windows/git/releases/download/v(.*)\.windows',
+]
+cpe = "cpe:2.3:a:git-scm:git"
+vendors = ["git", "git-scm"]
+
+[git-for-windows]
+url_regexes = [
+    'https://github\.com/git-for-windows/git/releases/download/v(.*)/Git-',
+]
+cpe = "cpe:2.3:a:git_for_windows_project:git_for_windows"
 
 # More known CPEs from major projects in important JLLs
 # = "cpe:2.3:a:libffi_project:libffi"
