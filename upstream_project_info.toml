@@ -1,0 +1,225 @@
+[libpng]
+regexes = [
+    'https://sourceforge\.net/projects/libpng/files/libpng\d+/(.*)/',
+    'https://downloads\.sourceforge\.net/libpng/libpng-(.*)\.tar',
+    'ftp://ftp\.simplesystems\.org/pub/libpng/png/src/history/libpng\d+/libpng-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:libpng:libpng"
+
+[libssh2]
+regexes = [
+    'https://github\.com/libssh2/libssh2/releases/download/libssh2-(.*)/',
+]
+cpe = "cpe:2.3:a:libssh2:libssh2"
+
+[OpenBLAS]
+regexes = [
+    'https://github\.com/(?:xianyi|OpenMathLib)/OpenBLAS/releases/download/v(.*)/',
+    'https://github\.com/xianyi/OpenBLAS/archive/v(.*)\.tar',
+]
+cpe = "cpe:2.3:a:openblas_project:openblas"
+vendors = ["openblas", "openblas_project", "xianyi"]
+
+[openssl]
+regexes = [
+    'https://github\.com/openssl/openssl/releases/download/openssl-(.*)/',
+    'https://www\.openssl\.org/source/openssl-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:openssl:openssl"
+
+[cairo]
+regexes = [
+    'https://cairographics\.org/releases/cairo-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:cairographics:cairo"
+
+[fontconfig]
+regexes = [
+    'https://gitlab\.freedesktop\.org/api/v\d+/projects/\d+/packages/generic/fontconfig/[^/]+/fontconfig-(.*)\.tar',
+    'https?://www\.freedesktop\.org/software/fontconfig/release/fontconfig-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:fontconfig_project:fontconfig"
+vendors = ["fontconfig", "freedesktop"]
+
+[freetype]
+regexes = [
+    'https?://download\.savannah\.gnu\.org/releases/freetype/freetype-(.*)\.tar'
+]
+cpe = "cpe:2.3:a:freetype:freetype"
+
+[glib]
+regexes = [
+    'https://ftp\.gnome\.org/pub/gnome/sources/glib/[^/]+/glib-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:gnome:glib"
+
+[lzo]
+regexes = [
+    'https://www\.oberhumer\.com/opensource/lzo/download/lzo-(.*).tar'
+]
+cpe = "cpe:2.3:a:lzo_project:lzo"
+
+[pixman]
+regexes = [
+    'https?://www\.cairographics\.org/releases/pixman-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:pixman:pixman"
+
+[zlib]
+regexes = [
+    'https?://zlib\.net/zlib-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:zlib:zlib"
+
+[IntelOpenMP]
+regexes = [
+    'https://files\.pythonhosted\.org/packages/[^/]+/[^/]+/[^/]+/intel_openmp-(.*)-py',
+    'https://anaconda\.org/intel/intel-openmp/[^/]+/download/[^/]+/intel-openmp-(.*)-intel',
+    'https://anaconda\.org/intel/openmp/[^/]+/download/[^/]+/openmp-(.*)-intel',
+]
+cpe = "cpe:2.3:a:intel:openmp"
+
+[ffmpeg]
+regexes = [
+    'https://ffmpeg\.org/releases/ffmpeg-(.*).tar',
+]
+cpe = "cpe:2.3:a:ffmpeg:ffmpeg"
+
+[LAME]
+regexes = [
+    'https://downloads\.sourceforge\.net/project/lame/lame/[^/]+/lame-(.*).tar',
+]
+cpe = "cpe:2.3:a:lame_project:lame"
+
+[fribidi]
+repo = 'https://github.com/fribidi/fribidi'
+commits.'5464c284034da9c058269377b7f5013bb089f553' = "1.0.10"
+commits.'bca04dc3cd3af85a9d9220c430737333634d622a' = "1.0.14"
+commits.'68162babff4f39c4e2dc164a5e825af93bda9983' = "1.0.16"
+cpe = "cpe:2.3:a:gnu:fribidi"
+
+# URI("https?://www.cairographics.org/releases/pixman-0.28.2.tar.gz") => pixman,
+# URI("https?://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz") => gettext,
+# URI("ftp://sourceware.org/pub/libffi/libffi-3.0.11.tar.gz") => libffi,
+# URI("https?://ftp.gnome.org/pub/gnome/sources/glib/2.34/glib-2.34.3.tar.xz") => gobject,
+# URI("https?://ftp.gnome.org/pub/GNOME/sources/pango/1.32/pango-1.32.6.tar.xz") => [pango,pangocairo],
+
+[pcre2]
+regexes = [
+    'https://github\.com/PCRE2Project/pcre2/releases/download/pcre2-[^/]+/pcre2-(.*)\.tar',
+    'https://ftp\.pcre\.org/pub/pcre/pcre2-(.*)\.tar',
+]
+repo = 'https://github.com/PCRE2Project/pcre2'
+commits.'6ae58beca071f13ccfed31d03b3f479ab520639b' = "10.44"
+commits.'3864abdb713f78831dd12d898ab31bbb0fa630b6' = "10.43"
+commits.'52c08847921a324c804cabf2814549f50bce1265' = "10.42"
+cpe = "cpe:2.3:a:pcre:pcre2"
+
+[libaom]
+regexes = [
+     'https://storage\.googleapis\.com/aom-releases/libaom-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:aomedia:aomedia"
+
+[libass]
+regexes = [
+    'https://github\.com/libass/libass/releases/download/[^/]+/libass-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:libass_project:libass"
+
+[fdkaac]
+regexes = [
+    'https://downloads\.sourceforge\.net/project/opencore-amr/fdk-aac/fdk-aac-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:fdkaac_project:fdkaac"
+vendors = ["opencore-amr", "fdkaac_project", "fdkaac"]
+
+[libvorbis]
+regexes = [
+    'https://ftp\.osuosl\.org/pub/xiph/releases/vorbis/libvorbis-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:xiph.org:libvorbis"
+vendors = ["xiph", "xiph.org"]
+
+[x265]
+regexes = [
+    'https://bitbucket\.org/multicoreware/x265_git/get/Release_(.*)\.tar',
+]
+repo = 'https://bitbucket.org/multicoreware/x265_git.git'
+commits.'32e25ffcf810c5fe284901859b369270824c4596' = "4.1"
+commits.'4ecee600df03bc5c7679d2caf702be9169f41aec' = "4.0"
+commits.'aa7f602f7592eddb9d87749be7466da005b556ee' = "3.6"
+cpe = "cpe:2.3:a:multicorewareinc:x265"
+
+[graphite2]
+regexes = [
+    'https://github\.com/silnrsi/graphite/releases/download/[^/]+/graphite2-(.*)\.t',
+]
+cpe = "cpe:2.3:a:sil:graphite2"
+
+[harfbuzz]
+regexes = [
+    'https://github\.com/harfbuzz/harfbuzz/releases/download/[^/]+/harfbuzz-(.*)\.t',
+    'https://www\.freedesktop\.org/software/harfbuzz/release/harfbuzz-(.*)\.t',
+]
+cpe = "cpe:2.3:a:harfbuzz_project:harfbuzz"
+
+[curl]
+regexes = [
+    'https://curl\.se/download/curl-(.*)\.t',
+    'https://curl\.haxx\.se/download/curl-(.*)\.t',
+]
+cpe = "cpe:2.3:a:curl_project:curl"
+
+[libgit2]
+git = 'https://github.com/libgit2/libgit2.git'
+commits.'0060d9cf5666f015b1067129bd874c6cc4c9c7ac' = "1.9.1"
+commits.'338e6fb681369ff0537719095e22ce9dc602dbf0' = "1.9.0"
+commits.'3f4182d15eab74a302718f2de454ffadb1995626' = "1.8.4"
+commits.'d74d491481831ddcd23575d376e56d2197e95910' = "1.8.0"
+commits.'a418d9d4ab87bae16b87d8f37143a4687ae0e4b2' = "1.7.2"
+commits.'a2bde63741977ca0f4ef7db2f609df320be67a08' = "1.7.1"
+commits.'e6325351ceee58cf56f58bdce61b38907805544f' = "1.6.4"
+commits.'8a871d13b7f4e186b8ad943ae5a7fcf30be52e67' = "1.6.1"
+# There are more, but stopping there...
+cpe = "cpe:2.3:a:libgit2:libgit2"
+
+# More known CPEs from major projects in important JLLs
+# = "cpe:2.3:a:libffi_project:libffi"
+# = "cpe:2.3:a:libtiff:libtiff"
+# = "cpe:2.3:a:kernel:util-linux" # libuuid_jll
+# = "cpe:2.3:a:arm:mbed_tls"
+# = "cpe:2.3:a:gnome:pango"
+# = "cpe:2.3:a:qt:qtbase"
+# = "cpe:2.3:a:qt:qtbase"
+# = "cpe:2.3:a:rclone:rclone"
+# = "cpe:2.3:a:wayland:wayland"
+# = "cpe:2.3:a:xz_project:xz"
+# # The vendor for X.org cpe are all over the place. These exist:
+# = "cpe:2.3:a:freedesktop:libice"
+# = "cpe:2.3:a:freedesktop:dbus"
+# = "cpe:2.3:a:x:libx11"
+# = "cpe:2.3:a:x.org:libx11"
+# = "cpe:2.3:a:x:libxcursor"
+# = "cpe:2.3:a:x.org:libxdmcp"
+# = "cpe:2.3:a:x:libxfixes"
+# = "cpe:2.3:a:x.org:libxi"
+# = "cpe:2.3:a:x:libxinerama"
+# = "cpe:2.3:a:x:libxrandr"
+# = "cpe:2.3:a:x.org:libxrandr"
+# = "cpe:2.3:a:x:libxcb"
+# = "cpe:2.3:a:x:libxext"
+# = "cpe:2.3:a:x.org:libxrender"
+# = "cpe:2.3:a:freedesktop:libinput"
+# = "cpe:2.3:a:xkbcommon:libxkbcommon"
+# = "cpe:2.3:a:xkbcommon_project:xkbcommon"
+# = "cpe:2.3:a:facebook:zstandard" # zstd_jll
+# = "cpe:2.3:a:nghttp2:nghttp2"
+# = "cpe:2.3:a:7-zip:p7zip"
+
+# Known problems:
+# DuckDB_jll = "cpe:2.3:a:duckdb:duckdb" -- uses Git commit hashes for all its versions. Will likely have to manually generate.
+# BZip2_jll = "cpe:2.3:a:bzip:bzip2" -- uses Git commit hashes
+# What about LLVM/LLVMExtra_jll/
+# Is Opus_jll cpe:2.3:a:xiph:opusfile?
+# cpe:2.3:a:qt:qt might include vulns against Qt6Wayland_jll or Qt6ShaderTools?
