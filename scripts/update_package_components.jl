@@ -14,17 +14,44 @@ function main()
         for (jllname, jllinfo) in jll_metadata
             for (jllversion, verinfo) in jllinfo if haskey(verinfo, "sources")
                 for s in verinfo["sources"] if haskey(s, "repo")]
+    git_cache = Dict{String,String}()
     for (proj, info) in project_info
         # Look for JLLs whose sources match this project
         url_regexes = get(info, "url_regexes", String[])
         matches = Dict{Tuple{String,String},Any}()
-        for (jllname, jllversion, url) in jll_urls
-            ms = filter(!isnothing, match.(Regex.(url_regexes, "i"), url))
-            isempty(ms) && continue
-            # In most cases, there's only one upstream version. But this supports arrays for multiple captures
-            # we also append to a previously-found match from a prior URL, if it's there
-            captures = unique(vcat((x->x.captures[1]).(ms), get(matches, (jllname, jllversion), String[])))
-            matches[(jllname, jllversion)] = length(captures) == 1 ? captures[1] : captures
+        if !isempty(url_regexes)
+            for (jllname, jllversion, url) in jll_urls
+                ms = filter(!isnothing, match.(Regex.(url_regexes, "i"), url))
+                isempty(ms) && continue
+                # In most cases, there's only one upstream version. But this supports arrays for multiple captures
+                # we also append to a previously-found match from a prior URL, if it's there
+                captures = unique(vcat((x->x.captures[1]).(ms), get(matches, (jllname, jllversion), String[])))
+                matches[(jllname, jllversion)] = length(captures) == 1 ? captures[1] : captures
+            end
+        end
+        if haskey(info, "repo")
+            for (jllname, jllversion, repo, commit) in jll_repos
+                if repo == get(info, "repo", "")
+                    dir = get!(git_cache, proj) do
+                        tmp = mktempdir()
+                        run(pipeline(`git clone $repo $tmp`, stdout=Base.devnull, stderr=Base.devnull))
+                        tmp
+                    end
+                    tag = cd(dir) do
+                        readchomp(`git tag --points-at $commit`)
+                    end
+                    if isempty(tag)
+                        @info "Commit $repo @ $commit is not a tag"
+                        continue
+                    end
+                    # It can be challenging to parse a version number out of a tag; some options here include: v1.2.3 and PCRE2-1.2.3
+                    # This strips all non-numeric prefixes with up to one digit as long as the digit is not immediately followed by a period.
+                    ver = chopprefix(tag, r"^[^\d]*(?:\d[^\d.]+)?")
+                    @info "got version $(ver) from git tag $tag"
+                    versions = unique(vcat(ver, get(matches, (jllname, jllversion), String[])))
+                    matches[(jllname, jllversion)] = length(versions) == 1 ? versions[1] : versions
+                end
+            end
         end
         matching_jlls = unique(first.(keys(matches)))
         for jll in matching_jlls
