@@ -21,19 +21,19 @@ url_regexes = [
 cpe = "cpe:2.3:a:openblas_project:openblas"
 vendors = ["openblas", "openblas_project", "xianyi"]
 
-# [openssl]
-# url_regexes = [
-#     'https://github\.com/openssl/openssl/releases/download/openssl-(.*)/',
-#     'https://www\.openssl\.org/source/openssl-(.*)\.tar',
-# ]
-# cpe = "cpe:2.3:a:openssl:openssl"
+[openssl]
+url_regexes = [
+    'https://github\.com/openssl/openssl/releases/download/openssl-(.*)/',
+    'https://www\.openssl\.org/source/openssl-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:openssl:openssl"
 
-# [cairo]
-# repo = "https://gitlab.freedesktop.org/cairo/cairo.git"
-# url_regexes = [
-#     'https://(?:www\.)?cairographics\.org/releases/cairo-(.*)\.tar',
-# ]
-# cpe = "cpe:2.3:a:cairographics:cairo"
+[cairo]
+repo = "https://gitlab.freedesktop.org/cairo/cairo.git"
+url_regexes = [
+    'https://(?:www\.)?cairographics\.org/releases/cairo-(.*)\.tar',
+]
+cpe = "cpe:2.3:a:cairographics:cairo"
 
 # [fontconfig]
 # url_regexes = [
