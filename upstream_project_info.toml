@@ -339,6 +339,7 @@ url_regexes = ['https://github\.com/nghttp2/nghttp2/releases/download/v(.+)/nght
 cpe = "cpe:2.3:a:nghttp2:nghttp2"
 
 [opus]
+repo = 'https://gitlab.xiph.org/xiph/opus'
 url_regexes = ['https://archive\.mozilla\.org/pub/opus/opus-(.+)\.tar']
 cpe = "cpe:2.3:a:xiph:opusfile"
 
