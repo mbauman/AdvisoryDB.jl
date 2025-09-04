@@ -104,7 +104,7 @@ function main()
         "<details><summary>", length(info["skips"]), "updates were skipped because their values were already set</summary>\n\n",
         "* ", join([string(pkg, "@", pkgver, " ", proj, ": found ", newver, "; have ", oldver, " set")], "\n* "),
         "\n\n</details>\n")
-    println(io, "title=[automatic] update upstream versions for $n_jlls $pkg_str")
+    println(io, "title=[automatic] update upstream component versions for $n_pkgs $pkg_str")
     println(io, """
         body<<BODY_EOF
         This automated action used `upstream_project_info.toml` to match upstream projects against the JLL sources reported in `jll_metadata.toml`.
