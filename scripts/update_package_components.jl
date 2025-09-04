@@ -79,7 +79,7 @@ function main()
                         source_urls = (x->x[3]).(jll_urls[first.(jll_urls) .== jll .&& (x->x[2]).(jll_urls) .== version])
                         source_repo = (x->x[3]).(jll_repos[first.(jll_repos) .== jll .&& (x->x[2]).(jll_repos) .== version])
                         sources = vcat(source_urls, source_repo)
-                        source_info_str = isempty(sources) ? "no sources" : "sources:\n    " * join(sources, "\n    *")
+                        source_info_str = isempty(sources) ? "no sources" : "sources:\n    * " * join(sources, "\n    * ")
                         info["missing_reasons"][(jll, version, proj)] = "no matched sources; the JLL had $source_info_str"
                     end
                     @info "$proj: no version captured for $jll@$version; $(info["missing_reasons"][(jll, version, proj)])"
