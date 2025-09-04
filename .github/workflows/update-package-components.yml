@@ -1,3 +1,5 @@
+name: Update package components
+
 on:
   push:
     branches:

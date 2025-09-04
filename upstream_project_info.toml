@@ -7,19 +7,19 @@ url_regexes = [
 ]
 cpe = "cpe:2.3:a:libpng:libpng"
 
-# [libssh2]
-# url_regexes = [
-#     'https://github\.com/libssh2/libssh2/releases/download/libssh2-(.*)/',
-# ]
-# cpe = "cpe:2.3:a:libssh2:libssh2"
+[libssh2]
+url_regexes = [
+    'https://github\.com/libssh2/libssh2/releases/download/libssh2-(.*)/',
+]
+cpe = "cpe:2.3:a:libssh2:libssh2"
 
-# [OpenBLAS]
-# url_regexes = [
-#     'https://github\.com/(?:xianyi|OpenMathLib)/OpenBLAS/releases/download/v(.*)/',
-#     'https://github\.com/xianyi/OpenBLAS/archive/v(.*)\.tar',
-# ]
-# cpe = "cpe:2.3:a:openblas_project:openblas"
-# vendors = ["openblas", "openblas_project", "xianyi"]
+[OpenBLAS]
+url_regexes = [
+    'https://github\.com/(?:xianyi|OpenMathLib)/OpenBLAS/releases/download/v(.*)/',
+    'https://github\.com/xianyi/OpenBLAS/archive/v(.*)\.tar',
+]
+cpe = "cpe:2.3:a:openblas_project:openblas"
+vendors = ["openblas", "openblas_project", "xianyi"]
 
 # [openssl]
 # url_regexes = [
