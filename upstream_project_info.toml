@@ -110,16 +110,13 @@ cpe = "cpe:2.3:a:cairographics:cairo"
 # # URI("https?://ftp.gnome.org/pub/gnome/sources/glib/2.34/glib-2.34.3.tar.xz") => gobject,
 # # URI("https?://ftp.gnome.org/pub/GNOME/sources/pango/1.32/pango-1.32.6.tar.xz") => [pango,pangocairo],
 
-# [pcre2]
-# url_regexes = [
-#     'https://github\.com/PCRE2Project/pcre2/releases/download/pcre2-[^/]+/pcre2-(.*)\.tar',
-#     'https://ftp\.pcre\.org/pub/pcre/pcre2-(.*)\.tar',
-# ]
-# repo = 'https://github.com/PCRE2Project/pcre2'
-# commits.'6ae58beca071f13ccfed31d03b3f479ab520639b' = "10.44"
-# commits.'3864abdb713f78831dd12d898ab31bbb0fa630b6' = "10.43"
-# commits.'52c08847921a324c804cabf2814549f50bce1265' = "10.42"
-# cpe = "cpe:2.3:a:pcre:pcre2"
+[pcre2]
+url_regexes = [
+    'https://github\.com/PCRE2Project/pcre2/releases/download/pcre2-[^/]+/pcre2-(.*)\.tar',
+    'https://ftp\.pcre\.org/pub/pcre/pcre2-(.*)\.tar',
+]
+repo = 'https://github.com/PCRE2Project/pcre2'
+cpe = "cpe:2.3:a:pcre:pcre2"
 
 # [libaom]
 # url_regexes = [

@@ -82,7 +82,7 @@ function main()
                         source_info_str = isempty(sources) ? "no sources" : "sources:\n    " * join(sources, "\n    *")
                         info["missing_reasons"][(jll, version, proj)] = "no matched sources; the JLL had $source_info_str"
                     end
-                    @info "$proj: no version captured for $jll@$missing_version; $(info["missing_reasons"][(jll, version, proj)])"
+                    @info "$proj: no version captured for $jll@$version; $(info["missing_reasons"][(jll, version, proj)])"
                 else
                     push!(info["updates"], (jll, version, proj))
                 end
@@ -97,7 +97,7 @@ function main()
     n_pkgs = length(updated_packages)
     pkg_str = string(n_pkgs == 1 ? "package" : "packages", n_pkgs <= 3 ? ": " * join(updated_packages, ", ", ", and ") : "")
     missing_str = isempty(info["missings"]) ? "" : string(
-        "### Failed to find versions for", length(info["missings"]), "entries\n\n* ",
+        "### Failed to find versions for ", length(info["missings"]), length(info["missings"]) == 1 ? " entry" : " entries", "\n\n* ",
         join([string(pkg, "@", pkgver, ", ", proj, ": ", info["missing_reasons"][(pkg, pkgver, proj)]) for (pkg,pkgver,proj) in info["missings"]], "\n* "),
         "\n\n Address these by manually replacing the `\"*\"` entries with either `[]` (to confirm that project does not exist) or the appropriate upstream version number.")
     skip_str = isempty(info["skips"]) ? "" : string(
