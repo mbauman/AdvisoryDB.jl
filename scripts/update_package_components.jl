@@ -98,7 +98,7 @@ function main()
     pkg_str = string(n_pkgs == 1 ? "package" : "packages", n_pkgs <= 3 ? ": " * join(updated_packages, ", ", ", and ") : "")
     missing_str = isempty(info["missings"]) ? "" : string(
         "### Failed to find versions for", length(info["missings"]), "entries\n\n* ",
-        join([string(pkg, "@", pkgver, ", " proj, ": ", info["missing_reasons"][(pkg, pkgver, proj)]) for (pkg,pkgver,proj) in info["missings"]], "\n* "),
+        join([string(pkg, "@", pkgver, ", ", proj, ": ", info["missing_reasons"][(pkg, pkgver, proj)]) for (pkg,pkgver,proj) in info["missings"]], "\n* "),
         "\n\n Address these by manually replacing the `\"*\"` entries with either `[]` (to confirm that project does not exist) or the appropriate upstream version number.")
     skip_str = isempty(info["skips"]) ? "" : string(
         "<details><summary>", length(info["skips"]), "updates were skipped because their values were already set</summary>\n\n",
