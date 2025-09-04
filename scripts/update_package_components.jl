@@ -20,9 +20,9 @@ function main()
     info["updates"] = Tuple{String,String,String}[] # (package,version,project) that stored a non-missing value
     info["missing_reasons"] = Dict{Tuple{String,String,String}, String}()
     git_cache = Dict{String,String}()
-    for (proj, info) in project_info
+    for (proj, projinfo) in project_info
         # Look for JLLs whose sources match this project
-        url_regexes = get(info, "url_regexes", String[])
+        url_regexes = get(projinfo, "url_regexes", String[])
         matches = Dict{Tuple{String,String},Any}()
         if !isempty(url_regexes)
             for (jllname, jllversion, url) in jll_urls
@@ -34,9 +34,9 @@ function main()
                 matches[(jllname, jllversion)] = length(captures) == 1 ? captures[1] : captures
             end
         end
-        if haskey(info, "repo")
+        if haskey(projinfo, "repo")
             for (jllname, jllversion, repo, commit) in jll_repos
-                if repo == get(info, "repo", "")
+                if repo == get(projinfo, "repo", "")
                     dir = get!(git_cache, proj) do
                         tmp = mktempdir()
                         run(pipeline(`git clone $repo $tmp`, stdout=Base.devnull, stderr=Base.devnull))
