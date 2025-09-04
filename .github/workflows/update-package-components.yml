@@ -47,19 +47,19 @@ jobs:
           echo "committed=true" >> $GITHUB_OUTPUT
         fi
 
-    - name: Commit directly to branch or main
+    - name: Push directly to branch or main if exact
       if: |
         steps.git_commit.outputs.committed == 'true' &&
-        steps.update.outputs.exact == 'true' || github.event_name == 'pull_request'
+        steps.update.outputs.exact == 'true'
       run: |
         # For PRs, push to the PR's branch; for main, push to main
         current_branch="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
         git push origin HEAD:"$current_branch"
 
-    - name: Create PR from changes
+    - name: Create PR for missing versions
       if: |
         steps.git_commit.outputs.committed == 'true' &&
-        !(steps.update.outputs.exact == 'true' || github.event_name == 'pull_request')
+        steps.update.outputs.exact != 'true'
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
