@@ -1,99 +1,99 @@
 [libpng]
 url_regexes = [
-    'https://sourceforge\.net/projects/libpng/files/libpng\d+/(.*)/',
-    'https://downloads\.sourceforge\.net/libpng/libpng-(.*)\.tar',
-    'ftp://ftp\.simplesystems\.org/pub/libpng/png/src/history/libpng\d+/libpng-(.*)\.tar',
-    'https://vorboss\.dl\.sourceforge\.net/project/libpng/libpng\d+/(.*)/',
+    'https://sourceforge\.net/projects/libpng/files/libpng\d+/([^/]+)/',
+    'https://downloads\.sourceforge\.net/libpng/libpng-(.+)\.tar',
+    'ftp://ftp\.simplesystems\.org/pub/libpng/png/src/history/libpng\d+/libpng-(.+)\.tar',
+    'https://vorboss\.dl\.sourceforge\.net/project/libpng/libpng\d+/([^/]+)/',
 ]
 cpe = "cpe:2.3:a:libpng:libpng"
 
 [libssh2]
 url_regexes = [
-    'https://github\.com/libssh2/libssh2/releases/download/libssh2-(.*)/',
+    'https://github\.com/libssh2/libssh2/releases/download/libssh2-([^/]+)/',
 ]
 cpe = "cpe:2.3:a:libssh2:libssh2"
 
 [OpenBLAS]
 url_regexes = [
-    'https://github\.com/(?:xianyi|OpenMathLib)/OpenBLAS/releases/download/v(.*)/',
-    'https://github\.com/xianyi/OpenBLAS/archive/v(.*)\.tar',
+    'https://github\.com/(?:xianyi|OpenMathLib)/OpenBLAS/releases/download/v([^/]+)/',
+    'https://github\.com/xianyi/OpenBLAS/archive/v(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:openblas_project:openblas"
 vendors = ["openblas", "openblas_project", "xianyi"]
 
 [openssl]
 url_regexes = [
-    'https://github\.com/openssl/openssl/releases/download/openssl-(.*)/',
-    'https://www\.openssl\.org/source/openssl-(.*)\.tar',
+    'https://github\.com/openssl/openssl/releases/download/openssl-([^/]+)/',
+    'https://www\.openssl\.org/source/openssl-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:openssl:openssl"
 
 [cairo]
 repo = "https://gitlab.freedesktop.org/cairo/cairo.git"
 url_regexes = [
-    'https://(?:www\.)?cairographics\.org/releases/cairo-(.*)\.tar',
+    'https://(?:www\.)?cairographics\.org/releases/cairo-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:cairographics:cairo"
 
 [fontconfig]
 url_regexes = [
-    'https://gitlab\.freedesktop\.org/api/v\d+/projects/\d+/packages/generic/fontconfig/[^/]+/fontconfig-(.*)\.tar',
-    'https?://www\.freedesktop\.org/software/fontconfig/release/fontconfig-(.*)\.tar',
+    'https://gitlab\.freedesktop\.org/api/v\d+/projects/\d+/packages/generic/fontconfig/[^/]+/fontconfig-(.+)\.tar',
+    'https?://www\.freedesktop\.org/software/fontconfig/release/fontconfig-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:fontconfig_project:fontconfig"
 vendors = ["fontconfig", "freedesktop"]
 
 [freetype]
 url_regexes = [
-    'https?://download\.savannah\.gnu\.org/releases/freetype/freetype-(.*)\.tar'
+    'https?://download\.savannah\.gnu\.org/releases/freetype/freetype-(.+)\.tar'
 ]
 cpe = "cpe:2.3:a:freetype:freetype"
 
 [glib]
 url_regexes = [
-    'https://ftp\.gnome\.org/pub/gnome/sources/glib/[^/]+/glib-(.*)\.tar',
+    'https://ftp\.gnome\.org/pub/gnome/sources/glib/[^/]+/glib-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:gnome:glib"
 
 [lzo]
 url_regexes = [
-    'https://www\.oberhumer\.com/opensource/lzo/download/lzo-(.*).tar'
+    'https://www\.oberhumer\.com/opensource/lzo/download/lzo-(.+).tar'
 ]
 cpe = "cpe:2.3:a:lzo_project:lzo"
 
 [pixman]
 url_regexes = [
-    'https?://www\.cairographics\.org/releases/pixman-(.*)\.tar',
+    'https?://www\.cairographics\.org/releases/pixman-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:pixman:pixman"
 
 [zlib]
 repo = 'https://github.com/madler/zlib.git'
 url_regexes = [
-    'https?://zlib\.net/zlib-(.*)\.tar',
+    'https?://zlib\.net/zlib-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:zlib:zlib"
 
 [IntelOpenMP]
 url_regexes = [
-    'https://files\.pythonhosted\.org/packages/[^/]+/[^/]+/[^/]+/intel_openmp-(.*)-py',
-    'https://anaconda\.org/intel/intel-openmp/[^/]+/download/[^/]+/intel-openmp-(.*)-intel',
-    'https://anaconda\.org/intel/openmp/[^/]+/download/[^/]+/openmp-(.*)-intel',
-    'https://conda\.anaconda\.org/intel/[^/]+/intel-openmp-(.*)-intel',
-    'https://software\.repos\.intel\.com/python/conda/[^/]+/intel-openmp-(.*)-intel',
+    'https://files\.pythonhosted\.org/packages/[^/]+/[^/]+/[^/]+/intel_openmp-(.+)-py',
+    'https://anaconda\.org/intel/intel-openmp/[^/]+/download/[^/]+/intel-openmp-(.+)-intel',
+    'https://anaconda\.org/intel/openmp/[^/]+/download/[^/]+/openmp-(.+)-intel',
+    'https://conda\.anaconda\.org/intel/[^/]+/intel-openmp-(.+)-intel',
+    'https://software\.repos\.intel\.com/python/conda/[^/]+/intel-openmp-(.+)-intel',
 ]
 cpe = "cpe:2.3:a:intel:openmp"
 
 [ffmpeg]
 url_regexes = [
-    'https://ffmpeg\.org/releases/ffmpeg-(.*).tar',
+    'https://ffmpeg\.org/releases/ffmpeg-(.+).tar',
 ]
 cpe = "cpe:2.3:a:ffmpeg:ffmpeg"
 
 [LAME]
 url_regexes = [
-    'https://downloads\.sourceforge\.net/project/lame/lame/[^/]+/lame-(.*).tar',
-    'https://downloads\.sourceforge\.net/lame/lame-(.*)\.tar',
+    'https://downloads\.sourceforge\.net/project/lame/lame/[^/]+/lame-(.+).tar',
+    'https://downloads\.sourceforge\.net/lame/lame-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:lame_project:lame"
 
@@ -109,64 +109,64 @@ cpe = "cpe:2.3:a:gnu:fribidi"
 
 [pcre2]
 url_regexes = [
-    'https://github\.com/PCRE2Project/pcre2/releases/download/pcre2-[^/]+/pcre2-(.*)\.tar',
-    'https://ftp\.pcre\.org/pub/pcre/pcre2-(.*)\.tar',
+    'https://github\.com/PCRE2Project/pcre2/releases/download/pcre2-[^/]+/pcre2-(.+)\.tar',
+    'https://ftp\.pcre\.org/pub/pcre/pcre2-(.+)\.tar',
 ]
 repo = 'https://github.com/PCRE2Project/pcre2'
 cpe = "cpe:2.3:a:pcre:pcre2"
 
 [libaom]
 url_regexes = [
-     'https://storage\.googleapis\.com/aom-releases/libaom-(.*)\.tar',
+     'https://storage\.googleapis\.com/aom-releases/libaom-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:aomedia:aomedia"
 
 [libass]
 url_regexes = [
-    'https://github\.com/libass/libass/releases/download/[^/]+/libass-(.*)\.tar',
+    'https://github\.com/libass/libass/releases/download/[^/]+/libass-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:libass_project:libass"
 
 [fdkaac]
 url_regexes = [
-    'https://downloads\.sourceforge\.net/project/opencore-amr/fdk-aac/fdk-aac-(.*)\.tar',
-    'https://downloads\.sourceforge\.net/opencore-amr/fdk-aac-(.*)\.tar'
+    'https://downloads\.sourceforge\.net/project/opencore-amr/fdk-aac/fdk-aac-(.+)\.tar',
+    'https://downloads\.sourceforge\.net/opencore-amr/fdk-aac-(.+)\.tar'
 ]
 cpe = "cpe:2.3:a:fdkaac_project:fdkaac"
 vendors = ["opencore-amr", "fdkaac_project", "fdkaac"]
 
 [libvorbis]
 url_regexes = [
-    'https://ftp\.osuosl\.org/pub/xiph/releases/vorbis/libvorbis-(.*)\.tar',
-    'https://downloads\.xiph\.org/releases/vorbis/libvorbis-(.*)\.tar'
+    'https://ftp\.osuosl\.org/pub/xiph/releases/vorbis/libvorbis-(.+)\.tar',
+    'https://downloads\.xiph\.org/releases/vorbis/libvorbis-(.+)\.tar'
 ]
 cpe = "cpe:2.3:a:xiph.org:libvorbis"
 vendors = ["xiph", "xiph.org"]
 
 [x265]
 url_regexes = [
-    'https://bitbucket\.org/multicoreware/x265_git/get/Release_(.*)\.tar',
+    'https://bitbucket\.org/multicoreware/x265_git/get/Release_(.+)\.tar',
 ]
 repo = 'https://bitbucket.org/multicoreware/x265_git.git'
 cpe = "cpe:2.3:a:multicorewareinc:x265"
 
 [graphite2]
 url_regexes = [
-    'https://github\.com/silnrsi/graphite/releases/download/[^/]+/graphite2-(.*)\.t',
+    'https://github\.com/silnrsi/graphite/releases/download/[^/]+/graphite2-(.+)\.t',
 ]
 cpe = "cpe:2.3:a:sil:graphite2"
 
 [harfbuzz]
 url_regexes = [
-    'https://github\.com/harfbuzz/harfbuzz/releases/download/[^/]+/harfbuzz-(.*)\.t',
-    'https://www\.freedesktop\.org/software/harfbuzz/release/harfbuzz-(.*)\.t',
+    'https://github\.com/harfbuzz/harfbuzz/releases/download/[^/]+/harfbuzz-(.+)\.t',
+    'https://www\.freedesktop\.org/software/harfbuzz/release/harfbuzz-(.+)\.t',
 ]
 cpe = "cpe:2.3:a:harfbuzz_project:harfbuzz"
 
 [curl]
 url_regexes = [
-    'https://curl\.se/download/curl-(.*)\.t',
-    'https://curl\.haxx\.se/download/curl-(.*)\.t',
+    'https://curl\.se/download/curl-(.+)\.t',
+    'https://curl\.haxx\.se/download/curl-(.+)\.t',
 ]
 cpe = "cpe:2.3:a:curl_project:curl"
 
@@ -176,34 +176,34 @@ cpe = "cpe:2.3:a:libgit2:libgit2"
 
 [git]
 url_regexes = [
-    'https://mirrors\.edge\.kernel\.org/pub/software/scm/git/git-(.*)\.tar',
-    'https://github\.com/git-for-windows/git/releases/download/v(.*)\.windows',
+    'https://mirrors\.edge\.kernel\.org/pub/software/scm/git/git-(.+)\.tar',
+    'https://github\.com/git-for-windows/git/releases/download/v(.+)\.windows',
 ]
 cpe = "cpe:2.3:a:git-scm:git"
 vendors = ["git", "git-scm"]
 
 [git-for-windows]
 url_regexes = [
-    'https://github\.com/git-for-windows/git/releases/download/v(.*)/Git-',
+    'https://github\.com/git-for-windows/git/releases/download/v(.+)/Git-',
 ]
 cpe = "cpe:2.3:a:git_for_windows_project:git_for_windows"
 
 [libffi]
 url_regexes = [
-    'https://sourceware\.org/pub/libffi/libffi-(.*)\.tar',
-    'https://github\.com/libffi/libffi/releases/download/v(*.)/'
+    'https://sourceware\.org/pub/libffi/libffi-(.+)\.tar',
+    'https://github\.com/libffi/libffi/releases/download/v([^/]+)/'
 ]
 cpe = "cpe:2.3:a:libffi_project:libffi"
 
 [libtiff]
 url_regexes = [
-    'https://download\.osgeo\.org/libtiff/tiff-(.*)\.tar',
+    'https://download\.osgeo\.org/libtiff/tiff-(.+)\.tar',
 ]
 cpe = "cpe:2.3:a:libtiff:libtiff"
 
 [util-linux]
 url_regexes = [
-    'https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v(.*)/util-linux'
+    'https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v(.+)/util-linux'
 ]
 cpe = "cpe:2.3:a:kernel:util-linux"
 
