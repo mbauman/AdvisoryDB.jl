@@ -344,6 +344,83 @@ repos = ['https://gitlab.xiph.org/xiph/opus']
 url_regexes = ['https://archive\.mozilla\.org/pub/opus/opus-(.+)\.tar']
 cpe = "cpe:2.3:a:xiph:opusfile"
 
+[GDAL]
+repo = 'https://github.com/OSGeo/gdal.git'
+url_regexes = [
+    'https://github\.com/OSGeo/gdal/releases/download/v(.+)/gdal-',
+]
+cpe = 'cpe:2.3:a:osgeo:gdal'
+
+[NetCDF]
+repo = 'https://github.com/Unidata/netcdf-c.git'
+url_regexes = [
+    'https://github\.com/Unidata/netcdf-fortran/archive/refs/tags/v(.+)\.tar',
+    'https://github\.com/Unidata/netcdf-c/archive/v(.+)\.zip',
+    'https://downloads\.unidata\.ucar\.edu/netcdf-c/(.+)/netcdf-c-',
+    'https://downloads\.unidata\.ucar\.edu/netcdf-fortran/(.+)/netcdf-fortran-',
+]
+
 # Known problems:
 # [p7zip]
 # cpe = "cpe:2.3:a:7-zip:p7zip"
+# ASL_jll
+# Bzip2_jll
+# CompilerSupportLibraries_jll
+# Enzyme_jll
+# EpollShim_jll
+# Expat_jll
+# FFTW_jll
+# FreeType2_jll
+# FriBidi_jll
+# GLFW_jll
+# GR_jll
+# GettextRuntime_jll
+# Hwloc_jll
+# Ipopt_jll
+# JpegTurbo_jll
+# Kaleido_jll
+# LERC_jll
+# LLVMExtra_jll
+# LLVMOpenMP_jll
+# L_BFGS_B_jll
+# LibGit2_jll
+# LibTracyClient_jll
+# Libglvnd_jll
+# Libiconv_jll
+# METIS_jll
+# MKL_jll
+# MUMPS_seq_jll
+# MozillaCACerts_jll
+# OSQP_jll
+# Ogg_jll
+# OpenBLAS_jll
+# OpenLibm_jll
+# OpenSpecFun_jll
+# Qt6Declarative_jll
+# Qt6Wayland_jll
+# Rmath_jll
+# SPRAL_jll
+# SuiteSparse_jll
+# Vulkan_Loader_jll
+# Xorg_libSM_jll
+# Xorg_libXau_jll
+# Xorg_libxkbfile_jll
+# Xorg_xcb_util_cursor_jll
+# Xorg_xcb_util_image_jll
+# Xorg_xcb_util_jll
+# Xorg_xcb_util_keysyms_jll
+# Xorg_xcb_util_renderutil_jll
+# Xorg_xcb_util_wm_jll
+# Xorg_xkbcomp_jll
+# Xorg_xkeyboard_config_jll
+# Xorg_xtrans_jll
+# eudev_jll
+# fzf_jll
+# libblastrampoline_jll
+# libdecor_jll
+# libevdev_jll
+# mtdev_jll
+# oneTBB_jll
+# p7zip_jll
+# x264_jll
+# x265_jll
