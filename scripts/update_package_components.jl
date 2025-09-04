@@ -36,7 +36,7 @@ function main()
         end
         if haskey(projinfo, "repo")
             for (jllname, jllversion, repo, commit) in jll_repos
-                if repo == get(projinfo, "repo", "")
+                if repo in vcat(get(projinfo, "repo", ""), get(projinfo, "repos", String[]))
                     dir = get!(git_cache, proj) do
                         tmp = mktempdir()
                         run(pipeline(`git clone $repo $tmp`, stdout=Base.devnull, stderr=Base.devnull))
