@@ -36,7 +36,7 @@ function main()
         end
         if haskey(projinfo, "repo")
             for (jllname, jllversion, repo, commit) in jll_repos
-                if repo == get(projinfo, "repo", "")
+                if repo in vcat(get(projinfo, "repo", ""), get(projinfo, "repos", String[]))
                     dir = get!(git_cache, proj) do
                         tmp = mktempdir()
                         run(pipeline(`git clone $repo $tmp`, stdout=Base.devnull, stderr=Base.devnull))
@@ -51,7 +51,8 @@ function main()
                     end
                     # It can be challenging to parse a version number out of a tag; some options here include: v1.2.3 and PCRE2-1.2.3
                     # This strips all non-numeric prefixes with up to one digit as long as the digit is not followed by a period.
-                    ver = chopprefix(tag, r"^[^\d]*(?:\d[^\d.]+)?")
+                    # and ignore everything after a newline
+                    ver = strip(split(chopprefix(tag, r"^[^\d]*(?:\d[^\d.]+)?"), "\n", limit=2)[1])
                     @info "got version $(ver) from git tag $tag"
                     versions = unique(vcat(ver, get(matches, (jllname, jllversion), String[])))
                     matches[(jllname, jllversion)] = length(versions) == 1 ? versions[1] : versions
@@ -79,7 +80,7 @@ function main()
                         source_urls = (x->x[3]).(jll_urls[first.(jll_urls) .== jll .&& (x->x[2]).(jll_urls) .== version])
                         source_repo = (x->x[3]).(jll_repos[first.(jll_repos) .== jll .&& (x->x[2]).(jll_repos) .== version])
                         sources = vcat(source_urls, source_repo)
-                        source_info_str = isempty(sources) ? "no sources" : "sources:\n    " * join(sources, "\n    *")
+                        source_info_str = isempty(sources) ? "no sources" : "sources:\n    * " * join(sources, "\n    * ")
                         info["missing_reasons"][(jll, version, proj)] = "no matched sources; the JLL had $source_info_str"
                     end
                     @info "$proj: no version captured for $jll@$version; $(info["missing_reasons"][(jll, version, proj)])"
