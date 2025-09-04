@@ -133,5 +133,5 @@ function main()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    update_metadata()
+    main()
 end
