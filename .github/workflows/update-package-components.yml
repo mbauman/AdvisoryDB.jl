@@ -17,6 +17,7 @@ jobs:
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
+        ref: ${{ github.head_ref || github.ref_name }}
 
     - name: Set up git user
       run: |
@@ -62,7 +63,6 @@ jobs:
         steps.update.outputs.exact != 'true'
       uses: peter-evans/create-pull-request@v6
       with:
-        base: ${{ github.head_ref || github.ref_name }}
         token: ${{ secrets.GITHUB_TOKEN }}
         title: ${{ steps.update.outputs.title }}
         body: ${{ steps.update.outputs.body }}
