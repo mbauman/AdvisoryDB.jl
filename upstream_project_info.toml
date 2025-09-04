@@ -232,6 +232,9 @@ cpe = "cpe:2.3:a:qt:qt"
 
 [rclone]
 repo = 'https://github.com/rclone/rclone.git'
+url_regexes = [
+    'https://github.com/rclone/rclone/releases/download/v(.+)/rclone-',
+]
 cpe = "cpe:2.3:a:rclone:rclone"
 
 [wayland]
