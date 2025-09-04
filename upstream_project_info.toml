@@ -230,10 +230,15 @@ url_regexes = [
 ]
 cpe = "cpe:2.3:a:qt:qt"
 
+[qtshadertools]
+url_regexes = [
+    'https://download\.qt\.io/official_releases/qt/[^/]+/(.+)/submodules/qtshadertools-'
+]
+
 [rclone]
 repo = 'https://github.com/rclone/rclone.git'
 url_regexes = [
-    'https://github.com/rclone/rclone/releases/download/v(.+)/rclone-',
+    'https://github\.com/rclone/rclone/releases/download/v(.+)/rclone-',
 ]
 cpe = "cpe:2.3:a:rclone:rclone"
 
@@ -254,28 +259,89 @@ url_regexes = [
 ]
 cpe = "cpe:2.3:a:xz_project:xz"
 
-# # The vendor for X.org cpe are all over the place. These exist:
-# = "cpe:2.3:a:freedesktop:libice"
-# = "cpe:2.3:a:freedesktop:dbus"
-# = "cpe:2.3:a:x:libx11"
-# = "cpe:2.3:a:x.org:libx11"
-# = "cpe:2.3:a:x:libxcursor"
-# = "cpe:2.3:a:x.org:libxdmcp"
-# = "cpe:2.3:a:x:libxfixes"
-# = "cpe:2.3:a:x.org:libxi"
-# = "cpe:2.3:a:x:libxinerama"
-# = "cpe:2.3:a:x:libxrandr"
-# = "cpe:2.3:a:x.org:libxrandr"
-# = "cpe:2.3:a:x:libxcb"
-# = "cpe:2.3:a:x:libxext"
-# = "cpe:2.3:a:x.org:libxrender"
-# = "cpe:2.3:a:freedesktop:libinput"
-# = "cpe:2.3:a:xkbcommon:libxkbcommon"
-# = "cpe:2.3:a:xkbcommon_project:xkbcommon"
-# = "cpe:2.3:a:facebook:zstandard" # zstd_jll
-# = "cpe:2.3:a:nghttp2:nghttp2"
-# = "cpe:2.3:a:7-zip:p7zip"
+[libICE]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libICE-(.+)\.tar']
+cpe = "cpe:2.3:a:freedesktop:libice"
+vendors = ["x", "x.org", "freedesktop"]
+
+[dbus]
+url_regexes = ['https://dbus\.freedesktop\.org/releases/dbus/dbus-(.+)\.tar']
+cpe = "cpe:2.3:a:freedesktop:dbus"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libX11]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libX11-(.+)\.tar']
+cpe = "cpe:2.3:a:x:libx11"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libxcursor]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXcursor-(.+)\.tar']
+cpe = "cpe:2.3:a:x:libxcursor"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libxdmcp]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXdmcp-(.+)\.tar']
+cpe = "cpe:2.3:a:x.org:libxdmcp"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libxfixes]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXfixes-(.+)\.tar']
+cpe = "cpe:2.3:a:x:libxfixes"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libXi]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXi-(.+)\.tar']
+cpe = "cpe:2.3:a:x.org:libxi"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libXinerama]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXinerama-(.+)\.tar']
+cpe = "cpe:2.3:a:x:libxinerama"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libXrandr]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXrandr-(.+)\.tar']
+cpe = "cpe:2.3:a:x:libxrandr"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libxcb]
+url_regexes = ['https://www\.x\.org/archive/individual/xcb/libxcb-(.+)\.tar']
+cpe = "cpe:2.3:a:x:libxcb"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libXext]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXext-(.+)\.tar']
+cpe = "cpe:2.3:a:x:libxext"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libxrender]
+url_regexes = ['https://www\.x\.org/archive/individual/lib/libXrender-(.+)\.tar']
+cpe = "cpe:2.3:a:x.org:libxrender"
+vendors = ["x", "x.org", "freedesktop"]
+
+[libinput]
+repo = 'https://gitlab.freedesktop.org/libinput/libinput'
+cpe = "cpe:2.3:a:freedesktop:libinput"
+vendors = ["x", "x.org", "freedesktop"]
+
+[xkbcommon]
+repo = 'https://github.com/xkbcommon/libxkbcommon'
+url_regexes = ['https://xkbcommon\.org/download/libxkbcommon-(.+)\.tar']
+cpe = "cpe:2.3:a:xkbcommon_project:xkbcommon"
+
+[zstd_jl]
+url_regexes = ['https://github\.com/facebook/zstd/releases/download/v(.+)/zstd-']
+cpe = "cpe:2.3:a:facebook:zstandard"
+
+[nghttp2]
+repo = 'https://github.com/nghttp2/nghttp2.git'
+url_regexes = ['https://github\.com/nghttp2/nghttp2/releases/download/v(.+)/nghttp2-']
+cpe = "cpe:2.3:a:nghttp2:nghttp2"
+
+[opus]
+url_regexes = ['https://archive\.mozilla\.org/pub/opus/opus-(.+)\.tar']
+cpe = "cpe:2.3:a:xiph:opusfile"
 
 # Known problems:
-# Is Opus_jll cpe:2.3:a:xiph:opusfile?
-# Is cpe:2.3:a:qt:qt needed for vulns against Qt6Wayland_jll or Qt6ShaderTools?
+# [p7zip]
+# cpe = "cpe:2.3:a:7-zip:p7zip"
