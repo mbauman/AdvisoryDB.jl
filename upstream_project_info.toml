@@ -203,7 +203,7 @@ cpe = "cpe:2.3:a:libtiff:libtiff"
 
 [util-linux]
 url_regexes = [
-    'https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v(.+)/util-linux'
+    'https://mirrors\.edge\.kernel\.org/pub/linux/utils/util-linux/v(.+)/util-linux'
 ]
 cpe = "cpe:2.3:a:kernel:util-linux"
 
@@ -212,13 +212,45 @@ repo = 'https://github.com/Mbed-TLS/mbedtls.git'
 repos = ['https://github.com/ARMmbed/mbedtls.git']
 cpe = "cpe:2.3:a:arm:mbed_tls"
 
+[pango]
+url_regexes = [
+    'http://ftp\.gnome\.org/pub/GNOME/sources/pango/[^/]+/pango-(.+)\.tar',
+]
+cpe = "cpe:2.3:a:gnome:pango"
 
-# = "cpe:2.3:a:gnome:pango"
-# = "cpe:2.3:a:qt:qtbase"
-# = "cpe:2.3:a:qt:qtbase"
-# = "cpe:2.3:a:rclone:rclone"
-# = "cpe:2.3:a:wayland:wayland"
-# = "cpe:2.3:a:xz_project:xz"
+[qtbase]
+url_regexes = [
+    'https://download\.qt\.io/official_releases/qt/[^/]+/(.+)/submodules/qtbase-',
+]
+cpe = "cpe:2.3:a:qt:qtbase"
+
+[qt]
+url_regexes = [
+    'https://download\.qt\.io/official_releases/qt/[^/]+/(.+)/single/qt-',
+]
+cpe = "cpe:2.3:a:qt:qt"
+
+[rclone]
+repo = 'https://github.com/rclone/rclone.git'
+cpe = "cpe:2.3:a:rclone:rclone"
+
+[wayland]
+url_regexes = [
+    'https://wayland\.freedesktop\.org/releases/wayland-(\d.+)\.tar',
+    'https://gitlab\.freedesktop\.org/wayland/wayland/-/releases/[^/]+/downloads/wayland-(\d.+)\.tar',
+]
+cpe = "cpe:2.3:a:wayland:wayland"
+
+[xz]
+repo = 'https://github.com/tukaani-project/xz'
+repos = ['https://git.tukaani.org/xz.git']
+url_regexes = [
+    'https://tukaani\.org/xz/xz-(.+)\.tar',
+    'https://tukaani\.org/xz/xz-(.+)-windows\.',
+    'https://github\.com/tukaani-project/xz/releases/download/v(.+)/xz',
+]
+cpe = "cpe:2.3:a:xz_project:xz"
+
 # # The vendor for X.org cpe are all over the place. These exist:
 # = "cpe:2.3:a:freedesktop:libice"
 # = "cpe:2.3:a:freedesktop:dbus"
