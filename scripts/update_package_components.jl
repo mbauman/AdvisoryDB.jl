@@ -39,7 +39,7 @@ function main()
                 if repo in vcat(get(projinfo, "repo", ""), get(projinfo, "repos", String[]))
                     dir = get!(git_cache, proj) do
                         tmp = mktempdir()
-                        run(pipeline(`git clone $repo $tmp`, stdout=Base.devnull, stderr=Base.devnull))
+                        run(pipeline(`git clone $(projinfo["repo"]) $tmp`, stdout=Base.devnull, stderr=Base.devnull))
                         tmp
                     end
                     tag = cd(dir) do
