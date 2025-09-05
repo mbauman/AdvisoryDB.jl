@@ -1,9 +1,14 @@
 using TOML: TOML
 using HTTP: HTTP
 using JSON3: JSON3
-using BinaryBuilder: BinaryBuilder
+using BinaryBuilder: BinaryBuilder, BinaryBuilderBase
 using Pkg: Pkg, Registry
 using Base64: base64decode
+
+@eval BinaryBuilderBase begin
+    # Disable errors when github archives are used
+    check_github_archive(url::String) = nothing
+end
 
 # Copied from AdvisoryDB just to make life a little easier, since this runs v1.7
 function get_registry(reg=Registry.RegistrySpec(name="General", uuid = "23338594-aafe-5451-b93e-139f81909106"); depot=Pkg.depots1())
@@ -156,35 +161,50 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
             m = Module(gensym())
             sources = []
             products = []
-            @eval m begin
-                include(p) = Base.include($m, p)
-                using BinaryBuilder, Pkg
-                # Patch up support for old LibraryProduct syntax
-                BinaryBuilder.BinaryBuilderBase.LibraryProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = LibraryProduct([prefix*name], var, args...; kwargs...)
-                BinaryBuilder.BinaryBuilderBase.ExecutableProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = ExecutableProduct([prefix*name], var, args...; kwargs...)
-                BinaryBuilder.BinaryBuilderBase.FileProduct(prefix::String, name::String, args...; kwargs...) = FileProduct([prefix*name], args...; kwargs...)
-                # LLVM_jll does strange things with fancytoys.jl
-                get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
-                # Ignore github archive errors
-                BinaryBuilder.BinaryBuilderBase.check_github_archive(url::String) = nothing
-                # Support old Pkg platforms
-                using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD
-                ARGS = []
-                expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
-                prefix = ""
-                function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
-                    append!($sources, sources)
-                    if products isa AbstractVector
-                        append!($products, products)
-                    else
-                        # Old versions of binary builder used a function that could add a prefix:
-                        append!($products, products(""))
+            dependencies = []
+            cd(dirname(buildscript)) do
+                @eval m begin
+                    include(p) = Base.include($m, p)
+                    using BinaryBuilder, Pkg
+                    # Patch up support for old Products that used prefixes and avoid collisions with Base
+                    _avoid_collisions(x::Symbol) = isdefined(Base, x) ? Symbol(x, :_is_not_defined_in_base) : x
+                    LibraryProduct(x, varname, args...;kwargs...) = BinaryBuilder.LibraryProduct(x, _avoid_collisions(varname), args...; kwargs...)
+                    LibraryProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = LibraryProduct([prefix*name], var, args...; kwargs...)
+                    LibraryProduct(prefix::String, name::Vector{<:AbstractString}, var::Symbol, args...; kwargs...) = LibraryProduct(prefix.*name, var, args...; kwargs...)
+                    ExecutableProduct(x, varname, args...;kwargs...) = BinaryBuilder.ExecutableProduct(x, _avoid_collisions(varname), args...; kwargs...)
+                    ExecutableProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = ExecutableProduct([prefix*name], var, args...; kwargs...)
+                    ExecutableProduct(prefix::String, name::Vector{<:AbstractString}, var::Symbol, args...; kwargs...) = ExecutableProduct(prefix.*name, var, args...; kwargs...)
+                    FileProduct(x, varname, args...;kwargs...) = BinaryBuilder.FileProduct(x, _avoid_collisions(varname), args...; kwargs...)
+                    FileProduct(prefix::String, name::String, args...; kwargs...) = FileProduct([prefix*name], args...; kwargs...)
+                    FileProduct(prefix::String, name::Vector{<:AbstractString}, args...; kwargs...) = FileProduct(prefix.*name, args...; kwargs...)
+                    # Ignore unknown FileSource kwargs (old versions supported an unpack_target kwarg)
+                    FileSource(args...; kwargs...) = BinaryBuilder.FileSource(args...; filter((==)(:filename)∘first, kwargs)...)
+                    # Addable specs are used for Build deps.
+                    get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
+                    # Support old Pkg platforms
+                    using Pkg.BinaryPlatforms: CompilerABI
+                    UnknownPlatform(args...; kwargs...) = BinaryBuilder.AnyPlatform()
+                    Linux(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "linux", args...; kwargs...)
+                    MacOS(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "macos", args...; kwargs...)
+                    Windows(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "windows", args...; kwargs...)
+                    FreeBSD(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "freebsd", args...; kwargs...)
+                    ARGS = []
+                    expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
+                    prefix = ""
+                    function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
+                        append!($sources, sources)
+                        if products isa AbstractVector
+                            append!($products, products)
+                        else
+                            # Old versions of binary builder used a function that could add a prefix:
+                            append!($products, products(""))
+                        end
+                        nothing
                     end
-                    nothing
+                    include($buildscript)
                 end
-                include($buildscript)
             end
-            unique(sources), unique(products)
+            sources, products
         end
 
         product_names(x::BinaryBuilder.LibraryProduct) = x.libnames
