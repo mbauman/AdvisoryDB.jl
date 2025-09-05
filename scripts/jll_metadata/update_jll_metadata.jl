@@ -166,14 +166,15 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 @eval m begin
                     include(p) = Base.include($m, p)
                     using BinaryBuilder, Pkg
-                    # Patch up support for old Products that used prefixes
-                    LibraryProduct(args...;kwargs...) = BinaryBuilder.LibraryProduct(args...; kwargs...)
+                    # Patch up support for old Products that used prefixes and avoid collisions with Base
+                    _avoid_collisions(x::Symbol) = isdefined(Base, x) ? Symbol(x, :_is_not_defined_in_base) : x
+                    LibraryProduct(x, varname, args...;kwargs...) = BinaryBuilder.LibraryProduct(x, _avoid_collisions(varname), args...; kwargs...)
                     LibraryProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = LibraryProduct([prefix*name], var, args...; kwargs...)
                     LibraryProduct(prefix::String, name::Vector{<:AbstractString}, var::Symbol, args...; kwargs...) = LibraryProduct(prefix.*name, var, args...; kwargs...)
-                    ExecutableProduct(args...;kwargs...) = BinaryBuilder.ExecutableProduct(args...; kwargs...)
+                    ExecutableProduct(x, varname, args...;kwargs...) = BinaryBuilder.ExecutableProduct(x, _avoid_collisions(varname), args...; kwargs...)
                     ExecutableProduct(prefix::String, name::String, var::Symbol, args...; kwargs...) = ExecutableProduct([prefix*name], var, args...; kwargs...)
                     ExecutableProduct(prefix::String, name::Vector{<:AbstractString}, var::Symbol, args...; kwargs...) = ExecutableProduct(prefix.*name, var, args...; kwargs...)
-                    FileProduct(args...;kwargs...) = BinaryBuilder.FileProduct(args...; kwargs...)
+                    FileProduct(x, varname, args...;kwargs...) = BinaryBuilder.FileProduct(x, _avoid_collisions(varname), args...; kwargs...)
                     FileProduct(prefix::String, name::String, args...; kwargs...) = FileProduct([prefix*name], args...; kwargs...)
                     FileProduct(prefix::String, name::Vector{<:AbstractString}, args...; kwargs...) = FileProduct(prefix.*name, args...; kwargs...)
                     # Ignore unknown FileSource kwargs (old versions supported an unpack_target kwarg)
