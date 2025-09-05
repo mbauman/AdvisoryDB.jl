@@ -82,6 +82,31 @@ function find_commit_date_from_tree_sha(owner, repo, tree_sha)
     error("could not find sha $tree_sha in the commit history of $owner/$repo")
 end
 
+function dict(pkg::PackageSpec)
+    # effectively Base.show(io::IO, pkg::PackageSpec)
+    vstr = repr(pkg.version)
+    f = []
+    pkg.name !== nothing && push!(f, "name" => pkg.name)
+    pkg.uuid !== nothing && push!(f, "uuid" => pkg.uuid)
+    pkg.tree_hash !== nothing && push!(f, "tree_hash" => pkg.tree_hash)
+    pkg.path !== nothing && push!(f, "path" => pkg.path)
+    pkg.url !== nothing && push!(f, "url" => pkg.url)
+    pkg.rev !== nothing && push!(f, "rev" => pkg.rev)
+    pkg.subdir !== nothing && push!(f, "subdir" => pkg.subdir)
+    pkg.pinned && push!(f, "pinned" => pkg.pinned)
+    push!(f, "version" => (vstr == "VersionSpec(\"*\")" ? "*" : vstr))
+    if pkg.repo.source !== nothing
+        push!(f, "repo/source" => string("\"", pkg.repo.source, "\""))
+    end
+    if pkg.repo.rev !== nothing
+        push!(f, "repo/rev" => pkg.repo.rev)
+    end
+    if pkg.repo.subdir !== nothing
+        push!(f, "repo/subdir" => pkg.repo.subdir)
+    end
+    Dict(f)
+end
+
 # Backported from Julia (some newer release than 1.7)
 function chopsuffix(s::Union{String, SubString{String}},
                     suffix::Union{String, SubString{String}})
@@ -193,6 +218,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     prefix = ""
                     function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
                         append!($sources, sources)
+                        append!($dependencies, dependencies)
                         if products isa AbstractVector
                             append!($products, products)
                         else
@@ -204,7 +230,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     include($buildscript)
                 end
             end
-            sources, products
+            sources, products, dependencies
         end
 
         product_names(x::BinaryBuilder.LibraryProduct) = x.libnames
@@ -223,12 +249,17 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         source_info(x::BinaryBuilder.GitSource) = Dict("repo"=>x.url, "hash"=>x.hash)
         source_info(x::BinaryBuilder.DirectorySource) = Dict(
             "patches"=>string("https://github.com/JuliaPackaging/Yggdrasil/blob/", commit, "/", chopprefix(joinpath(dirname(buildscript), x.path), yggy)))
-        srcs = source_info.(sources)
+        srcs = unique(source_info.(sources))
+
+        # We ignore runtime dependencies; those are in the Project/Manifest
+        builddeps = unique([Dict(dict(x.pkg)..., "target"=>x isa BinaryBuilder.HostBuildDependency ? "host" : "target") for x in dependencies if !(x isa Union{String, BinaryBuilder.Dependency, BinaryBuilder.RuntimeDependency})])
+
         version_meta = get!(metadata, string(version), Dict{String,Any}())
         !isempty(libs) && (version_meta["libraries"] = libs)
         !isempty(exes) && (version_meta["executables"] = exes)
         !isempty(files) && (version_meta["files"] = files)
         !isempty(srcs) && (version_meta["sources"] = srcs)
+        !isempty(builddeps) && (version_meta["build_dependencies"] = builddeps)
     end
 
     return metadata
