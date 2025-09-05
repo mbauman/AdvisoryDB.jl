@@ -183,10 +183,10 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     # Support old Pkg platforms
                     using Pkg.BinaryPlatforms: CompilerABI
                     UnknownPlatform(args...; kwargs...) = BinaryBuilder.AnyPlatform()
-                    Linux(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "linux", args...; kwargs...)
-                    MacOS(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "macos", args...; kwargs...)
-                    Windows(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "windows", args...; kwargs...)
-                    FreeBSD(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "freebsd", args...; kwargs...)
+                    Linux(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "linux", args...; kwargs...)
+                    MacOS(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "macos", args...; kwargs...)
+                    Windows(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "windows", args...; kwargs...)
+                    FreeBSD(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "freebsd", args...; kwargs...)
                     ARGS = []
                     expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
                     prefix = ""
