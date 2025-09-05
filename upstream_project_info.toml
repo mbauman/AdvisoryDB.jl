@@ -580,8 +580,10 @@ repo = 'https://github.com/ralna/spral.git'
 
 [SuiteSparse]
 repo = 'https://github.com/DrTimothyAldenDavis/SuiteSparse.git'
+repos = ['https://github.com/Wimmerer/SuiteSparse.git']
 url_regexes = [
     'https://github\.com/DrTimothyAldenDavis/SuiteSparse/archive/v(.+)\.tar',
+    'http://faculty\.cse\.tamu\.edu/davis/SuiteSparse/SuiteSparse-(.+)\.tar',
 ]
 
 [Vulkan-Loader]
