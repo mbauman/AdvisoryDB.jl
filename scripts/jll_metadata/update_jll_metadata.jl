@@ -2,7 +2,7 @@ using TOML: TOML
 using HTTP: HTTP
 using JSON3: JSON3
 using BinaryBuilder: BinaryBuilder, BinaryBuilderBase
-using Pkg: Pkg, Registry
+using Pkg: Pkg, Registry, PackageSpec
 using Base64: base64decode
 
 @eval BinaryBuilderBase begin
