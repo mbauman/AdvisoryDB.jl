@@ -194,7 +194,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                         end
                         nothing
                     end
-                    include($(basename(buildscript)))
+                    include($buildscript)
                 end
             end
             sources, products
