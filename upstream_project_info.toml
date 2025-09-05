@@ -527,7 +527,7 @@ url_regexes = [
 [libglvnd]
 url_regexes = [
     'https://github\.com/NVIDIA/libglvnd/releases/download/v(.+)/libglvnd-',
-    'https://gitlab\.freedesktop\.org/glvnd/libglvnd/-/archive/v(.+/libglvnd-',
+    'https://gitlab\.freedesktop\.org/glvnd/libglvnd/-/archive/v(.+)/libglvnd-',
 ]
 
 [libiconv]
