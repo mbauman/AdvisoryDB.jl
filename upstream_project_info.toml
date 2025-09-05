@@ -146,6 +146,7 @@ vendors = ["xiph", "xiph.org"]
 [x265]
 url_regexes = [
     'https://bitbucket\.org/multicoreware/x265_git/get/Release_(.+)\.tar',
+    'http://ftp\.videolan\.org/pub/videolan/x265/x265_(.+)\.tar'
 ]
 repo = 'https://bitbucket.org/multicoreware/x265_git.git'
 cpe = "cpe:2.3:a:multicorewareinc:x265"
