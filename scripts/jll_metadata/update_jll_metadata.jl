@@ -101,6 +101,10 @@ run(pipeline(`git clone https://github.com/JuliaPackaging/Yggdrasil.git $yggy`, 
 
 jlls(reg = get_registry()) = filter(((k,v),)->endswith(v.name, "_jll"), reg.pkgs)
 
+majorminorpatch(v::VersionNumber) = string(v.major, ".", v.minor, ".", v.patch)
+majorminor(v::VersionNumber) = string(v.major, ".", v.minor)
+major(v::VersionNumber) = string(v.major)
+
 metadata_for_jll(jll::String; reg = get_registry()) = metadata_for_jll(only(filter(((k,v),)->v.name==jll, reg.pkgs))[2])
 function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_info(jll).version_info)
     jllinfo = Registry.registry_info(jll)
@@ -129,19 +133,23 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
             run(pipeline(`git checkout $commit`, stdout=Base.devnull, stderr=Base.devnull))
             buildscript = @something path_from_readme joinpath(yggy, uppercase(jllname[1:1]), jllname, "build_tarballs.jl")
             if !isfile(buildscript)
-                name_match_re = string(raw"^\s*name\s*=\s*\"", jllname, raw"\"\s*$")
-                matches = filter(endswith("build_tarballs.jl"), split(read(ignorestatus(`grep -l -r $name_match_re $yggy`), String)))
-                if isempty(matches)
-                    # look for a literal passed to the build_tarballs command directly
-                    name_match_re = string(raw"^\s*build_tarballs([^,]+,\s*\"", jllname, raw"\"")
-                    matches = filter(endswith("build_tarballs.jl"), split(read(ignorestatus(`grep -l -r $name_match_re $yggy`), String)))
+                # First look for a potentially-deeper nested path, without worrying about case, then consider version numbers
+                for searchpath in ("./$(jllname[1])/$jllname/build_tarballs.jl",
+                                   "*/$jllname/build_tarballs.jl",
+                                   "*/$jllname@$version/build_tarballs.jl",
+                                   "*/$jllname@$(majorminorpatch(version))/build_tarballs.jl",
+                                   "*/$jllname@$(majorminor(version))/build_tarballs.jl",
+                                   "*/$jllname@$(major(version))/build_tarballs.jl")
+                    pathmatches = split(readchomp(`find . -ipath $searchpath`), "\n", keepempty=false)
+                    if length(pathmatches) == 1
+                        buildscript = joinpath(yggy, pathmatches[1])
+                        break
+                    elseif length(pathmatches) > 1
+                        error("found multiple build scripts for $jllname at Ygg $commit, got $pathmatches")
+                    end
                 end
-                if length(matches) != 1
-                    error("no unique match for $jllname@$version, Ygg $commit, got $matches")
-                end
-                buildscript = string(only(matches))
-                @info "found $buildscript by name match"
             end
+            !isfile(buildscript) && error("could not find build script for $jllname at Ygg $commit")
             @info "$jllname@$version: $buildscript @ $commit"
             # Now we can evaluate the buildscript at the time of this release's publication
             # but with `build_tarballs` shadowed to simply log the sources and products:
