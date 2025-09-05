@@ -171,6 +171,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                 using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD
                 ARGS = []
                 expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
+                prefix = ""
                 function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
                     append!($sources, sources)
                     if products isa AbstractVector
