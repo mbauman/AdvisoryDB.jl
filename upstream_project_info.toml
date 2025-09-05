@@ -361,10 +361,6 @@ vendors = ["x", "x.org", "freedesktop"]
 url_regexes = ['https://xcb\.freedesktop\.org/dist/xcb-util-cursor-(\d.+)\.tar']
 vendors = ["x", "x.org", "freedesktop"]
 
-[libxcb-util-image]
-url_regexes = ['https://xcb\.freedesktop\.org/dist/xcb-util-image-(\d.+)\.tar']
-vendors = ["x", "x.org", "freedesktop"]
-
 [libxcb-util]
 url_regexes = ['https://xcb\.freedesktop\.org/dist/xcb-util-(\d.+)\.tar']
 vendors = ["x", "x.org", "freedesktop"]
