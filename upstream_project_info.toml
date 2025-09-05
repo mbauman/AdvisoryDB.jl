@@ -528,6 +528,7 @@ url_regexes = [
 url_regexes = [
     'https://github\.com/NVIDIA/libglvnd/releases/download/v(.+)/libglvnd-',
     'https://gitlab\.freedesktop\.org/glvnd/libglvnd/-/archive/v(.+)/libglvnd-',
+    'https://gitlab\.freedesktop\.org/glvnd/libglvnd/uploads/[^/]+/libglvnd-(.+)\.tar'
 ]
 
 [libiconv]
@@ -538,7 +539,10 @@ url_regexes = [
 
 [MUMPS]
 url_regexes = [
-    'http://mumps\.enseeiht\.fr/MUMPS_(.+)\.tar'
+    'http://mumps\.enseeiht\.fr/MUMPS_(.+)\.tar',
+    'https://mumps-solver\.org/MUMPS_(.+)\.tar',
+    'https://graal\.ens-lyon\.fr/MUMPS/MUMPS_(.+)\.tar',
+
 ]
 
 [OSQP]
@@ -550,6 +554,7 @@ url_regexes = [
 [libogg]
 url_regexes = [
     'https://downloads\.xiph\.org/releases/ogg/libogg-(.+)\.tar',
+    'https://ftp\.osuosl\.org/pub/xiph/releases/ogg/libogg-(.+)\.tar'
 ]
 
 [openlibm]
@@ -604,6 +609,7 @@ url_regexes = ['http://bitmath\.org/code/mtdev/mtdev-(.+)\.tar']
 
 [oneTBB]
 repo = 'https://github.com/oneapi-src/oneTBB.git'
+url_regexes = ['https://github\.com/oneapi-src/oneTBB/archive/refs/tags/v(.+)\.tar']
 
 # Missing projects:
 # ASL_jll -- no upstream versioning
