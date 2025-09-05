@@ -157,7 +157,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
             nothing
         end
         commit, buildscript = "", ""
-        sources, products = cd(yggy) do
+        sources, products, dependencies = cd(yggy) do
             # First look to the
             commit = @something commit_from_readme strip(read(`git rev-list -n 1 --before=$(release_published_at) master`, String))
             run(pipeline(`git checkout $commit`, stdout=Base.devnull, stderr=Base.devnull))
