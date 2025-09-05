@@ -53,7 +53,7 @@ function main()
                     # This strips all non-numeric prefixes with up to one digit as long as the digit is not followed by a period.
                     # and ignore everything after a newline
                     ver = strip(split(chopprefix(tag, r"^[^\d]*(?:\d[^\d.]+)?"), "\n", limit=2)[1])
-                    @info "got version $(ver) from git tag $tag"
+                    @info "$proj: got version $(ver) from git tag $tag"
                     versions = unique(vcat(ver, get(matches, (jllname, jllversion), String[])))
                     matches[(jllname, jllversion)] = length(versions) == 1 ? versions[1] : versions
                 end
