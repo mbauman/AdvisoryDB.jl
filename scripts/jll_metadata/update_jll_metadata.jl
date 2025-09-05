@@ -142,14 +142,14 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                                    "*/$jllname@$(major(version))/build_tarballs.jl")
                     pathmatches = split(readchomp(`find . -ipath $searchpath`), "\n", keepempty=false)
                     if length(pathmatches) == 1
-                        buildscript = pathmatches[1]
+                        buildscript = joinpath(yggy, pathmatches[1])
                         break
                     elseif length(pathmatches) > 1
-                        error("found multiple build scripts for $proj at Ygg $commit, got $pathmatches")
+                        error("found multiple build scripts for $jllname at Ygg $commit, got $pathmatches")
                     end
                 end
             end
-            !isfile(buildscript) && error("could not find build script for $proj at Ygg $commit")
+            !isfile(buildscript) && error("could not find build script for $jllname at Ygg $commit")
             @info "$jllname@$version: $buildscript @ $commit"
             # Now we can evaluate the buildscript at the time of this release's publication
             # but with `build_tarballs` shadowed to simply log the sources and products:
