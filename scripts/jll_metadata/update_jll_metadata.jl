@@ -161,6 +161,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
             m = Module(gensym())
             sources = []
             products = []
+            dependencies = []
             cd(dirname(buildscript)) do
                 @eval m begin
                     include(p) = Base.include($m, p)
@@ -179,8 +180,13 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     FileSource(args...; kwargs...) = BinaryBuilder.FileSource(args...; filter((==)(:filename)∘first, kwargs)...)
                     # Addable specs are used for Build deps.
                     get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
-                    # Support old Pkg platforms. This doesn't fully work because they aren't <: BinaryBuilder.BinaryPlatform
-                    using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD
+                    # Support old Pkg platforms
+                    using Pkg.BinaryPlatforms: CompilerABI
+                    UnknownPlatform(args...; kwargs...) = BinaryBuilder.AnyPlatform()
+                    Linux(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "linux", args...; kwargs...)
+                    MacOS(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "macos", args...; kwargs...)
+                    Windows(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "windows", args...; kwargs...)
+                    FreeBSD(arch, args...; kwargs...) = BinaryBuilder.Platform(arch, "freebsd", args...; kwargs...)
                     ARGS = []
                     expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
                     prefix = ""
