@@ -140,7 +140,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
     jllinfo = Registry.registry_info(jll)
     jllrepo = jllinfo.repo
     jllname = chopsuffix(jll.name, "_jll")
-    m = match(r"github\.com[:/]([^/]+)/(.*)(?:.git)?$", jllinfo.repo)
+    m = match(r"github\.com[:/]([^/]+)/(.+?)(?:.git)?$", jllinfo.repo)
     isnothing(m) && error("unknown repo $(jllinfo.repo)")
     org, repo = m.captures
     github_releases = get_releases(org, repo)
