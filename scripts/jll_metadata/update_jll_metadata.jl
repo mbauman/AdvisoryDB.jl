@@ -86,23 +86,23 @@ function dict(pkg::PackageSpec)
     # effectively Base.show(io::IO, pkg::PackageSpec)
     vstr = repr(pkg.version)
     f = []
-    pkg.name !== nothing && push!(f, "name" => pkg.name)
-    pkg.uuid !== nothing && push!(f, "uuid" => pkg.uuid)
-    pkg.tree_hash !== nothing && push!(f, "tree_hash" => pkg.tree_hash)
-    pkg.path !== nothing && push!(f, "path" => pkg.path)
-    pkg.url !== nothing && push!(f, "url" => pkg.url)
-    pkg.rev !== nothing && push!(f, "rev" => pkg.rev)
-    pkg.subdir !== nothing && push!(f, "subdir" => pkg.subdir)
-    pkg.pinned && push!(f, "pinned" => pkg.pinned)
+    pkg.name !== nothing && push!(f, "name" => string(pkg.name))
+    pkg.uuid !== nothing && push!(f, "uuid" => string(pkg.uuid))
+    pkg.tree_hash !== nothing && push!(f, "tree_hash" => string(pkg.tree_hash))
+    pkg.path !== nothing && push!(f, "path" => string(pkg.path))
+    pkg.url !== nothing && push!(f, "url" => string(pkg.url))
+    pkg.rev !== nothing && push!(f, "rev" => string(pkg.rev))
+    pkg.subdir !== nothing && push!(f, "subdir" => string(pkg.subdir))
+    pkg.pinned && push!(f, "pinned" => string(pkg.pinned))
     push!(f, "version" => (vstr == "VersionSpec(\"*\")" ? "*" : vstr))
     if pkg.repo.source !== nothing
         push!(f, "repo/source" => string("\"", pkg.repo.source, "\""))
     end
     if pkg.repo.rev !== nothing
-        push!(f, "repo/rev" => pkg.repo.rev)
+        push!(f, "repo/rev" => string(pkg.repo.rev))
     end
     if pkg.repo.subdir !== nothing
-        push!(f, "repo/subdir" => pkg.repo.subdir)
+        push!(f, "repo/subdir" => string(pkg.repo.subdir))
     end
     Dict(f)
 end
