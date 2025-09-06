@@ -203,8 +203,8 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     FileProduct(prefix::String, name::Vector{<:AbstractString}, args...; kwargs...) = FileProduct(prefix.*name, args...; kwargs...)
                     # Ignore unknown FileSource kwargs (old versions supported an unpack_target kwarg)
                     FileSource(args...; kwargs...) = BinaryBuilder.FileSource(args...; filter((==)(:filename)∘first, kwargs)...)
-                    # Addable specs are used for Build deps and used to be exported
-                    using BinaryBuilder.BinaryBuilderBase: get_addable_spec
+                    # fancy_toys.jl used to define this with Pkg APIs that no longer work on v1.7. This defines it with a tighter signature than it used:
+                    get_addable_spec(name::String, version::VersionNumber; kwargs...) = BinaryBuilder.BinaryBuilderBase.get_addable_spec(name, version; kwargs...)
                     # Just use the old Pkg BinaryPlatforms always
                     using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD, Platform
                     ARGS = []
