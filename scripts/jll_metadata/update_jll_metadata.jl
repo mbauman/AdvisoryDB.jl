@@ -84,7 +84,6 @@ end
 
 function dict(pkg::PackageSpec)
     # effectively Base.show(io::IO, pkg::PackageSpec)
-    vstr = repr(pkg.version)
     f = []
     pkg.name !== nothing && push!(f, "name" => string(pkg.name))
     pkg.uuid !== nothing && push!(f, "uuid" => string(pkg.uuid))
@@ -94,7 +93,7 @@ function dict(pkg::PackageSpec)
     pkg.rev !== nothing && push!(f, "rev" => string(pkg.rev))
     pkg.subdir !== nothing && push!(f, "subdir" => string(pkg.subdir))
     pkg.pinned && push!(f, "pinned" => string(pkg.pinned))
-    push!(f, "version" => (vstr == "VersionSpec(\"*\")" ? "*" : vstr))
+    push!(f, "version" => string(pkg.version))
     if pkg.repo.source !== nothing
         push!(f, "repo/source" => string("\"", pkg.repo.source, "\""))
     end
