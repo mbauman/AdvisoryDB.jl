@@ -205,8 +205,9 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     FileSource(args...; kwargs...) = BinaryBuilder.FileSource(args...; filter((==)(:filename)∘first, kwargs)...)
                     # fancy_toys.jl used to define this with Pkg APIs that no longer work on v1.7. This defines it with a tighter signature than it used:
                     get_addable_spec(name::String, version::VersionNumber; kwargs...) = BinaryBuilder.BinaryBuilderBase.get_addable_spec(name, version; kwargs...)
-                    # Just use the old Pkg BinaryPlatforms always
+                    # Just use the old Pkg BinaryPlatforms always; this is quite fragile/broken but the DB here ignores platform-specifics as much as possible
                     using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD, Platform
+                    supported_platforms(; exclude, experimental) = BinaryBuilder.supported_platforms() # These kwargs require BinaryBuilder.Platforms
                     ARGS = []
                     expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
                     prefix = ""
