@@ -2,7 +2,7 @@ using TOML: TOML
 using HTTP: HTTP
 using JSON3: JSON3
 using BinaryBuilder: BinaryBuilder, BinaryBuilderBase
-using Pkg: Pkg, Registry
+using Pkg: Pkg, Registry, PackageSpec
 using Base64: base64decode
 
 @eval BinaryBuilderBase begin
@@ -82,6 +82,30 @@ function find_commit_date_from_tree_sha(owner, repo, tree_sha)
     error("could not find sha $tree_sha in the commit history of $owner/$repo")
 end
 
+function dict(pkg::PackageSpec)
+    # effectively Base.show(io::IO, pkg::PackageSpec)
+    f = []
+    pkg.name !== nothing && push!(f, "name" => string(pkg.name))
+    pkg.uuid !== nothing && push!(f, "uuid" => string(pkg.uuid))
+    pkg.tree_hash !== nothing && push!(f, "tree_hash" => string(pkg.tree_hash))
+    pkg.path !== nothing && push!(f, "path" => string(pkg.path))
+    pkg.url !== nothing && push!(f, "url" => string(pkg.url))
+    pkg.rev !== nothing && push!(f, "rev" => string(pkg.rev))
+    pkg.subdir !== nothing && push!(f, "subdir" => string(pkg.subdir))
+    pkg.pinned && push!(f, "pinned" => string(pkg.pinned))
+    push!(f, "version" => string(pkg.version))
+    if pkg.repo.source !== nothing
+        push!(f, "repo/source" => string("\"", pkg.repo.source, "\""))
+    end
+    if pkg.repo.rev !== nothing
+        push!(f, "repo/rev" => string(pkg.repo.rev))
+    end
+    if pkg.repo.subdir !== nothing
+        push!(f, "repo/subdir" => string(pkg.repo.subdir))
+    end
+    Dict(f)
+end
+
 # Backported from Julia (some newer release than 1.7)
 function chopsuffix(s::Union{String, SubString{String}},
                     suffix::Union{String, SubString{String}})
@@ -115,7 +139,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
     jllinfo = Registry.registry_info(jll)
     jllrepo = jllinfo.repo
     jllname = chopsuffix(jll.name, "_jll")
-    m = match(r"github\.com[:/]([^/]+)/(.*)(?:.git)?$", jllinfo.repo)
+    m = match(r"github\.com[:/]([^/]+)/(.+?)(?:.git)?$", jllinfo.repo)
     isnothing(m) && error("unknown repo $(jllinfo.repo)")
     org, repo = m.captures
     github_releases = get_releases(org, repo)
@@ -132,7 +156,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
             nothing
         end
         commit, buildscript = "", ""
-        sources, products = cd(yggy) do
+        sources, products, dependencies = cd(yggy) do
             # First look to the
             commit = @something commit_from_readme strip(read(`git rev-list -n 1 --before=$(release_published_at) master`, String))
             run(pipeline(`git checkout $commit`, stdout=Base.devnull, stderr=Base.devnull))
@@ -179,20 +203,17 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     FileProduct(prefix::String, name::Vector{<:AbstractString}, args...; kwargs...) = FileProduct(prefix.*name, args...; kwargs...)
                     # Ignore unknown FileSource kwargs (old versions supported an unpack_target kwarg)
                     FileSource(args...; kwargs...) = BinaryBuilder.FileSource(args...; filter((==)(:filename)∘first, kwargs)...)
-                    # Addable specs are used for Build deps.
-                    get_addable_spec(name::String, version::VersionNumber; kwargs...) = string(name, "@", string(version))
-                    # Support old Pkg platforms
-                    using Pkg.BinaryPlatforms: CompilerABI
-                    UnknownPlatform(args...; kwargs...) = BinaryBuilder.AnyPlatform()
-                    Linux(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "linux", args...; kwargs...)
-                    MacOS(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "macos", args...; kwargs...)
-                    Windows(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "windows", args...; kwargs...)
-                    FreeBSD(arch, args...; kwargs...) = BinaryBuilder.Platform(string(arch), "freebsd", args...; kwargs...)
+                    # fancy_toys.jl used to define this with Pkg APIs that no longer work on v1.7. This defines it with a tighter signature than it used:
+                    get_addable_spec(name::String, version::VersionNumber; kwargs...) = BinaryBuilder.BinaryBuilderBase.get_addable_spec(name, version; kwargs...)
+                    # Just use the old Pkg BinaryPlatforms always; this is quite fragile/broken but the DB here ignores platform-specifics as much as possible
+                    using Pkg.BinaryPlatforms: CompilerABI, UnknownPlatform, Linux, MacOS, Windows, FreeBSD, Platform
+                    supported_platforms(; exclude, experimental) = BinaryBuilder.supported_platforms() # These kwargs require BinaryBuilder.Platforms
                     ARGS = []
                     expand_gcc_versions(p) = p isa AbstractVector ? p : [p]
                     prefix = ""
                     function build_tarballs(ARGS, src_name, src_version, sources, script, platforms, products, dependencies; kwargs...)
                         append!($sources, sources)
+                        append!($dependencies, dependencies)
                         if products isa AbstractVector
                             append!($products, products)
                         else
@@ -204,7 +225,7 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
                     include($buildscript)
                 end
             end
-            sources, products
+            sources, products, dependencies
         end
 
         product_names(x::BinaryBuilder.LibraryProduct) = x.libnames
@@ -223,12 +244,17 @@ function metadata_for_jll(jll::Registry.PkgEntry, versions = Registry.registry_i
         source_info(x::BinaryBuilder.GitSource) = Dict("repo"=>x.url, "hash"=>x.hash)
         source_info(x::BinaryBuilder.DirectorySource) = Dict(
             "patches"=>string("https://github.com/JuliaPackaging/Yggdrasil/blob/", commit, "/", chopprefix(joinpath(dirname(buildscript), x.path), yggy)))
-        srcs = source_info.(sources)
+        srcs = unique(source_info.(sources))
+
+        # We ignore runtime dependencies; those are in the Project/Manifest
+        builddeps = unique([Dict(dict(x.pkg)..., "target"=>x isa BinaryBuilder.HostBuildDependency ? "host" : "target") for x in dependencies if !(x isa Union{String, BinaryBuilder.Dependency, BinaryBuilder.RuntimeDependency})])
+
         version_meta = get!(metadata, string(version), Dict{String,Any}())
         !isempty(libs) && (version_meta["libraries"] = libs)
         !isempty(exes) && (version_meta["executables"] = exes)
         !isempty(files) && (version_meta["files"] = files)
         !isempty(srcs) && (version_meta["sources"] = srcs)
+        !isempty(builddeps) && (version_meta["build_dependencies"] = builddeps)
     end
 
     return metadata
