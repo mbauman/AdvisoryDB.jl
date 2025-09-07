@@ -3,8 +3,10 @@
 using AdvisoryDB: AdvisoryDB, NVD, EUVD, GitHub, VersionRange
 using TOML: TOML
 
+
 function main()
-    upstream_advisories = TOML.parsefile(joinpath(@__DIR__, "..", "upstream_advisories.toml"))
+    upstream_advisories_file = joinpath(@__DIR__, "..", "upstream_advisories.toml")
+    upstream_advisories = isfile(upstream_advisories_file) ? TOML.parsefile(upstream_advisories_file) : Dict{String, Any}()
     input = ARGS[1]
     advisories = Dict{Tuple{String,String},Any}()
     info = Dict{String,Any}()
@@ -157,7 +159,7 @@ function main()
     seekstart(io)
     foreach(println, eachline(io)) # Also log to stdout
 
-    open(joinpath(@__DIR__, "..", "upstream_advisories.toml"),"w+") do f
+    open(upstream_advisories_file,"w+") do f
         println(f, """
             ### This file contains a table of advisories and the packages to which they apply ###
             #
