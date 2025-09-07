@@ -3,8 +3,8 @@ name: Update JLL metadata
 on:
   workflow_dispatch:
   schedule:
-    # Run every other hour
-    - cron: '0 */2 * * *'
+    # Run at 1 AM UTC every day
+    - cron: '0 1 * * *'
 
 jobs:
   update-jll-metadata:
