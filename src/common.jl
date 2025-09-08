@@ -219,6 +219,7 @@ function get_registry(reg=Registry.RegistrySpec(name="General", uuid = "23338594
 end
 
 function uuids_from_name(name, reg=get_registry())
+    name == "julia" && return Base.UUID[]
     Registry.uuids_from_name(reg, string(name))
 end
 registry_has_package(name, reg=get_registry()) = !isempty(uuids_from_name(name, reg))
@@ -307,12 +308,15 @@ end
 
 function related_julia_packages(description, vendorproductversions)
     pkgs = Pair{String,String}[]
-    jlpkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
-                             (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
+    julia_like_pkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
+                                      (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
+    jlpkgs_mentioned = filter(registry_has_package, julia_like_pkgs_mentioned)
+    found_match = false
     for (vendor, product, version) in vendorproductversions
         # First check for a known **NON-JULIA-PACKAGE** CPE:
         if haskey(upstream_projects_by_vendor_product(), (vendor, product))
             matched_project = upstream_projects_by_vendor_product()[(vendor, product)]
+            found_match = true
             # We have an upstream component! Make an educated guess at the remapped version range if we can.
             matched_pkgs = packages_with_project(matched_project)
             for pkg in matched_pkgs
@@ -327,7 +331,7 @@ function related_julia_packages(description, vendorproductversions)
                     firstidx = findfirst(in(r), VersionIshNumber.(last.(versionmap)))
                     if isnothing(firstidx)
                         # No vulnerable versions were ever registered
-                        @info "ignoring un-applicable version $version for $pkg"
+                        @info "no registered versions of $pkg used $matched_project with vulnarable versions: $version"
                         # We could report it with a non-applicable range, but it's simpler to just not report it at all.
                         # TODO: Need to add support for packages that have an unknown version registered
                         # push!(pkgs, pkg => string(VersionRange(v"0-", VersionNumber(first(first(versionmap))), true, false)))
@@ -335,33 +339,44 @@ function related_julia_packages(description, vendorproductversions)
                         lastidx = something(findlast(in(r), VersionIshNumber.(last.(versionmap))))
                         firstversion = firstidx == firstindex(versionmap) ? typemin(VersionNumber) : VersionNumber(versionmap[firstidx][1])
                         lastversion  = lastidx+1 >  lastindex(versionmap) ? typemax(VersionNumber) : VersionNumber(versionmap[lastidx+1][1])
-                        push!(pkgs, pkg => string(VersionRange(firstversion, lastversion, true, false)))
+                        push!(pkgs, pkg => string(VersionRange(firstversion, lastversion, true, lastversion == typemax(VersionNumber))))
                     end
                 end
             end
         elseif (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
             # A vendor or package _looks_ really julia-ish and is in the registry
+            found_match = true
             push!(pkgs, chopsuffix(product, ".jl") => version)
         elseif !isempty(jlpkgs_mentioned)
             # There are packages mentioned in the description! First look for a possible match against the given product
-            matched_product = false
             for pkg in jlpkgs_mentioned
-                (pkg == chopsuffix(product, ".jl") && registry_has_package(pkg)) || continue
+                pkg == chopsuffix(product, ".jl") || continue
                 push!(pkgs, pkg => version)
-                matched_product = true
+                found_match = true
                 break
             end
-            if !matched_product
-                # Just tag all mentioned packages with the given version info. If there's more than one
-                # mentioned, it's likely that only one applies to this particular version. But we don't know
-                append!(pkgs, jlpkgs_mentioned .=> version)
+        end
+    end
+    if !found_match && !isempty(jlpkgs_mentioned)
+        # We didn't connect any vendor/product pair with a Julia package, but there are some mentioned.
+        # if there is only one vendor/product pair here, we blindly connect all to the mentioned verions
+        # Otherwise, we prefix the packages with a ? to make this abundantly obvious
+        vendor_products = unique((x->x[1:2]).(vendorproductversions))
+        @info "Julia packages $jlpkgs_mentioned were mentioned but did not match any vendor/product pairs $vendor_products"
+        if length(vendor_products) == 1
+            @info "assumptively marking all packages with the provided versions"
+            push!(pkgs, [pkg => v for pkg in jlpkgs_mentioned, (_,_,v) in vendorproductversions])
+        else
+            for vp in vendor_products
+                vs = vendorproductversions[(x->x[1:2]).(vendorproductversions) .== (vp,)]
+                push!(pkgs, ["?$(vp[1]):$(vp[2]):" * pkg => v for pkg in jlpkgs_mentioned, (_,_,v) in vs])
             end
         end
     end
     # Combine all versions for a given package into an array, merging ranges if we have real Julia package VersionNumbers
     unique_pkg_names = unique(first.(pkgs))
     merge_versionranges = xs->map(string, merge_ranges(map(VersionRange{VersionNumber}, xs)))
-    return [p => (startswith(p, "cpe:") ? unique : merge_versionranges)(last.(pkgs[first.(pkgs) .== p])) for p in unique_pkg_names]
+    return [p => (startswith(p, "?") ? unique : merge_versionranges)(last.(pkgs[first.(pkgs) .== p])) for p in unique_pkg_names]
 end
 
 # TODO: use the above Pkg machinery for this, too
