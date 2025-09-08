@@ -8,6 +8,7 @@ using AdvisoryDB: VersionIshNumber as V
     @test V("1") < V("1.0.1")
     @test V("1.2.3-") < V("1.2.3")
     @test V("1.2.3-rc1") < V("1.2.3")
+    @test !(V("1.2.3") < V("1.2.3"))
 end
 
 using AdvisoryDB: VersionRange as VR, merge_ranges

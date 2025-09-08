@@ -41,7 +41,7 @@ function Base.isless(a::VersionIshNumber, b::VersionIshNumber)
     # swapped them to `\0` here.
     matched_len = min(length(a.parts), length(b.parts))
     return isless(a.parts[1:matched_len], b.parts[1:matched_len]) ||
-           (a.parts[1:matched_len] == b.parts[1:matched_len] && (
+           (a != b && a.parts[1:matched_len] == b.parts[1:matched_len] && (
                 length(a.parts) <= length(b.parts) ||
                 startswith(a.parts[matched_len+1], "\0"))) # This was a -
 end
