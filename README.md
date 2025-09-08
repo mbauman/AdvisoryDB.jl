@@ -57,19 +57,20 @@ In addition to the periodic check, both NVD and GitHub support fetching all advi
 
 So the GitHub actions here:
 
-* Validate the OSV schema of all jsons in `packages` (which includes ensuring that mentioned versions exist in the General registry). This runs on every PR and push for those juicy green checkmarks.
-* Import a GHSA from a specific repository:
-    * Manually, by a given org/repo
-    * TODO: Automatically, slowly scanning across all packages with GitHub repos
-* Identify possibly-related upstream advisories based upon some search and open pull requests suggesting their addition to `upstream_advisories.toml`. Multiple flavors of haystacks can be searched:
-    * Manually, by single CVE or EUVD identifier
+* Validate the OSV schema of all jsons in the `packages/` directory (which includes ensuring that mentioned versions exist in the General registry).
+* Publish a new (or update an existing) JLSEC advisory by importing an upstream advisory and converting it to a first-party-authored OSV, using the `upstream_components.toml` table to define which advisories are applicable to Julia packages and at which versions. Entries can be manually added to this file, or another action can:
+* Search through a "haystack" of upstream advisories, finding potentially-relevant ones and suggest new entries to `upstream_components.toml`. Multiple flavors of haystacks can be searched:
+    * Manually, by single CVE, EUVD, or GHSA (or URL to a GHSA not in thr GitHub Advisories DB) identifier
     * Manually, by a CPE-like `vendor:product` pair (searching both `a` part CPEs in the NVD and vendor/product pairs in the EUVD).
-    * TODO: By recently published (EUVD) or recently updated (NVD only) advisories. The EUVD API is severly limited here. TODO: this should run nightly
-* TODO: Import/update upstream advisories based upon the state of `upstream_advisories.toml`.
+    * TODO: Manually, over a date range of published (EUVD) or recently updated (NVD only) advisories. The EUVD API is severly limited here.
+    * TODO: Manually, by seaching a specific Github Repo for advisories
+    * TODO: Automatically, looking for recent updates
+    * TODO: Automatically, walking through all GitHub registered packages
 
 We also need an up-to-date listing of upstream component metadata.
 
-* TODO: A GitHub action should scan package source for upstream components matched based upon the contents of `cpe_config.toml` and auto-generate `cpe_map.toml`.
+* Another action parses Yggdrasil's build scripts to find the JLL sources.
+* And, finally, another action creates the listing of upstream components. 
 
 ## References
 
