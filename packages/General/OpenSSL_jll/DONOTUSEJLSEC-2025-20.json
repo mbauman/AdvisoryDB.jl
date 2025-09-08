@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:03Z",
-  "published": "2025-08-27T02:51:03Z",
+  "modified": "2025-09-08T02:55:50Z",
+  "published": "2025-09-08T02:55:50Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-20",
   "aliases": [
-    "CVE-2022-3602"
+    "CVE-2023-1255"
   ],
-  "summary": "A buffer overrun can be triggered in X.509 certificate verification, specifically in name constraint checking.",
-  "details": "A buffer overrun can be triggered in X.509 certificate verification, specifically in name constraint checking. Note that this occurs after certificate chain signature verification and requires either a CA to have signed the malicious certificate or for the application to continue certificate verification despite failure to construct a path to a trusted issuer. An attacker can craft a malicious email address to overflow four attacker-controlled bytes on the stack. This buffer overflow could result in a crash (causing a denial of service) or potentially remote code execution. Many platforms implement stack overflow protections which would mitigate against the risk of remote code execution. The risk may be further mitigated based on stack layout for any given platform/compiler. Pre-announcements of CVE-2022-3602 described this issue as CRITICAL. Further analysis based on some of the mitigating factors described above have led this to be downgraded to HIGH. Users are still encouraged to upgrade to a new version as soon as possible. In a TLS client, this can be triggered by connecting to a malicious server. In a TLS server, this can be triggered if the server requests client authentication and a malicious client connects. Fixed in OpenSSL 3.0.7 (Affected 3.0.0,3.0.1,3.0.2,3.0.3,3.0.4,3.0.5,3.0.6).",
+  "summary": "Issue summary: The AES-XTS cipher decryption implementation for 64 bit ARM platform contains a bug that could cause it to read past the input buffer, leading to a crash.",
+  "details": "Issue summary: The AES-XTS cipher decryption implementation for 64 bit ARM\nplatform contains a bug that could cause it to read past the input buffer,\nleading to a crash.\n\nImpact summary: Applications that use the AES-XTS algorithm on the 64 bit ARM\nplatform can crash in rare circumstances. The AES-XTS algorithm is usually\nused for disk encryption.\n\nThe AES-XTS cipher decryption implementation for 64 bit ARM platform will read\npast the end of the ciphertext buffer if the ciphertext size is 4 mod 5 in 16\nbyte blocks, e.g. 144 bytes or 1024 bytes. If the memory after the ciphertext\nbuffer is unmapped, this will trigger a crash which results in a denial of\nservice.\n\nIf an attacker can control the size and location of the ciphertext buffer\nbeing decrypted by an application using AES-XTS on 64 bit ARM, the\napplication is affected. This is fairly unlikely making this issue\na Low severity one.",
   "affected": [
     {
       "package": {
@@ -22,7 +22,13 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
+              "fixed": "1.1.1+0"
+            },
+            {
+              "introduced": "3.0.8+0"
+            },
+            {
+              "fixed": "3.0.9+0"
             }
           ]
         }
@@ -32,329 +38,41 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://packetstormsecurity.com/files/169687/OpenSSL-Security-Advisory-20221101.html"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=02ac9c9420275868472f33b01def01218742b8bb"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/15"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=bc2f61ad70971869b242fc1cb445b98bad50074a"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/16"
+      "url": "https://security.netapp.com/advisory/ntap-20230908-0006/"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/17"
+      "url": "https://www.openssl.org/news/secadv/20230419.txt"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/18"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=02ac9c9420275868472f33b01def01218742b8bb"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/19"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=bc2f61ad70971869b242fc1cb445b98bad50074a"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/20"
+      "url": "https://security.netapp.com/advisory/ntap-20230908-0006/"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/21"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/24"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/1"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/10"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/11"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/12"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/13"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/14"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/15"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/2"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/3"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/5"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/6"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/7"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/9"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/1"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/10"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/11"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/2"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/3"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/5"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/6"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/7"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/9"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=fe3b639dc19b325846f4f6801f2f4604f56e3de3"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/63YRPWPUSX3MBHNPIEJZDKQT6YA7UF6S/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DWP23EZYOBDJQP7HP4YU7W2ABU2YDITS/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0023"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202211-01"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20221102-0001/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-openssl-W9sdCc2a"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.kb.cert.org/vuls/id/794340"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20221101.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "http://packetstormsecurity.com/files/169687/OpenSSL-Security-Advisory-20221101.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/15"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/16"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/17"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/18"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/19"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/20"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/21"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/01/24"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/1"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/10"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/11"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/12"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/13"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/14"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/15"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/2"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/3"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/5"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/6"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/7"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/02/9"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/1"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/10"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/11"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/2"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/3"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/5"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/6"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/7"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2022/11/03/9"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=fe3b639dc19b325846f4f6801f2f4604f56e3de3"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/63YRPWPUSX3MBHNPIEJZDKQT6YA7UF6S/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DWP23EZYOBDJQP7HP4YU7W2ABU2YDITS/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0023"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202211-01"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20221102-0001/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-openssl-W9sdCc2a"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.kb.cert.org/vuls/id/794340"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20221101.txt"
+      "url": "https://www.openssl.org/news/secadv/20230419.txt"
     }
   ]
 }

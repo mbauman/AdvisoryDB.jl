@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:03Z",
-  "published": "2025-08-27T02:51:03Z",
+  "modified": "2025-09-08T02:55:52Z",
+  "published": "2025-09-08T02:55:52Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-15",
   "aliases": [
-    "CVE-2022-4203"
+    "CVE-2023-0464"
   ],
-  "summary": "A read buffer overrun can be triggered in X.509 certificate verification, specifically in name constraint checking.",
-  "details": "A read buffer overrun can be triggered in X.509 certificate verification,\nspecifically in name constraint checking. Note that this occurs\nafter certificate chain signature verification and requires either a\nCA to have signed the malicious certificate or for the application to\ncontinue certificate verification despite failure to construct a path\nto a trusted issuer.\n\nThe read buffer overrun might result in a crash which could lead to\na denial of service attack. In theory it could also result in the disclosure\nof private memory contents (such as private keys, or sensitive plaintext)\nalthough we are not aware of any working exploit leading to memory\ncontents disclosure as of the time of release of this advisory.\n\nIn a TLS client, this can be triggered by connecting to a malicious\nserver. In a TLS server, this can be triggered if the server requests\nclient authentication and a malicious client connects.",
+  "summary": "A security vulnerability has been identified in all supported versions of OpenSSL related to the verification of X.509 certificate chains that include policy constraints.",
+  "details": "A security vulnerability has been identified in all supported versions\n\nof OpenSSL related to the verification of X.509 certificate chains\nthat include policy constraints.  Attackers may be able to exploit this\nvulnerability by creating a malicious certificate chain that triggers\nexponential use of computational resources, leading to a denial-of-service\n(DoS) attack on affected systems.\n\nPolicy processing is disabled by default but can be enabled by passing\nthe `-policy' argument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()' function.",
   "affected": [
     {
       "package": {
@@ -18,6 +18,12 @@
         {
           "type": "SEMVER",
           "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.21+0"
+            },
             {
               "introduced": "3.0.8+0"
             },
@@ -32,13 +38,29 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:H"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c927a3492698c254637da836762f9b1f86cffabc"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2017771e2db3e2b96f89bbe8766c3209f6a99545"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2dcd4f1e3115f38cefa43e3efbe9b801c27e642e"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=879f7080d7e141f415c79eaa3a8ac4a3dad0348b"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=959c59c7a0164117e7f8366466a32bb1f8d77ff1"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html"
     },
     {
       "type": "WEB",
@@ -46,11 +68,39 @@
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c927a3492698c254637da836762f9b1f86cffabc"
+      "url": "https://www.couchbase.com/alerts/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2023/dsa-5417"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230322.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2017771e2db3e2b96f89bbe8766c3209f6a99545"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2dcd4f1e3115f38cefa43e3efbe9b801c27e642e"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=879f7080d7e141f415c79eaa3a8ac4a3dad0348b"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=959c59c7a0164117e7f8366466a32bb1f8d77ff1"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html"
     },
     {
       "type": "WEB",
@@ -58,7 +108,23 @@
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      "url": "https://security.netapp.com/advisory/ntap-20230406-0006/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.couchbase.com/alerts/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2023/dsa-5417"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230322.txt"
     }
   ]
 }

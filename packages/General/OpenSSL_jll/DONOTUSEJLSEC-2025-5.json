@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:01Z",
-  "published": "2025-08-27T02:51:01Z",
+  "modified": "2025-09-08T02:55:52Z",
+  "published": "2025-09-08T02:55:52Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-5",
   "aliases": [
-    "CVE-2023-6237"
+    "CVE-2023-0286"
   ],
-  "summary": "Issue summary: Checking excessively long invalid RSA public keys may take a long time.",
-  "details": "Issue summary: Checking excessively long invalid RSA public keys may take\na long time.\n\nImpact summary: Applications that use the function EVP_PKEY_public_check()\nto check RSA public keys may experience long delays. Where the key that\nis being checked has been obtained from an untrusted source this may lead\nto a Denial of Service.\n\nWhen function EVP_PKEY_public_check() is called on RSA public keys,\na computation is done to confirm that the RSA modulus, n, is composite.\nFor valid RSA keys, n is a product of two or more large primes and this\ncomputation completes quickly. However, if n is an overly large prime,\nthen this computation would take a long time.\n\nAn application that calls EVP_PKEY_public_check() and supplies an RSA key\nobtained from an untrusted source could be vulnerable to a Denial of Service\nattack.\n\nThe function EVP_PKEY_public_check() is not called from other OpenSSL\nfunctions however it is called from the OpenSSL pkey command line\napplication. For that reason that application is also vulnerable if used\nwith the '-pubin' and '-check' options on untrusted data.\n\nThe OpenSSL SSL/TLS implementation is not affected by this issue.\n\nThe OpenSSL 3.0 and 3.1 FIPS providers are affected by this issue.",
+  "summary": "There is a type confusion vulnerability relating to X.400 address processing inside an X.509 GeneralName.",
+  "details": "There is a type confusion vulnerability relating to X.400 address processing\ninside an X.509 GeneralName. X.400 addresses were parsed as an ASN1_STRING but\nthe public structure definition for GENERAL_NAME incorrectly specified the type\nof the x400Address field as ASN1_TYPE. This field is subsequently interpreted by\nthe OpenSSL function GENERAL_NAME_cmp as an ASN1_TYPE rather than an\nASN1_STRING.\n\nWhen CRL checking is enabled (i.e. the application sets the\nX509_V_FLAG_CRL_CHECK flag), this vulnerability may allow an attacker to pass\narbitrary pointers to a memcmp call, enabling them to read memory contents or\nenact a denial of service. In most cases, the attack requires the attacker to\nprovide both the certificate chain and CRL, neither of which need to have a\nvalid signature. If the attacker only controls one of these inputs, the other\ninput must already contain an X.400 address as a CRL distribution point, which\nis uncommon. As such, this vulnerability is most likely to only affect\napplications which have implemented their own functionality for retrieving CRLs\nover a network.",
   "affected": [
     {
       "package": {
@@ -22,13 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
-            },
-            {
-              "introduced": "3.0.8+0"
-            },
-            {
-              "fixed": "3.0.14+0"
+              "fixed": "1.1.20+0"
             }
           ]
         }
@@ -38,49 +32,65 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/0b0f7abfb37350794a4b8960fafc292cd5d1b84d"
+      "url": "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.6.2-relnotes.txt"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/18c02492138d1eb8b6548cb26e7b625fb2414a2a"
+      "url": "https://ftp.openbsd.org/pub/OpenBSD/patches/7.2/common/018_x509.patch.sig"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/a830f551557d3d66a84bbb18a5b889c640c36294"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2c6c9d439b484e1ba9830d8454a34fa4f80fdfe9"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20240115.txt"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2f7530077e0ef79d98718138716bc51ca0cad658"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2024/03/11/1"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fd2af07dc083a350c959147097003a14a5e8ac4d"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/0b0f7abfb37350794a4b8960fafc292cd5d1b84d"
+      "url": "https://security.gentoo.org/glsa/202402-08"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/18c02492138d1eb8b6548cb26e7b625fb2414a2a"
+      "url": "https://www.openssl.org/news/secadv/20230207.txt"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/a830f551557d3d66a84bbb18a5b889c640c36294"
+      "url": "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.6.2-relnotes.txt"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20240531-0007/"
+      "url": "https://ftp.openbsd.org/pub/OpenBSD/patches/7.2/common/018_x509.patch.sig"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20240115.txt"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2c6c9d439b484e1ba9830d8454a34fa4f80fdfe9"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2f7530077e0ef79d98718138716bc51ca0cad658"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fd2af07dc083a350c959147097003a14a5e8ac4d"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202402-08"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230207.txt"
     }
   ]
 }

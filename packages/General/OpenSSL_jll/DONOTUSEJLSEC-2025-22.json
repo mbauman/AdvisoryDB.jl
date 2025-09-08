@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:50:59Z",
-  "published": "2025-08-27T02:50:59Z",
+  "modified": "2025-09-08T02:55:50Z",
+  "published": "2025-09-08T02:55:50Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-22",
   "aliases": [
-    "CVE-2017-3732"
+    "CVE-2024-6119"
   ],
-  "summary": "There is a carry propagating bug in the x86_64 Montgomery squaring procedure in OpenSSL 1.0.2 before 1.0.2k and 1.1.0 before 1.1.0d.",
-  "details": "There is a carry propagating bug in the x86_64 Montgomery squaring procedure in OpenSSL 1.0.2 before 1.0.2k and 1.1.0 before 1.1.0d. No EC algorithms are affected. Analysis suggests that attacks against RSA and DSA as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH are considered just feasible (although very difficult) because most of the work necessary to deduce information about a private key may be performed offline. The amount of resources required for such an attack would be very significant and likely only accessible to a limited number of attackers. An attacker would additionally need online access to an unpatched system using the target private key in a scenario with persistent DH parameters and a private key that is shared between multiple clients. For example this can occur by default in OpenSSL DHE based SSL/TLS ciphersuites. Note: This issue is very similar to CVE-2015-3193 but must be treated as a separate problem.",
+  "summary": "Issue summary: Applications performing certificate name checks (e.g., TLS clients checking server certificates) may attempt to read an invalid memory address resulting in abnormal termination of the application process.",
+  "details": "Issue summary: Applications performing certificate name checks (e.g., TLS\nclients checking server certificates) may attempt to read an invalid memory\naddress resulting in abnormal termination of the application process.\n\nImpact summary: Abnormal termination of an application can a cause a denial of\nservice.\n\nApplications performing certificate name checks (e.g., TLS clients checking\nserver certificates) may attempt to read an invalid memory address when\ncomparing the expected name with an `otherName` subject alternative name of an\nX.509 certificate. This may result in an exception that terminates the\napplication program.\n\nNote that basic certificate chain validation (signatures, dates, ...) is not\naffected, the denial of service can occur only when the application also\nspecifies an expected DNS name, Email address or IP address.\n\nTLS servers rarely solicit client certificates, and even when they do, they\ngenerally don't perform a name check against a reference identifier (expected\nidentity), but rather extract the presented identity after checking the\ncertificate chain.  So TLS servers are generally not affected and the severity\nof the issue is Moderate.\n\nThe FIPS modules in 3.3, 3.2, 3.1 and 3.0 are not affected by this issue.",
   "affected": [
     {
       "package": {
@@ -22,7 +22,13 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
+              "fixed": "1.1.1+0"
+            },
+            {
+              "introduced": "3.0.8+0"
+            },
+            {
+              "fixed": "3.0.15+0"
             }
           ]
         }
@@ -32,157 +38,41 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujan2018-3236628.html"
+      "url": "https://github.com/openssl/openssl/commit/05f360d9e849a1b277db628f1f13083a7f8dd04f"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujul2017-3236622.html"
+      "url": "https://github.com/openssl/openssl/commit/06d1dc3fa96a2ba5a3e22735a033012aadc9f0d6"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html"
+      "url": "https://github.com/openssl/openssl/commit/621f3729831b05ee828a3203eddb621d014ff2b2"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/95814"
+      "url": "https://github.com/openssl/openssl/commit/7dfcee2cd2a63b2c64b9b4b0850be64cb695b0a0"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037717"
+      "url": "https://openssl-library.org/news/secadv/20240903.txt"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2185"
+      "url": "http://www.openwall.com/lists/oss-security/2024/09/03/4"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2186"
+      "url": "https://lists.freebsd.org/archives/freebsd-security/2024-September/000303.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2187"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2568"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2575"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2713"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/a59b90bf491410f1f2bc4540cc21f1980fd14c5b"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.FreeBSD.org/advisories/FreeBSD-SA-17:02.openssl.asc"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201702-07"
-    },
-    {
-      "type": "WEB",
-      "url": "https://support.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03838en_us"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20170126.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2017-04"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujan2018-3236628.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujul2017-3236622.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/95814"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037717"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2185"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2186"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2187"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2568"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2575"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2713"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/a59b90bf491410f1f2bc4540cc21f1980fd14c5b"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.FreeBSD.org/advisories/FreeBSD-SA-17:02.openssl.asc"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201702-07"
-    },
-    {
-      "type": "WEB",
-      "url": "https://support.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03838en_us"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20170126.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2017-04"
+      "url": "https://security.netapp.com/advisory/ntap-20240912-0001/"
     }
   ]
 }

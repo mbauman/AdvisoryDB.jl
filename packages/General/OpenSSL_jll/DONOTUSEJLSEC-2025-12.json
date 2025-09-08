@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:05Z",
-  "published": "2025-08-27T02:51:05Z",
+  "modified": "2025-09-08T02:55:50Z",
+  "published": "2025-09-08T02:55:50Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-12",
   "aliases": [
-    "CVE-2024-13176"
+    "CVE-2021-23840"
   ],
-  "summary": "Issue summary: A timing side-channel which could potentially allow recovering the private key exists in the ECDSA signature computation.",
-  "details": "Issue summary: A timing side-channel which could potentially allow recovering\nthe private key exists in the ECDSA signature computation.\n\nImpact summary: A timing side-channel in ECDSA signature computations\ncould allow recovering the private key by an attacker. However, measuring\nthe timing would require either local access to the signing application or\na very fast network connection with low latency.\n\nThere is a timing signal of around 300 nanoseconds when the top word of\nthe inverted ECDSA nonce value is zero. This can happen with significant\nprobability only for some of the supported elliptic curves. In particular\nthe NIST P-521 curve is affected. To be able to measure this leak, the attacker\nprocess must either be located in the same physical computer or must\nhave a very fast network connection with low latency. For that reason\nthe severity of this vulnerability is Low.\n\nThe FIPS modules in 3.4, 3.3, 3.2, 3.1 and 3.0 are affected by this issue.",
+  "summary": "Calls to EVP_CipherUpdate, EVP_EncryptUpdate and EVP_DecryptUpdate may overflow the output length argument in some cases where the input length is close to the maximum permissable length for an integer on the platform.",
+  "details": "Calls to EVP_CipherUpdate, EVP_EncryptUpdate and EVP_DecryptUpdate may overflow the output length argument in some cases where the input length is close to the maximum permissable length for an integer on the platform. In such cases the return value from the function call will be 1 (indicating success), but the output length value will be negative. This could cause applications to behave incorrectly or crash. OpenSSL versions 1.1.1i and below are affected by this issue. Users of these versions should upgrade to OpenSSL 1.1.1j. OpenSSL versions 1.0.2x and below are affected by this issue. However OpenSSL 1.0.2 is out of support and no longer receiving public updates. Premium support customers of OpenSSL 1.0.2 should upgrade to 1.0.2y. Other users should upgrade to 1.1.1j. Fixed in OpenSSL 1.1.1j (Affected 1.1.1-1.1.1i). Fixed in OpenSSL 1.0.2y (Affected 1.0.2-1.0.2x).",
   "affected": [
     {
       "package": {
@@ -22,7 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "3.5.0+0"
+              "fixed": "1.1.10+0"
             }
           ]
         }
@@ -32,57 +32,173 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:P/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/07272b05b04836a762b4baa874958af51d513844"
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/2af62e74fb59bc469506bc37eb2990ea408d9467"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6a51b9e1d0cf0bf8515f7201b68fb0a3482b3dc1"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/392dcb336405a0c94486aa6655057f59fd3a0902"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=9b1129239f3ebb1d1c98ce9ed41d5c9476c47cb2"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/4b1cb94a734a7d4ec363ac0a215a25c181e11f65"
+      "url": "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44846"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/77c608f4c8857e63e98e66444e2e761c9627916f"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10366"
     },
     {
       "type": "WEB",
-      "url": "https://github.openssl.org/openssl/extended-releases/commit/0d5fd1ab987f7571e2c955d8d8b638fc0fb54ded"
+      "url": "https://lists.apache.org/thread.html/r58af02e294bd07f487e2c64ffc0a29b837db5600e33b6e698b9d696b%40%3Cissues.bookkeeper.apache.org%3E"
     },
     {
       "type": "WEB",
-      "url": "https://github.openssl.org/openssl/extended-releases/commit/a2639000db19878d5d89586ae7b725080592ae86"
+      "url": "https://lists.apache.org/thread.html/rf4c02775860db415b4955778a131c2795223f61cb8c6a450893651e4%40%3Cissues.bookkeeper.apache.org%3E"
     },
     {
       "type": "WEB",
-      "url": "https://openssl-library.org/news/secadv/20250120.txt"
+      "url": "https://security.gentoo.org/glsa/202103-03"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2025/01/20/2"
+      "url": "https://security.netapp.com/advisory/ntap-20210219-0009/"
     },
     {
       "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2025/05/msg00028.html"
+      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20250124-0005/"
+      "url": "https://www.debian.org/security/2021/dsa-4855"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20250418-0010/"
+      "url": "https://www.openssl.org/news/secadv/20210216.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuApr2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpujan2022.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-03"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-09"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-10"
+    },
+    {
+      "type": "WEB",
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6a51b9e1d0cf0bf8515f7201b68fb0a3482b3dc1"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=9b1129239f3ebb1d1c98ce9ed41d5c9476c47cb2"
+    },
+    {
+      "type": "WEB",
+      "url": "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44846"
+    },
+    {
+      "type": "WEB",
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10366"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.apache.org/thread.html/r58af02e294bd07f487e2c64ffc0a29b837db5600e33b6e698b9d696b%40%3Cissues.bookkeeper.apache.org%3E"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.apache.org/thread.html/rf4c02775860db415b4955778a131c2795223f61cb8c6a450893651e4%40%3Cissues.bookkeeper.apache.org%3E"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202103-03"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20210219-0009/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2021/dsa-4855"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20210216.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuApr2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpujan2022.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-03"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-09"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-10"
     }
   ]
 }

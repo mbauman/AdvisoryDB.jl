@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:04Z",
-  "published": "2025-08-27T02:51:04Z",
+  "modified": "2025-09-08T02:55:53Z",
+  "published": "2025-09-08T02:55:53Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-7",
   "aliases": [
-    "CVE-2023-3446"
+    "CVE-2023-0466"
   ],
-  "summary": "Issue summary: Checking excessively long DH keys or parameters may be very slow.",
-  "details": "Issue summary: Checking excessively long DH keys or parameters may be very slow.\n\nImpact summary: Applications that use the functions DH_check(), DH_check_ex()\nor EVP_PKEY_param_check() to check a DH key or DH parameters may experience long\ndelays. Where the key or parameters that are being checked have been obtained\nfrom an untrusted source this may lead to a Denial of Service.\n\nThe function DH_check() performs various checks on DH parameters. One of those\nchecks confirms that the modulus ('p' parameter) is not too large. Trying to use\na very large modulus is slow and OpenSSL will not normally use a modulus which\nis over 10,000 bits in length.\n\nHowever the DH_check() function checks numerous aspects of the key or parameters\nthat have been supplied. Some of those checks use the supplied modulus value\neven if it has already been found to be too large.\n\nAn application that calls DH_check() and supplies a key or parameters obtained\nfrom an untrusted source could be vulernable to a Denial of Service attack.\n\nThe function DH_check() is itself called by a number of other OpenSSL functions.\nAn application calling any of those other functions may similarly be affected.\nThe other functions affected by this are DH_check_ex() and\nEVP_PKEY_param_check().\n\nAlso vulnerable are the OpenSSL dhparam and pkeyparam command line applications\nwhen using the '-check' option.\n\nThe OpenSSL SSL/TLS implementation is not affected by this issue.\nThe OpenSSL 3.0 and 3.1 FIPS providers are not affected by this issue.",
+  "summary": "The function X509_VERIFY_PARAM_add0_policy() is documented to implicitly enable the certificate policy check when doing certificate verification.",
+  "details": "The function X509_VERIFY_PARAM_add0_policy() is documented to\nimplicitly enable the certificate policy check when doing certificate\nverification. However the implementation of the function does not\nenable the check which allows certificates with invalid or incorrect\npolicies to pass the certificate verification.\n\nAs suddenly enabling the policy check could break existing deployments it was\ndecided to keep the existing behavior of the X509_VERIFY_PARAM_add0_policy()\nfunction.\n\nInstead the applications that require OpenSSL to perform certificate\npolicy check need to use X509_VERIFY_PARAM_set1_policies() or explicitly\nenable the policy check by calling X509_VERIFY_PARAM_set_flags() with\nthe X509_V_FLAG_POLICY_CHECK flag argument.\n\nCertificate policy checks are disabled by default in OpenSSL and are not\ncommonly used by applications.",
   "affected": [
     {
       "package": {
@@ -22,13 +22,13 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.23+0"
+              "fixed": "1.1.21+0"
             },
             {
               "introduced": "3.0.8+0"
             },
             {
-              "fixed": "3.0.11+0"
+              "fixed": "3.0.9+0"
             }
           ]
         }
@@ -38,69 +38,33 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=1fa20cf2f506113c761777127a38bce5068740eb"
+      "url": "http://www.openwall.com/lists/oss-security/2023/09/28/4"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=8780a896543a654e757db1b9396383f9d8095528"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=0d16b7e99aafc0b4a6d729eec65a411a7e025f0a"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9a0a4d3c1e7138915563c0df4fe6a3f9377b839c"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=51e8a84ce742db0f6c70510d0159dad8f7825908"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fc9867c1e03c22ebf56943be205202e576aabf23"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=73398dea26de9899fb4baa94098ad0a61f435c72"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20230719.txt"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fc814a30fc4f0bc54fcea7d9a7462f5457aab061"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2023/07/19/4"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2023/07/19/5"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2023/07/19/6"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2023/07/31/1"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2024/05/16/1"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=1fa20cf2f506113c761777127a38bce5068740eb"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=8780a896543a654e757db1b9396383f9d8095528"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9a0a4d3c1e7138915563c0df4fe6a3f9377b839c"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fc9867c1e03c22ebf56943be205202e576aabf23"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2023/08/msg00019.html"
+      "url": "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html"
     },
     {
       "type": "WEB",
@@ -108,11 +72,55 @@
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20230803-0011/"
+      "url": "https://security.netapp.com/advisory/ntap-20230414-0001/"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20230719.txt"
+      "url": "https://www.debian.org/security/2023/dsa-5417"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230328.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2023/09/28/4"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=0d16b7e99aafc0b4a6d729eec65a411a7e025f0a"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=51e8a84ce742db0f6c70510d0159dad8f7825908"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=73398dea26de9899fb4baa94098ad0a61f435c72"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fc814a30fc4f0bc54fcea7d9a7462f5457aab061"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202402-08"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20230414-0001/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2023/dsa-5417"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230328.txt"
     }
   ]
 }

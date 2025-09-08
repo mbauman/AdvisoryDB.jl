@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:02Z",
-  "published": "2025-08-27T02:51:02Z",
+  "modified": "2025-09-08T02:55:50Z",
+  "published": "2025-09-08T02:55:50Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-31",
   "aliases": [
-    "CVE-2019-1543"
+    "CVE-2021-3449"
   ],
-  "summary": "ChaCha20-Poly1305 is an AEAD cipher, and requires a unique nonce input for every encryption operation.",
-  "details": "ChaCha20-Poly1305 is an AEAD cipher, and requires a unique nonce input for every encryption operation. RFC 7539 specifies that the nonce value (IV) should be 96 bits (12 bytes). OpenSSL allows a variable nonce length and front pads the nonce with 0 bytes if it is less than 12 bytes. However it also incorrectly allows a nonce to be set of up to 16 bytes. In this case only the last 12 bytes are significant and any additional leading bytes are ignored. It is a requirement of using this cipher that nonce values are unique. Messages encrypted using a reused nonce value are susceptible to serious confidentiality and integrity attacks. If an application changes the default nonce length to be longer than 12 bytes and then makes a change to the leading bytes of the nonce expecting the new value to be a new unique nonce then such an application could inadvertently encrypt messages with a reused nonce. Additionally the ignored bytes in a long nonce are not covered by the integrity guarantee of this cipher. Any application that relies on the integrity of these ignored leading bytes of a long nonce may be further affected. Any OpenSSL internal use of this cipher, including in SSL/TLS, is safe because no such use sets such a long nonce value. However user applications that use this cipher directly and set a non-default nonce length to be longer than 12 bytes may be vulnerable. OpenSSL versions 1.1.1 and 1.1.0 are affected by this issue. Due to the limited scope of affected deployments this has been assessed as low severity and therefore we are not creating new releases at this time. Fixed in OpenSSL 1.1.1c (Affected 1.1.1-1.1.1b). Fixed in OpenSSL 1.1.0k (Affected 1.1.0-1.1.0j).",
+  "summary": "An OpenSSL TLS server may crash if sent a maliciously crafted renegotiation ClientHello message from a client.",
+  "details": "An OpenSSL TLS server may crash if sent a maliciously crafted renegotiation ClientHello message from a client. If a TLSv1.2 renegotiation ClientHello omits the signature_algorithms extension (where it was present in the initial ClientHello), but includes a signature_algorithms_cert extension then a NULL pointer dereference will result, leading to a crash and a denial of service attack. A server is only vulnerable if it has TLSv1.2 and renegotiation enabled (which is the default configuration). OpenSSL TLS clients are not impacted by this issue. All OpenSSL 1.1.1 versions are affected by this issue. Users of these versions should upgrade to OpenSSL 1.1.1k. OpenSSL 1.0.2 is not impacted by this issue. Fixed in OpenSSL 1.1.1k (Affected 1.1.1-1.1.1j).",
   "affected": [
     {
       "package": {
@@ -22,7 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
+              "fixed": "1.1.10+0"
             }
           ]
         }
@@ -32,117 +32,245 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
     },
     {
       "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:P/A:N"
+      "score": "AV:N/AC:M/Au:N/C:N/I:N/A:P"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-07/msg00056.html"
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/27/1"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3700"
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/27/2"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=ee22257b1418438ebaf54df98af4e24f494d1809"
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/28/3"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=f426625b6ae9a7831010750490a5f0ad689c5ba3"
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/28/4"
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-772220.pdf"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=fb9fa6b51defd48157eeb207f52181f735d96148"
     },
     {
       "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Jul/3"
+      "url": "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44845"
     },
     {
       "type": "WEB",
-      "url": "https://www.debian.org/security/2019/dsa-4475"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10356"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20190306.txt"
+      "url": "https://lists.debian.org/debian-lts-announce/2021/08/msg00029.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CCBFLLVQVILIVGZMBJL3IXZGKWQISYNP/"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
+      "url": "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2021-0013"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
+      "url": "https://security.FreeBSD.org/advisories/FreeBSD-SA-21:07.openssl.asc"
     },
     {
       "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-07/msg00056.html"
+      "url": "https://security.gentoo.org/glsa/202103-03"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3700"
+      "url": "https://security.netapp.com/advisory/ntap-20210326-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=ee22257b1418438ebaf54df98af4e24f494d1809"
+      "url": "https://security.netapp.com/advisory/ntap-20210513-0002/"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=f426625b6ae9a7831010750490a5f0ad689c5ba3"
+      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
+      "url": "https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-openssl-2021-GHY28dJd"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
+      "url": "https://www.debian.org/security/2021/dsa-4875"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
+      "url": "https://www.openssl.org/news/secadv/20210325.txt"
     },
     {
       "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Jul/3"
+      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.debian.org/security/2019/dsa-4475"
+      "url": "https://www.oracle.com/security-alerts/cpuApr2021.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20190306.txt"
+      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
+      "url": "https://www.oracle.com/security-alerts/cpujul2022.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
+      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
+      "url": "https://www.tenable.com/security/tns-2021-05"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-06"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-09"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-10"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/27/1"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/27/2"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/28/3"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2021/03/28/4"
+    },
+    {
+      "type": "WEB",
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
+    },
+    {
+      "type": "WEB",
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-772220.pdf"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=fb9fa6b51defd48157eeb207f52181f735d96148"
+    },
+    {
+      "type": "WEB",
+      "url": "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44845"
+    },
+    {
+      "type": "WEB",
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10356"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2021/08/msg00029.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CCBFLLVQVILIVGZMBJL3IXZGKWQISYNP/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2021-0013"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.FreeBSD.org/advisories/FreeBSD-SA-21:07.openssl.asc"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202103-03"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20210326-0006/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20210513-0002/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-openssl-2021-GHY28dJd"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2021/dsa-4875"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20210325.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuApr2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpujul2022.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-05"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-06"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-09"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2021-10"
     }
   ]
 }

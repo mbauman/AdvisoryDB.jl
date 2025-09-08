@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:01Z",
-  "published": "2025-08-27T02:51:01Z",
+  "modified": "2025-09-08T02:55:50Z",
+  "published": "2025-09-08T02:55:50Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-33",
   "aliases": [
-    "CVE-2016-7054"
+    "CVE-2022-4304"
   ],
-  "summary": "In OpenSSL 1.1.0 before 1.1.0c, TLS connections using *-CHACHA20-POLY1305 ciphersuites are susceptible to a DoS attack by corrupting larger payloads.",
-  "details": "In OpenSSL 1.1.0 before 1.1.0c, TLS connections using *-CHACHA20-POLY1305 ciphersuites are susceptible to a DoS attack by corrupting larger payloads. This can result in an OpenSSL crash. This issue is not considered to be exploitable beyond a DoS.",
+  "summary": "A timing based side channel exists in the OpenSSL RSA Decryption implementation which could be sufficient to recover a plaintext across a network in a Bleichenbacher style attack.",
+  "details": "A timing based side channel exists in the OpenSSL RSA Decryption implementation\nwhich could be sufficient to recover a plaintext across a network in a\nBleichenbacher style attack. To achieve a successful decryption an attacker\nwould have to be able to send a very large number of trial messages for\ndecryption. The vulnerability affects all RSA padding modes: PKCS#1 v1.5,\nRSA-OEAP and RSASVE.\n\nFor example, in a TLS connection, RSA is commonly used by a client to send an\nencrypted pre-master secret to the server. An attacker that had observed a\ngenuine connection between a client and a server could use this flaw to send\ntrial messages to the server and record the time taken to process them. After a\nsufficiently large number of messages the attacker could recover the pre-master\nsecret used for the original connection and thus be able to decrypt the\napplication data sent over that connection.",
   "affected": [
     {
       "package": {
@@ -22,7 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
+              "fixed": "1.1.20+0"
             }
           ]
         }
@@ -32,53 +32,25 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/94238"
+      "url": "https://security.gentoo.org/glsa/202402-08"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037261"
+      "url": "https://www.openssl.org/news/secadv/20230207.txt"
     },
     {
       "type": "WEB",
-      "url": "https://h20566.www2.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03744en_us"
+      "url": "https://security.gentoo.org/glsa/202402-08"
     },
     {
       "type": "WEB",
-      "url": "https://www.exploit-db.com/exploits/40899/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20161110.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/94238"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037261"
-    },
-    {
-      "type": "WEB",
-      "url": "https://h20566.www2.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03744en_us"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.exploit-db.com/exploits/40899/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20161110.txt"
+      "url": "https://www.openssl.org/news/secadv/20230207.txt"
     }
   ]
 }

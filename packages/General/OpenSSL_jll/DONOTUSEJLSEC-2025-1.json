@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-26T21:13:27Z",
-  "published": "2025-08-26T21:13:27Z",
+  "modified": "2025-09-08T02:55:51Z",
+  "published": "2025-09-08T02:55:51Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-1",
   "aliases": [
-    "CVE-2021-3712"
+    "CVE-2023-4807"
   ],
-  "summary": "ASN.1 strings are represented internally within OpenSSL as an ASN1_STRING structure which contains a buffer holding the string data and a field holding the buffer length.",
-  "details": "ASN.1 strings are represented internally within OpenSSL as an ASN1_STRING structure which contains a buffer holding the string data and a field holding the buffer length. This contrasts with normal C strings which are repesented as a buffer for the string data which is terminated with a NUL (0) byte. Although not a strict requirement, ASN.1 strings that are parsed using OpenSSL's own \"d2i\" functions (and other similar parsing functions) as well as any string whose value has been set with the ASN1_STRING_set() function will additionally NUL terminate the byte array in the ASN1_STRING structure. However, it is possible for applications to directly construct valid ASN1_STRING structures which do not NUL terminate the byte array by directly setting the \"data\" and \"length\" fields in the ASN1_STRING array. This can also happen by using the ASN1_STRING_set0() function. Numerous OpenSSL functions that print ASN.1 data have been found to assume that the ASN1_STRING byte array will be NUL terminated, even though this is not guaranteed for strings that have been directly constructed. Where an application requests an ASN.1 structure to be printed, and where that ASN.1 structure contains ASN1_STRINGs that have been directly constructed by the application without NUL terminating the \"data\" field, then a read buffer overrun can occur. The same thing can also occur during name constraints processing of certificates (for example if a certificate has been directly constructed by the application instead of loading it via the OpenSSL parsing functions, and the certificate contains non NUL terminated ASN1_STRING structures). It can also occur in the X509_get1_email(), X509_REQ_get1_email() and X509_get1_ocsp() functions. If a malicious actor can cause an application to directly construct an ASN1_STRING and then process it through one of the affected OpenSSL functions then this issue could be hit. This might result in a crash (causing a Denial of Service attack). It could also result in the disclosure of private memory contents (such as private keys, or sensitive plaintext). Fixed in OpenSSL 1.1.1l (Affected 1.1.1-1.1.1k). Fixed in OpenSSL 1.0.2za (Affected 1.0.2-1.0.2y).",
+  "summary": "Issue summary: The POLY1305 MAC (message authentication code) implementation contains a bug that might corrupt the internal state of applications on the Windows 64 platform when running on newer X86_64 processors supporting the AVX512-IFMA instructions.",
+  "details": "Issue summary: The POLY1305 MAC (message authentication code) implementation\ncontains a bug that might corrupt the internal state of applications on the\nWindows 64 platform when running on newer X86_64 processors supporting the\nAVX512-IFMA instructions.\n\nImpact summary: If in an application that uses the OpenSSL library an attacker\ncan influence whether the POLY1305 MAC algorithm is used, the application\nstate might be corrupted with various application dependent consequences.\n\nThe POLY1305 MAC (message authentication code) implementation in OpenSSL does\nnot save the contents of non-volatile XMM registers on Windows 64 platform\nwhen calculating the MAC of data larger than 64 bytes. Before returning to\nthe caller all the XMM registers are set to zero rather than restoring their\nprevious content. The vulnerable code is used only on newer x86_64 processors\nsupporting the AVX512-IFMA instructions.\n\nThe consequences of this kind of internal application state corruption can\nbe various - from no consequences, if the calling application does not\ndepend on the contents of non-volatile XMM registers at all, to the worst\nconsequences, where the attacker could get complete control of the application\nprocess. However given the contents of the registers are just zeroized so\nthe attacker cannot put arbitrary values inside, the most likely consequence,\nif any, would be an incorrect result of some application dependent\ncalculations or a crash leading to a denial of service.\n\nThe POLY1305 MAC algorithm is most frequently used as part of the\nCHACHA20-POLY1305 AEAD (authenticated encryption with associated data)\nalgorithm. The most common usage of this AEAD cipher is with TLS protocol\nversions 1.2 and 1.3 and a malicious client can influence whether this AEAD\ncipher is used by the server. This implies that server applications using\nOpenSSL can be potentially impacted. However we are currently not aware of\nany concrete application that would be affected by this issue therefore we\nconsider this a Low severity security issue.\n\nAs a workaround the AVX512-IFMA instructions support can be disabled at\nruntime by setting the environment variable OPENSSL_ia32cap:\n\n   OPENSSL_ia32cap=:~0x200000\n\nThe FIPS provider is not affected by this issue.",
   "affected": [
     {
       "package": {
@@ -22,7 +22,13 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.13+0"
+              "fixed": "1.1.23+0"
+            },
+            {
+              "introduced": "3.0.8+0"
+            },
+            {
+              "fixed": "3.0.11+0"
             }
           ]
         }
@@ -32,181 +38,45 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:P"
+      "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2021/08/26/2"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=4bfac4471f53c4f74c8d81020beb938f92d84ca5"
     },
     {
       "type": "WEB",
-      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-244969.pdf"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6754de4a121ec7f261b16723180df6592cbb4508"
     },
     {
       "type": "WEB",
-      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=a632d534c73eeb3e3db8c7540d811194ef7c79ff"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=94d23fcff9b2a7a8368dfe52214d5c2569882c11"
+      "url": "https://www.openssl.org/news/secadv/20230908.txt"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=ccb0a11145ee72b042d10593a64eaf9e8a55ec12"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=4bfac4471f53c4f74c8d81020beb938f92d84ca5"
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10366"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6754de4a121ec7f261b16723180df6592cbb4508"
     },
     {
       "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/r18995de860f0e63635f3008fd2a6aca82394249476d21691e7c59c9e%40%3Cdev.tomcat.apache.org%3E"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=a632d534c73eeb3e3db8c7540d811194ef7c79ff"
     },
     {
       "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/rad5d9f83f0d11fb3f8bb148d179b8a9ad7c6a17f18d70e5805a713d1%40%3Cdev.tomcat.apache.org%3E"
+      "url": "https://security.netapp.com/advisory/ntap-20230921-0001/"
     },
     {
       "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2021/09/msg00014.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2021/09/msg00021.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202209-02"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202210-02"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20210827-0010/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2021/dsa-4963"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20210824.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujan2022.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2021-16"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2022-02"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2021/08/26/2"
-    },
-    {
-      "type": "WEB",
-      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-244969.pdf"
-    },
-    {
-      "type": "WEB",
-      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=94d23fcff9b2a7a8368dfe52214d5c2569882c11"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=ccb0a11145ee72b042d10593a64eaf9e8a55ec12"
-    },
-    {
-      "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10366"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/r18995de860f0e63635f3008fd2a6aca82394249476d21691e7c59c9e%40%3Cdev.tomcat.apache.org%3E"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/rad5d9f83f0d11fb3f8bb148d179b8a9ad7c6a17f18d70e5805a713d1%40%3Cdev.tomcat.apache.org%3E"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2021/09/msg00014.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2021/09/msg00021.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202209-02"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202210-02"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20210827-0010/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2021/dsa-4963"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20210824.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujan2022.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2021-16"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2022-02"
+      "url": "https://www.openssl.org/news/secadv/20230908.txt"
     }
   ]
 }

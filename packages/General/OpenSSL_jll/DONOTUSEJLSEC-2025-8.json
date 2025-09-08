@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:02Z",
-  "published": "2025-08-27T02:51:02Z",
+  "modified": "2025-09-08T02:55:51Z",
+  "published": "2025-09-08T02:55:51Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-8",
   "aliases": [
-    "CVE-2018-0737"
+    "CVE-2019-1563"
   ],
-  "summary": "The OpenSSL RSA Key generation algorithm has been shown to be vulnerable to a cache timing side channel attack.",
-  "details": "The OpenSSL RSA Key generation algorithm has been shown to be vulnerable to a cache timing side channel attack. An attacker with sufficient access to mount cache timing attacks during the RSA key generation process could recover the private key. Fixed in OpenSSL 1.1.0i-dev (Affected 1.1.0-1.1.0h). Fixed in OpenSSL 1.0.2p-dev (Affected 1.0.2b-1.0.2o).",
+  "summary": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack.",
+  "details": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to the CMS_decrypt or PKCS7_decrypt functions to select the correct recipient info to decrypt. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
   "affected": [
     {
       "package": {
@@ -32,7 +32,7 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
     },
     {
       "type": "CVSS_V2",
@@ -42,107 +42,99 @@
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00054.html"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/103766"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00072.html"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1040685"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00012.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3221"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00016.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3505"
+      "url": "http://packetstormsecurity.com/files/154467/Slackware-Security-Advisory-openssl-Updates.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3932"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=08229ad838c50f644d7e928e2eef147b4308ad64"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3933"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=631f94db0065c78181ca9ba5546ebc8bb3884b97"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3935"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e21f8cf78a125cd3c8c0d1a1a6c8bb0b901f893f"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=349a41da1ad88ad87825414752a8ff5fdd6a6c3f"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6939eab03a6e23d2bd2c3f5e34fe1d48e542e787"
+      "url": "https://lists.debian.org/debian-lts-announce/2019/09/msg00026.html"
     },
     {
       "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2018/07/msg00043.html"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GY6SNRJP2S7Y42GIIDO3HXPNMDYN2U3A/"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZN4VVQJ3JDCHGIHV4Y2YTXBYQZ6PWQ7E/"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
+      "url": "https://seclists.org/bugtraq/2019/Oct/0"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
+      "url": "https://seclists.org/bugtraq/2019/Oct/1"
     },
     {
       "type": "WEB",
-      "url": "https://nodejs.org/en/blog/vulnerability/august-2018-security-releases/"
+      "url": "https://seclists.org/bugtraq/2019/Sep/25"
     },
     {
       "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201811-21"
+      "url": "https://security.gentoo.org/glsa/201911-04"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20180726-0003/"
+      "url": "https://security.netapp.com/advisory/ntap-20190919-0002/"
     },
     {
       "type": "WEB",
-      "url": "https://securityadvisories.paloaltonetworks.com/Home/Detail/133"
+      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support\u0026amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-1/"
+      "url": "https://usn.ubuntu.com/4376-1/"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-2/"
+      "url": "https://usn.ubuntu.com/4376-2/"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-1/"
+      "url": "https://usn.ubuntu.com/4504-1/"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-2/"
+      "url": "https://www.debian.org/security/2019/dsa-4539"
     },
     {
       "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4348"
+      "url": "https://www.debian.org/security/2019/dsa-4540"
     },
     {
       "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4355"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20180416.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+      "url": "https://www.openssl.org/news/secadv/20190910.txt"
     },
     {
       "type": "WEB",
@@ -150,135 +142,119 @@
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujan2019-5072801.html"
+      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
+      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-12"
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-13"
+      "url": "https://www.tenable.com/security/tns-2019-09"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-14"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00054.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-17"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00072.html"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00012.html"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/103766"
+      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00016.html"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1040685"
+      "url": "http://packetstormsecurity.com/files/154467/Slackware-Security-Advisory-openssl-Updates.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3221"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=08229ad838c50f644d7e928e2eef147b4308ad64"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3505"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=631f94db0065c78181ca9ba5546ebc8bb3884b97"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3932"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e21f8cf78a125cd3c8c0d1a1a6c8bb0b901f893f"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3933"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3935"
+      "url": "https://lists.debian.org/debian-lts-announce/2019/09/msg00026.html"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=349a41da1ad88ad87825414752a8ff5fdd6a6c3f"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GY6SNRJP2S7Y42GIIDO3HXPNMDYN2U3A/"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6939eab03a6e23d2bd2c3f5e34fe1d48e542e787"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZN4VVQJ3JDCHGIHV4Y2YTXBYQZ6PWQ7E/"
     },
     {
       "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2018/07/msg00043.html"
+      "url": "https://seclists.org/bugtraq/2019/Oct/0"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/"
+      "url": "https://seclists.org/bugtraq/2019/Oct/1"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
+      "url": "https://seclists.org/bugtraq/2019/Sep/25"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
+      "url": "https://security.gentoo.org/glsa/201911-04"
     },
     {
       "type": "WEB",
-      "url": "https://nodejs.org/en/blog/vulnerability/august-2018-security-releases/"
+      "url": "https://security.netapp.com/advisory/ntap-20190919-0002/"
     },
     {
       "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201811-21"
+      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support\u0026amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20180726-0003/"
+      "url": "https://usn.ubuntu.com/4376-1/"
     },
     {
       "type": "WEB",
-      "url": "https://securityadvisories.paloaltonetworks.com/Home/Detail/133"
+      "url": "https://usn.ubuntu.com/4376-2/"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-1/"
+      "url": "https://usn.ubuntu.com/4504-1/"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-2/"
+      "url": "https://www.debian.org/security/2019/dsa-4539"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-1/"
+      "url": "https://www.debian.org/security/2019/dsa-4540"
     },
     {
       "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-2/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4348"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4355"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20180416.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+      "url": "https://www.openssl.org/news/secadv/20190910.txt"
     },
     {
       "type": "WEB",
@@ -286,31 +262,23 @@
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujan2019-5072801.html"
+      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
+      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-12"
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-13"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-14"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-17"
+      "url": "https://www.tenable.com/security/tns-2019-09"
     }
   ]
 }
