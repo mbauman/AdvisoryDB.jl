@@ -38,7 +38,7 @@ function main()
         # Start with NVD; typically the best information but may be limited
         # The hardest part here is that we cannot search without a version number
         cpe = "cpe:2.3:a:$vendor:$product"
-        nvds = NVD.fetch_cpe_matches(cpe, AdvisoryDB.upstream_versions_used_by_cpe(cpe))
+        nvds = NVD.fetch_cpe_matches(cpe)
         push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
             pkgs = NVD.related_julia_packages(vuln)
