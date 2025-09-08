@@ -327,10 +327,10 @@ function related_julia_packages(description, vendorproductversions)
                     firstidx = findfirst(in(r), VersionIshNumber.(last.(versionmap)))
                     if isnothing(firstidx)
                         # No vulnerable versions were ever registered
-                        # Theoretically, we could simply avoid returning anything related to advisory
-                        # but it's helpful to know that we evaluated it to be not applicable. Further
-                        # downstream tooling can omit generating the advisories.
-                        push!(pkgs, pkg => string(VersionRange(v"0-", VersionNumber(first(first(versionmap))), true, false)))
+                        @info "ignoring un-applicable version $version for $pkg"
+                        # We could report it with a non-applicable range, but it's simpler to just not report it at all.
+                        # TODO: Need to add support for packages that have an unknown version registered
+                        # push!(pkgs, pkg => string(VersionRange(v"0-", VersionNumber(first(first(versionmap))), true, false)))
                     else
                         lastidx = something(findlast(in(r), VersionIshNumber.(last.(versionmap))))
                         firstversion = firstidx == firstindex(versionmap) ? typemin(VersionNumber) : VersionNumber(versionmap[firstidx][1])
