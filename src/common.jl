@@ -219,9 +219,9 @@ function get_registry(reg=Registry.RegistrySpec(name="General", uuid = "23338594
 end
 
 function uuids_from_name(name, reg=get_registry())
-    Registry.uuids_from_name(reg, name)
+    Registry.uuids_from_name(reg, string(name))
 end
-registry_has_package(name, reg=get_registry()) = !isempty(uuids_from_name(reg, name))
+registry_has_package(name, reg=get_registry()) = !isempty(uuids_from_name(name, reg))
 
 available_versions_for_uuid(uuid) = available_versions_for_uuid(Base.UUID(uuid))
 function available_versions_for_uuid(uuid::Base.UUID, reg=get_registry())
