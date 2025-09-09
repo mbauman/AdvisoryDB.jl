@@ -9,7 +9,7 @@ of digits without assuming anything about the structure of the string
 itself.
 
 There are four special version-y things this implements:
-* Digits are compared as integer values, ignoring leading zeros
+* Digits are compared as integer values, but leading zeros considered to be less than (so 1.2.03 < 1.2.3)
 * The delimiters '-', '.' and '+' split parts to be compared separately
 * The delimiter '-' is considered a prerelease and _precedes_ the version to its left
 * The extrema are VersionString("") and VersionString("∞")
