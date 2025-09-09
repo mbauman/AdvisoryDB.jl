@@ -328,7 +328,7 @@ function related_julia_packages(description, vendorproductversions)
             isnothing(r) && @info "$matched_project: failed to parse vulnerable version range $version"
             for pkg in matched_pkgs
                 if isnothing(r)
-                    push!(pkgs, "*")
+                    push!(pkgs, string("?", matched_project, ":", pkg) => "$version")
                 else
                     append!(pkgs, pkg .=> string.(convert_versions(package_project_version_map(pkg, matched_project), r)))
                 end
@@ -518,10 +518,10 @@ function fetch_advisory(advisory_id, package_verisioninfo=nothing)
     elseif startswith(advisory_id, "EUVD-")
         vuln = EUVD.fetch_esina(advisory_id)
         return EUVD.convert_to_osv(vuln, package_verisioninfo)
-    elseif startswith(advisory_id, "GHSA-")
-        vuln = GHSA.fetch_ghsa(advisory_id)
-        return GHSA.convert_to_osv(vuln, package_verisioninfo)
+    elseif endswith(advisory_id, r"GHSA-\w{4}-\w{4}-\w{4}")
+        vuln = GitHub.fetch_ghsa(advisory_id)
+        return GitHub.convert_to_osv(vuln, package_verisioninfo)
     else
-        throw(ArgumentError("unknown advisory prefix for $advisory_id"))
+        throw(ArgumentError("unknown advisory: $advisory_id"))
     end
 end

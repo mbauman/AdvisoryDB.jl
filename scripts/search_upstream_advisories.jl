@@ -29,25 +29,28 @@ function main()
         for (pkg, versioninfo) in pkgs
             advisories[(vuln_id, pkg)] = versioninfo
         end
-    elseif startswith(input, "GHSA")
-        push!(info["haystack_total"], "1 advisory from GitHub Advisory DB")
-        error("todo")
+    elseif endswith(input, r"GHSA-\w{4}-\w{4}-\w{4}")
+        vuln = GitHub.fetch_ghsa(input)
+        pkgs = GitHub.related_julia_packages(vuln)
+        push!(info["haystack_total"], "1 advisory from GitHub")
+        vuln_id = GitHub.vuln_id(vuln, input)
+        for (pkg, versioninfo) in pkgs
+            advisories[(vuln_id, pkg)] = versioninfo
+        end
     elseif contains(input, ":")
         _, vendor, product = rsplit(":"*input, ":", limit=3, keepempty=true)
         info["haystack"] = "search $vendor/$product"
         # Start with NVD; typically the best information but may be limited
-        # The hardest part here is that we cannot search without a version number
         cpe = "cpe:2.3:a:$vendor:$product"
         nvds = NVD.fetch_cpe_matches(cpe)
         push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
             pkgs = NVD.related_julia_packages(vuln)
             for (pkg, versioninfo) in pkgs
-                if startswith(pkg, "cpe:") && contains(pkg, "|")
-                    push!(info["version_trouble"], "$(vuln.cve.id): [NVD](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) has upstream versions for $pkg: $versioninfo")
-                    pkg = split(pkg, "|")[2]
+                if startswith(pkg, "?") && contains(pkg, ":")
+                    upstream, pkg = rsplit(pkg[2:end], ":", limit=2, keepempty=true)
+                    push!(info["version_trouble"], "[$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) has unconverted upstream ($upstream) versions for $pkg: $versioninfo")
                     versioninfo = ["*"]
-                    # TODO: Add debug information to the message body
                 end
                 advisories[(vuln.cve.id, pkg)] = versioninfo
             end
@@ -60,9 +63,9 @@ function main()
             pkgs = EUVD.related_julia_packages(vuln)
             vuln_id = EUVD.vuln_id(vuln)
             for (pkg, versioninfo) in pkgs
-                if startswith(pkg, "cpe:") && contains(pkg, "|")
-                    push!(info["version_trouble"], "$vuln_id: [EUVD](https://euvd.enisa.europa.eu/vulnerability/$(vuln.id)) has upstream versions for $pkg: $versioninfo")
-                    pkg = split(pkg, "|")[2]
+                if startswith(pkg, "?") && contains(pkg, ":")
+                    upstream, pkg = rsplit(pkg[2:end], ":", limit=2, keepempty=true)
+                    push!(info["version_trouble"], "[$vuln_id (EUVD)](https://euvd.enisa.europa.eu/vulnerability/$(vuln.id)) has unconverted upstream ($upstream) versions for $pkg: $versioninfo")
                     versioninfo = ["*"]
                 end
                 if haskey(advisories, (vuln_id, pkg))
@@ -92,7 +95,7 @@ function main()
                 advisories[(vuln_id, pkg)] = versioninfo
             end
         end
-        push!(info["haystack_total"], "another $nvd_fixups advisories EUVD flagged fixed up by NVD")
+        nvd_fixups > 0 && push!(info["haystack_total"], "another $nvd_fixups advisories EUVD found with data fixed up by NVD")
     else
         error("todo: implement fetching recent updates")
     end
