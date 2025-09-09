@@ -172,7 +172,3 @@ Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2024-6119]
 OpenSSL_jll = [">= 3.0.8+0, < 3.0.15+0"]
-
-["JuliaWeb/HTTP.jl/GHSA-4g68-4pxg-mw93"]
-HTTP = ["<= 1.10.16"]
-URIs = ["< 1.6.0"]
