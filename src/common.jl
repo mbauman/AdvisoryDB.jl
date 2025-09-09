@@ -18,77 +18,28 @@ is_populated(::Any) = true
 
 now() = replace(Dates.format(Dates.now(TimeZones.utc_tz), TimeZones.ISOZonedDateTimeFormat), "+00:00"=>"Z") # RFC3339
 
-"""
-    VersionIshNumber
-
-A not-necessarily-SemVer version number that implements version-like
-lexicographic splitting at punctuation and numeric-like comparisons
-of digits without assuming anything about the structure of the string
-itself.
-"""
-struct VersionIshNumber
-    str::String
-    parts::Vector{String}
-end
-VersionIshNumber(str) = VersionIshNumber(strip(str), version_parts(strip(str)))
-Base.tryparse(::Type{VersionIshNumber}, str) = VersionIshNumber(str)
-Base.:(==)(a::VersionIshNumber, b::VersionIshNumber) = a.str == b.str
-Base.hash(a::VersionIshNumber, h::UInt) = hash(a.str, hash(0x30eeab00fd453583, h))
-function Base.isless(a::VersionIshNumber, b::VersionIshNumber)
-    # By splitting parts, we can _mostly_ lean on lexicographic comparison. But
-    # parts that start with a `-` are special; they typically count as pre-releases
-    # of a given version and should sort _before_ the matched part. We've already
-    # swapped them to `\0` here.
-    matched_len = min(length(a.parts), length(b.parts))
-    return isless(a.parts[1:matched_len], b.parts[1:matched_len]) ||
-           (a != b && a.parts[1:matched_len] == b.parts[1:matched_len] && (
-                length(a.parts) <= length(b.parts) ||
-                startswith(a.parts[matched_len+1], "\0"))) # This was a -
-end
-function Base.show(io::IO, a::VersionIshNumber)
-    show(io, typeof(a))
-    print(io, "(")
-    show(io, a.str)
-    print(io, ")")
-    return nothing
-end
-Base.print(io::IO, a::VersionIshNumber) = print(io, a.str)
-Base.typemin(::Type{VersionIshNumber}) = VersionIshNumber("")
-Base.typemax(::Type{VersionIshNumber}) = VersionIshNumber("\U10FFFF∞")
-
-explode_int(::Nothing) = nothing
-explode_int(d::Integer) = string(d, pad=19)
-explode_digits(x) = something(explode_int(tryparse(Int, x)), x)
-# For somewhat coherent version sorting in the absence of real semver
-function version_parts(verstr)
-    parts = split(verstr, r"(?=[\-.])") # Keep the splitter itself as part of the comparison
-    exploded_parts = [join(explode_digits(subpart) for subpart in split(part, r"(?<=\d)(?=[^\d])|(?<=[^\d])(?=\d)")) for part in parts]
-    # Parts that start with - are special; they must sort before everything else
-    return replace.(exploded_parts, r"^-"=>"\0")
-end
-
-struct VersionRange{V<:Union{VersionNumber, VersionIshNumber}}
+struct VersionRange{V<:Union{VersionNumber, VersionString}}
     lb::V
     ub::V
     lbinclusive::Bool
     ubinclusive::Bool
 end
-VersionRange(x::AbstractString) = VersionRange{VersionIshNumber}(x)
-VersionRange{T}(x::AbstractString) where {T<:Union{VersionNumber, VersionIshNumber}} = something(tryparse(VersionRange{T}, x))
-function Base.in(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionIshNumber}}
+VersionRange(x::AbstractString) = VersionRange{VersionString}(x)
+VersionRange{T}(x::AbstractString) where {T<:Union{VersionNumber, VersionString}} = something(tryparse(VersionRange{T}, x))
+function Base.in(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionString}}
     return (r.lbinclusive ? x >= r.lb : x > r.lb) &&
            (r.ubinclusive ? x <= r.ub : x < r.ub)
 end
-function Base.:(<)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionIshNumber}}
+function Base.:(<)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionString}}
     return (r.lbinclusive ? x < r.lb : x <= r.lb)
 end
-function Base.:(>)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionIshNumber}}
+function Base.:(>)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionString}}
     return (r.ubinclusive ? x > r.ub : x >= r.ub)
 end
 Base.:(==)(a::VersionRange, b::VersionRange) = (==)((a.lb, a.lbinclusive, a.ub, a.ubinclusive), (b.lb, b.lbinclusive, b.ub, b.ubinclusive))
 Base.hash(a::VersionRange, h::UInt) = hash((a.lb, a.lbinclusive, a.ub, a.ubinclusive), hash(0x80ebd9334ee9e2b1, h))
 Base.isless(a::VersionRange, b::VersionRange) = isless((a.lb, !a.lbinclusive, a.ub, a.ubinclusive), (b.lb, !b.lbinclusive, b.ub, b.ubinclusive))
-Base.tryparse(::Type{VersionRange}, x::AbstractString) = tryparse(VersionRange{VersionIshNumber}, x)
+Base.tryparse(::Type{VersionRange}, x::AbstractString) = tryparse(VersionRange{VersionString}, x)
 function Base.tryparse(::Type{VersionRange{V}}, arg::AbstractString) where {V}
     # This supports parsing both GitHub and EUVD-like range syntaxes.
     # GHSA range format is described at:
@@ -308,6 +259,7 @@ end
 
 function related_julia_packages(description, vendorproductversions)
     pkgs = Pair{String,String}[]
+    reasons = String[]
     julia_like_pkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
                                       (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
     jlpkgs_mentioned = filter(registry_has_package, julia_like_pkgs_mentioned)
@@ -317,18 +269,19 @@ function related_julia_packages(description, vendorproductversions)
         if haskey(upstream_projects_by_vendor_product(), (vendor, product))
             matched_project = upstream_projects_by_vendor_product()[(vendor, product)]
             found_match = true
-            # We have an upstream component! Make an educated guess at the remapped version range if we can.
+            # We have an upstream component! Compute the remapped version range if we can.
             matched_pkgs = packages_with_project(matched_project)
+            r = tryparse(VersionRange, version)
+            isnothing(r) && push!(reasons, "$matched_project: failed to parse vulnerable version range $version")
             for pkg in matched_pkgs
-                r = tryparse(VersionRange, version)
                 if isnothing(r)
-                    push!(pkgs, string("?", matched_project, ":", pkg) => version) # We don't know how to parse this version! Use a fake package name to flag this
+                    push!(pkgs, "*")
                 else
-                    versionmap = sort(collect(package_project_version_map(pkg, matched_project)), by=((pkg_version,cpe_version),)->(VersionIshNumber(cpe_version), VersionNumber(pkg_version)))
+                    versionmap = sort(collect(package_project_version_map(pkg, matched_project)), by=((pkg_version,cpe_version),)->(VersionString(cpe_version), VersionNumber(pkg_version)))
                     # Find the extremes of Julia versions that are in the range; note that it might be possible for a version
                     # in between the extremes to be outside the range, but we don't care. We'll assume all versions within
                     # the extremese are vulnerable.
-                    firstidx = findfirst(in(r), VersionIshNumber.(last.(versionmap)))
+                    firstidx = findfirst(in(r), VersionString.(last.(versionmap)))
                     if isnothing(firstidx)
                         # No vulnerable versions were ever registered
                         @info "no registered versions of $pkg used $matched_project with vulnarable versions: $version"
@@ -336,7 +289,7 @@ function related_julia_packages(description, vendorproductversions)
                         # TODO: Need to add support for packages that have an unknown version registered
                         # push!(pkgs, pkg => string(VersionRange(v"0-", VersionNumber(first(first(versionmap))), true, false)))
                     else
-                        lastidx = something(findlast(in(r), VersionIshNumber.(last.(versionmap))))
+                        lastidx = something(findlast(in(r), VersionString.(last.(versionmap))))
                         firstversion = firstidx == firstindex(versionmap) ? typemin(VersionNumber) : VersionNumber(versionmap[firstidx][1])
                         lastversion  = lastidx+1 >  lastindex(versionmap) ? typemax(VersionNumber) : VersionNumber(versionmap[lastidx+1][1])
                         push!(pkgs, pkg => string(VersionRange(firstversion, lastversion, true, lastversion == typemax(VersionNumber))))

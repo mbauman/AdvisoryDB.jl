@@ -1,5 +1,8 @@
 module AdvisoryDB
 
+include("VersionStrings.jl")
+using .VersionStrings: VersionString
+
 include("common.jl")
 include("GitHub.jl")
 include("NVD.jl")
