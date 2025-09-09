@@ -186,8 +186,8 @@ function fetch_nvd_vulnerabilities(hours::Int = DEFAULT_HOURS)
     start_time = end_time - Hour(hours)
 
     # Format dates for NVD API (ISO 8601)
-    start_date = Dates.format(start_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
-    end_date = Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
+    start_date = Dates.format(start_time, "yyyy-mm-ddTHH:MM:SS.sss")*"Z"
+    end_date = Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sss")*"Z"
 
     headers = build_nvd_headers()
 

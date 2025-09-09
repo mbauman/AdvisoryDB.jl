@@ -7,17 +7,19 @@ using TOML: TOML
 function main()
     upstream_advisories_file = joinpath(@__DIR__, "..", "upstream_advisories.toml")
     upstream_advisories = isfile(upstream_advisories_file) ? TOML.parsefile(upstream_advisories_file) : Dict{String, Any}()
-    input = ARGS[1]
+    input = get(ARGS, 1, "")
     advisories = Dict{Tuple{String,String},Any}()
     info = Dict{String,Any}()
     info["haystack"] = input
     info["haystack_total"] = String[]
     info["version_trouble"] = String[]
     info["skips"] = String[]
+    specific_advisory_import = false
     if startswith(input, "CVE")
         vuln = NVD.fetch_cve(input)
         pkgs = NVD.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from NVD")
+        specific_advisory_import = true
         for (pkg, versioninfo) in pkgs
             advisories[(vuln.cve.id, pkg)] = versioninfo
         end
@@ -25,6 +27,7 @@ function main()
         vuln = EUVD.fetch_esina(input)
         pkgs = EUVD.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from EUVD")
+        specific_advisory_import = true
         vuln_id = EUVD.vuln_id(vuln)
         for (pkg, versioninfo) in pkgs
             advisories[(vuln_id, pkg)] = versioninfo
@@ -33,16 +36,26 @@ function main()
         vuln = GitHub.fetch_ghsa(input)
         pkgs = GitHub.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from GitHub")
+        specific_advisory_import = true
         vuln_id = GitHub.vuln_id(vuln, input)
         for (pkg, versioninfo) in pkgs
             advisories[(vuln_id, pkg)] = versioninfo
         end
-    elseif contains(input, ":")
-        _, vendor, product = rsplit(":"*input, ":", limit=3, keepempty=true)
-        info["haystack"] = "search $vendor/$product"
-        # Start with NVD; typically the best information but may be limited
-        cpe = "cpe:2.3:a:$vendor:$product"
-        nvds = NVD.fetch_cpe_matches(cpe)
+    else
+        # A larger joint EUVD/NVD search, either by vendor:product or time
+        if contains(input, ":")
+            _, vendor, product = rsplit(":"*input, ":", limit=3, keepempty=true)
+            info["haystack"] = "search $vendor/$product"
+            # Start with NVD; typically the best information but may be limited
+            cpe = "cpe:2.3:a:$vendor:$product"
+            nvds = NVD.fetch_cpe_matches(cpe)
+            euvds = EUVD.fetch_product_matches(vendor, product)
+        else
+            info["haystack"] = "searching recent NVD changes and EUVD publications"
+            nvds = NVD.fetch_nvd_vulnerabilities()
+            euvds = EUVD.fetch_vulnerabilities()
+        end
+
         push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
             pkgs = NVD.related_julia_packages(vuln)
@@ -56,7 +69,6 @@ function main()
             end
         end
         # Add EUVD
-        euvds = EUVD.fetch_product_matches(vendor, product)
         push!(info["haystack_total"], "$(length(euvds)) advisories from EUVD")
         nvd_fixups = 0
         for vuln in euvds
@@ -96,8 +108,6 @@ function main()
             end
         end
         nvd_fixups > 0 && push!(info["haystack_total"], "another $nvd_fixups advisories EUVD found with data fixed up by NVD")
-    else
-        error("todo: implement fetching recent updates")
     end
 
     n_created = 0
@@ -111,7 +121,7 @@ function main()
                 continue
             else
                 # We haved saved information. Avoid overwriting it _unless_ we very specifically asked for this very advisory explicitly
-                if input != advisory_id # TODO: this should also support EUVDs that have a CVE alias; it doesn't right now.
+                if !specific_advisory_import
                     # Only report this if there's a substantive change though
                     saved_advisory[pkg] != version_ranges && push!(info["skips"], "$advisory_id: skipped overwriting the existing $pkg=>$(saved_advisory[pkg]) with $version_ranges because we didn't explicitly ask for this advisory")
                     continue
