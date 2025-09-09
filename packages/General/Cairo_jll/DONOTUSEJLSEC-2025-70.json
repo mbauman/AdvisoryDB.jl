@@ -1,0 +1,60 @@
+{
+  "modified": "2025-09-09T19:44:42Z",
+  "published": "2025-09-09T19:44:42Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-70",
+  "aliases": [
+    "CVE-2018-19876"
+  ],
+  "summary": "cairo 1.16.0, in cairo_ft_apply_variations() in cairo-ft-font.c, would free memory using a free func...",
+  "details": "cairo 1.16.0, in cairo_ft_apply_variations() in cairo-ft-font.c, would free memory using a free function incompatible with WebKit's fastMalloc, leading to an application crash with a \"free(): invalid pointer\" error.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Cairo_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "1.16.0+0"
+            },
+            {
+              "fixed": "1.18.0+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:M/Au:N/C:N/I:N/A:P"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://bugs.webkit.org/show_bug.cgi?id=191595"
+    },
+    {
+      "type": "WEB",
+      "url": "https://gitlab.freedesktop.org/cairo/cairo/merge_requests/5"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugs.webkit.org/show_bug.cgi?id=191595"
+    },
+    {
+      "type": "WEB",
+      "url": "https://gitlab.freedesktop.org/cairo/cairo/merge_requests/5"
+    }
+  ]
+}
