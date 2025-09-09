@@ -257,6 +257,59 @@ function package_project_version_map(pkg, proj)
     return Dict(v => components[proj] for (v, components) in package_components()[pkg])
 end
 
+"""
+    convert_versions(pkg_project_map, vulnerable_range)
+
+Convert the vulnerable range from an upstream project's version numbers to the Julia packages,
+using the pkg_project_map.
+
+In practice, this uses the `package_components.toml` table and a vulnerable range from an upstream advisory.
+"""
+function convert_versions(pkg_project_map, vulnerable_range)
+    versionmap = sort([VersionNumber(k) => v for (k,v) in pkg_project_map], by=first)
+
+    versions = VersionRange{VersionNumber}[]
+    # Now walk through the Julia package's versions and push all applicable (potentially disjoint) ranges of versions
+    #
+    # There are two hard things we need to support in the pkg_project_map:
+    #   * Unknown versions are marked by "*" — we assume they're any versions between the known bounds
+    #   * There may be more than one upstream version on varying platforms. It may be String or String[]
+    first_vulnerable = v"0-"
+    last_vulnerable = nothing
+    last_known_ver = VersionString("")
+    last_unknown = nothing
+    skipped_unknowns = false
+    for (pkgver, ver) in versionmap
+        # Gather up sequential *s to cover their bounds
+        if ver == "*"
+            first_vulnerable = something(first_vulnerable, pkgver)
+            last_unknown = pkgver
+            skipped_unknowns = true
+            continue
+        end
+
+        if skipped_unknowns && overlaps(vulnerable_range, VersionRange(last_known_ver, ver isa AbstractString ? VersionString(ver) : isempty(ver) ? VersionString("∞") : maximum(VersionString.(ver)), true, false))
+            last_vulnerable = last_unknown
+        end
+
+        if any(in.(VersionString.(ver), (vulnerable_range,)))
+            first_vulnerable = something(first_vulnerable, pkgver)
+            last_vulnerable = pkgver
+        else
+            if last_vulnerable !== nothing
+                push!(versions, VersionRange(first_vulnerable, pkgver, true, false))
+            end
+            first_vulnerable = last_vulnerable = nothing
+        end
+        last_known_ver = ver isa AbstractString ? VersionString(ver) : isempty(ver) ? VersionString("") : minimum(VersionString.(ver))
+        skipped_unknowns = false
+    end
+    if first_vulnerable !== nothing && last_vulnerable !== nothing || (skipped_unknowns && overlaps(vulnerable_range, VersionRange(last_known_ver, typemax(VersionString), true, true)))
+        push!(versions, VersionRange(first_vulnerable, v"∞", true, true))
+    end
+    versions
+end
+
 function related_julia_packages(description, vendorproductversions)
     pkgs = Pair{String,String}[]
     reasons = String[]
@@ -272,28 +325,12 @@ function related_julia_packages(description, vendorproductversions)
             # We have an upstream component! Compute the remapped version range if we can.
             matched_pkgs = packages_with_project(matched_project)
             r = tryparse(VersionRange, version)
-            isnothing(r) && push!(reasons, "$matched_project: failed to parse vulnerable version range $version")
+            isnothing(r) && @info "$matched_project: failed to parse vulnerable version range $version"
             for pkg in matched_pkgs
                 if isnothing(r)
                     push!(pkgs, "*")
                 else
-                    versionmap = sort(collect(package_project_version_map(pkg, matched_project)), by=((pkg_version,cpe_version),)->(VersionString(cpe_version), VersionNumber(pkg_version)))
-                    # Find the extremes of Julia versions that are in the range; note that it might be possible for a version
-                    # in between the extremes to be outside the range, but we don't care. We'll assume all versions within
-                    # the extremese are vulnerable.
-                    firstidx = findfirst(in(r), VersionString.(last.(versionmap)))
-                    if isnothing(firstidx)
-                        # No vulnerable versions were ever registered
-                        @info "no registered versions of $pkg used $matched_project with vulnarable versions: $version"
-                        # We could report it with a non-applicable range, but it's simpler to just not report it at all.
-                        # TODO: Need to add support for packages that have an unknown version registered
-                        # push!(pkgs, pkg => string(VersionRange(v"0-", VersionNumber(first(first(versionmap))), true, false)))
-                    else
-                        lastidx = something(findlast(in(r), VersionString.(last.(versionmap))))
-                        firstversion = firstidx == firstindex(versionmap) ? typemin(VersionNumber) : VersionNumber(versionmap[firstidx][1])
-                        lastversion  = lastidx+1 >  lastindex(versionmap) ? typemax(VersionNumber) : VersionNumber(versionmap[lastidx+1][1])
-                        push!(pkgs, pkg => string(VersionRange(firstversion, lastversion, true, lastversion == typemax(VersionNumber))))
-                    end
+                    append!(pkgs, pkg .=> string.(convert_versions(package_project_version_map(pkg, matched_project), r)))
                 end
             end
         elseif (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
@@ -320,6 +357,7 @@ function related_julia_packages(description, vendorproductversions)
             @info "assumptively marking all packages with the provided versions"
             push!(pkgs, [pkg => v for pkg in jlpkgs_mentioned, (_,_,v) in vendorproductversions])
         else
+            @info "creating garbled identifiers"
             for vp in vendor_products
                 vs = vendorproductversions[(x->x[1:2]).(vendorproductversions) .== (vp,)]
                 push!(pkgs, ["?$(vp[1]):$(vp[2]):" * pkg => v for pkg in jlpkgs_mentioned, (_,_,v) in vs])

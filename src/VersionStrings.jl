@@ -20,6 +20,7 @@ end
 Base.tryparse(::Type{VersionString}, str) = VersionString(str)
 Base.:(==)(a::VersionString, b::VersionString) = a.str == b.str
 Base.hash(a::VersionString, h::UInt) = hash(a.str, hash(0x30eeab00fd453583, h))
+Base.Broadcast.broadcastable(a::VersionString) = Ref(a)
 
 isdelim(c::Char) = c in ('-','+','.')
 const DELIM_ORDERING = Dict('-'=>1,'+'=>2,'.'=>3)

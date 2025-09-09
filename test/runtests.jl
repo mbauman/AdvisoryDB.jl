@@ -45,3 +45,21 @@ end
 
     @test !any(contains("∞"), last(only(matches[first.(matches) .== "OpenBLASHighCoreCount_jll"])))
 end
+
+using AdvisoryDB: convert_versions, VersionRange
+@testset "version conversions" begin
+    @test isempty(convert_versions(["1.2.3" => "3.4.5"], VersionRange("< 3.4.5")))
+    @test only(convert_versions(["1.2.3" => "3.4.5"], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}("*")
+    @test only(convert_versions(["1.2.2" => "3.4.4", "1.2.3" => "3.4.5", "1.2.4" => "3.4.6"], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")
+    @test only(convert_versions(["1.2.2" => "*", "1.2.3" => "3.4.5", "1.2.4" => "3.4.6"], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}("< 1.2.4")
+    @test only(convert_versions(["1.2.2" => "3.4.4", "1.2.3" => "3.4.5", "1.2.4" => "*"], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3")
+    @test only(convert_versions(["1.2.2" => [], "1.2.3" => "3.4.5", "1.2.4" => []], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")
+    @test only(convert_versions(["1.2.2" => ["3.4.4","3.4.5"], "1.2.3" => "3.4.5", "1.2.4" => []], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}("< 1.2.4")
+
+    @test only(convert_versions(["1.2.2" => "3.4.4", "1.2.3" => "*", "1.2.4" => "3.4.6"], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")
+    @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.6","3.4.7"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")
+    @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.5"], "1.2.3" => "*", "1.2.4" => ["3.4.6","3.4.7"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}("< 1.2.4")
+    @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.5","3.4.7"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3")
+    @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.4","3.4.5"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3")
+    @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.4","3.4.7"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")
+end
