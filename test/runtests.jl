@@ -1,7 +1,7 @@
 using AdvisoryDB, Test
 
-using AdvisoryDB: VersionIshNumber as V
-@testset "VersionIshNumber comparisons" begin
+using AdvisoryDB.VersionStrings: VersionString as V
+@testset "VersionString comparisons" begin
     @test V("1.0.3") < V("1.0.10")
     @test V("1.0.3-rc2") < V("1.0.3-rc10")
     @test V("2.0.3-rc2") > V("1.0.3-rc10")
@@ -9,6 +9,14 @@ using AdvisoryDB: VersionIshNumber as V
     @test V("1.2.3-") < V("1.2.3")
     @test V("1.2.3-rc1") < V("1.2.3")
     @test !(V("1.2.3") < V("1.2.3"))
+    @test V("1.1.1") < V("1.1.1c")
+    @test V("01") < V("1")
+    @test V("01") < V("1.0")
+    @test V("1.2.03") < V("1.2.3")
+    @test V("1.2.03") != V("1.2.3")
+    @test V("1.2.3") > V("1.2.03")
+    @test V("1.2.03") < V("1.2.3-")
+    @test V("1.2.3-") > V("1.2.03")
 end
 
 using AdvisoryDB: VersionRange as VR, merge_ranges
