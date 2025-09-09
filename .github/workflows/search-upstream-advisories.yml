@@ -1,9 +1,9 @@
 name: Search for upstream advisories
 
 on:
-  # schedule:
-  #   # Run at 3 AM UTC every day
-  #   - cron: '0 3 * * *'
+  schedule:
+    # Run at 3 AM UTC every day
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       haystack:
