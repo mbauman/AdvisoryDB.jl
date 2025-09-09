@@ -9,6 +9,14 @@ using AdvisoryDB.VersionStrings: VersionString as V
     @test V("1.2.3-") < V("1.2.3")
     @test V("1.2.3-rc1") < V("1.2.3")
     @test !(V("1.2.3") < V("1.2.3"))
+    @test V("1.1.1") < V("1.1.1c")
+    @test V("01") < V("1")
+    @test V("01") < V("1.0")
+    @test V("1.2.03") < V("1.2.3")
+    @test V("1.2.03") != V("1.2.3")
+    @test V("1.2.3") > V("1.2.03")
+    @test V("1.2.03") < V("1.2.3-")
+    @test V("1.2.3-") > V("1.2.03")
 end
 
 using AdvisoryDB: VersionRange as VR, merge_ranges

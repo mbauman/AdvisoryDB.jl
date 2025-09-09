@@ -25,11 +25,17 @@ isdelim(c::Char) = c in ('-','+','.')
 const DELIM_ORDERING = Dict('-'=>1,'+'=>2,'.'=>3)
 delimisless(c1,c2) = DELIM_ORDERING[c1] < DELIM_ORDERING[c2]
 
-function lastdigitind(str, i)
+function last_digit_ind_and_leading_zeros(str, i)
+    counting_leading_zeros = str[i] == '0'
+    nzeros = Int(counting_leading_zeros)
     while i < lastindex(str) && isdigit(str[nextind(str, i)])
         i = nextind(str, i)
+        if counting_leading_zeros
+            counting_leading_zeros &= str[i] == '0'
+            nzeros += counting_leading_zeros
+        end
     end
-    return i
+    return i, nzeros
 end
 
 function Base.isless(aver::VersionString, bver::VersionString)
@@ -79,14 +85,17 @@ function Base.isless(aver::VersionString, bver::VersionString)
             return (a[ai] == '-')
         elseif isdigit(a[ai]) && isdigit(b[bi])
             # Consume all digits and compare them
-            adigitend = lastdigitind(a, ai)
-            bdigitend = lastdigitind(b, bi)
+            adigitend, anzeros = last_digit_ind_and_leading_zeros(a, ai)
+            bdigitend, bnzeros = last_digit_ind_and_leading_zeros(b, bi)
             adigit = parse(Int, SubString(a, ai, adigitend))
             bdigit = parse(Int, SubString(b, bi, bdigitend))
             ai = nextind(a, adigitend)
             bi = nextind(b, bdigitend)
-            if adigit == bdigit
+            if adigit == bdigit && anzeros == bnzeros
                 continue
+            elseif adigit == bdigit
+                # Having leading zeros is considered less than not; this allows using straight string equality
+                return bnzeros < anzeros
             else
                 return adigit < bdigit
             end
