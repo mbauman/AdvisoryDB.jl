@@ -5,7 +5,7 @@ using JSON3
 using Dates
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists, VersionRange
+using ..AdvisoryDB: AdvisoryDB, exists, VersionRange, VersionString
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
@@ -210,11 +210,18 @@ function vendor_product_versions(advisory)
     vpv = Tuple{String,String,String}[]
     for v in get(advisory, :vulnerabilities, [])
         exists(v, :package) || continue
-        exists(v.package, :name) || continue
-        vulnerable_version_range = get(v, :vulnerable_version_range, "")
-        r = tryparse(lowercase(get(v.package, :ecosystem, "")) == "julia" ? VersionRange{VersionNumber} : VersionRange, vulnerable_version_range)
-        # TODO: How to best incorporate patched_versions information here? This is messy.
-        push!(vpv, (get(v.package, :ecosystem, ""), v.package.name, isnothing(r) ? vulnerable_version_range : string(r)))
+        exists(v[:package], :name) || continue
+        (exists(v, :vulnerable_version_range) || exists(v, :first_patched_version)) || continue
+
+        # Use Semantic Version numbers if we are in a Julia ecosystem
+        T = strip(lowercase(get(v[:package], :ecosystem, ""))) == "julia" ? VersionNumber : VersionString
+        # Start with the vulnerable version range (or all versions if it doesn't exist)
+        r = something(tryparse(VersionRange{T}, get(v, :vulnerable_version_range, "")), VersionRange{T}("*"))
+        # And then if there's patched versions, amend the upper bound to exclude it
+        if exists(v, :first_patched_version)
+            r = VersionRange{T}(r.lb, T(v[:first_patched_version]), r.lbinclusive, false)
+        end
+        push!(vpv, (get(v[:package], :ecosystem, ""), v[:package][:name], isnothing(r) ? vulnerable_version_range : string(r)))
     end
     return vpv
 end
