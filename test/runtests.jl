@@ -63,3 +63,28 @@ using AdvisoryDB: convert_versions, VersionRange
     @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.4","3.4.5"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3")
     @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.4","3.4.7"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")
 end
+
+# Specific support for re-interpreting GitHub's patched field:
+@testset "GitHub version extraction" begin
+    # From GHSA-543v-gj2c-r3ch
+    vuln = Dict(:vulnerabilities => [Dict(:package => Dict(:name => "activemodel", :ecosystem => "rubygems"), :vulnerable_functions => Any[], :vulnerable_version_range => ">= 4.1.0, <= 4.1.14.0", :first_patched_version => "4.1.14.1"), Dict(:package => Dict(:name => "activemodel", :ecosystem => "rubygems"), :vulnerable_functions => Any[], :vulnerable_version_range => ">= 4.2.0, <= 4.2.5.0", :first_patched_version => "4.2.5.1")])
+    vpv = GitHub.vendor_product_versions(vuln)
+    @test length(vpv) == 2
+    @test vpv[1] == ("rubygems", "activemodel", ">= 4.1.0, < 4.1.14.1")
+    @test vpv[2] == ("rubygems", "activemodel", ">= 4.2.0, < 4.2.5.1")
+
+    vuln = Dict(:vulnerabilities => [Dict(:package => Dict(:name => "ActiveInference", :ecosystem => "Julia"), :vulnerable_functions => Any[], :vulnerable_version_range => ">= 4.1.0, <= 4.1.14.0", :first_patched_version => "4.1.14.1"), Dict(:package => Dict(:name => "ActiveInference", :ecosystem => "Julia"), :vulnerable_functions => Any[], :vulnerable_version_range => ">= 4.2.0, <= 4.2.5.0", :first_patched_version => "4.2.5.1")])
+    @test_throws "invalid version" GitHub.vendor_product_versions(vuln)
+
+    vuln = Dict(:vulnerabilities => [Dict(:package => Dict(:name => "ActiveInference", :ecosystem => "Julia"), :vulnerable_functions => Any[], :vulnerable_version_range => ">= 4.1.0, <= 4.1.14", :first_patched_version => "4.1.15"), Dict(:package => Dict(:name => "ActiveInference", :ecosystem => "Julia"), :vulnerable_functions => Any[], :vulnerable_version_range => ">= 4.2.0, <= 4.2.5", :first_patched_version => "4.2.6")])
+    vpv = GitHub.vendor_product_versions(vuln)
+    @test length(vpv) == 2
+    @test vpv[1] == ("Julia", "ActiveInference", ">= 4.1.0, < 4.1.15")
+    @test vpv[2] == ("Julia", "ActiveInference", ">= 4.2.0, < 4.2.6")
+
+    vuln = Dict(:vulnerabilities => [Dict(:package => Dict(:name => "ActiveInference", :ecosystem => "Julia"), :vulnerable_functions => Any[], :vulnerable_version_range => ">= 4.1.0", :first_patched_version => "4.1.15"), Dict(:package => Dict(:name => "ActiveInference", :ecosystem => "Julia"), :vulnerable_functions => Any[], :vulnerable_version_range => "<= 4.2.5", :first_patched_version => "4.2.6")])
+    vpv = GitHub.vendor_product_versions(vuln)
+    @test length(vpv) == 2
+    @test vpv[1] == ("Julia", "ActiveInference", ">= 4.1.0, < 4.1.15")
+    @test vpv[2] == ("Julia", "ActiveInference", "< 4.2.6")
+end

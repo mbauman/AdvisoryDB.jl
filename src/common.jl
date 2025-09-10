@@ -7,7 +7,7 @@ using DataStructures: OrderedDict as Dict
 using Dates: Dates
 using TimeZones: TimeZones
 
-exists(advisory, key) = haskey(advisory, key) && is_populated(getproperty(advisory, key))
+exists(advisory, key) = haskey(advisory, key) && is_populated(advisory[key])
 exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
 is_populated(::Nothing) = false
 is_populated(::Missing) = false
@@ -456,8 +456,8 @@ end
 """
     corresponding_jlsec_id(package, id, aliases=String[])
 
-Given a Julia package and an upstream advisory id and an optional list of (aliases),
-return the path to the corresponding JLSEC advisory if it exists and `nothing` otherwise.
+Given a Julia package and an upstream advisory id and an (optional) list of aliases,
+return the corresponding JLSEC advisory id if it exists and `nothing` otherwise.
 """
 function corresponding_jlsec_id(package, id, aliases=String[])
     # The obvious cases are those where the upstream advisory has a JLSEC alias
@@ -478,7 +478,7 @@ function corresponding_jlsec_id(package, id, aliases=String[])
         end
     end
     # And then search for the first match
-    for alias in vcat(id, sort(aliases))
+    for alias in vcat(id, chopprefix(id, r".*(?=GHSA-\w{4}-\w{4}-\w{4}$)"), sort(aliases))
         haskey(jlsec_aliases, alias) && return jlsec_aliases[alias]
     end
     return nothing
