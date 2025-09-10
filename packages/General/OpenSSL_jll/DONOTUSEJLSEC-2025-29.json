@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:50:58Z",
-  "published": "2025-08-27T02:50:58Z",
+  "modified": "2025-09-08T03:26:37Z",
+  "published": "2025-09-08T03:26:37Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-29",
   "aliases": [
-    "CVE-2021-4044"
+    "CVE-2023-1255"
   ],
-  "summary": "Internally libssl in OpenSSL calls X509_verify_cert() on the client side to verify a certificate supplied by a server.",
-  "details": "Internally libssl in OpenSSL calls X509_verify_cert() on the client side to verify a certificate supplied by a server. That function may return a negative return value to indicate an internal error (for example out of memory). Such a negative return value is mishandled by OpenSSL and will cause an IO function (such as SSL_connect() or SSL_do_handshake()) to not indicate success and a subsequent call to SSL_get_error() to return the value SSL_ERROR_WANT_RETRY_VERIFY. This return value is only supposed to be returned by OpenSSL if the application has previously called SSL_CTX_set_cert_verify_callback(). Since most applications do not do this the SSL_ERROR_WANT_RETRY_VERIFY return value from SSL_get_error() will be totally unexpected and applications may not behave correctly as a result. The exact behaviour will depend on the application but it could result in crashes, infinite loops or other similar incorrect responses. This issue is made more serious in combination with a separate bug in OpenSSL 3.0 that will cause X509_verify_cert() to indicate an internal error when processing a certificate chain. This will occur where a certificate does not include the Subject Alternative Name extension but where a Certificate Authority has enforced name constraints. This issue can occur even with valid chains. By combining the two issues an attacker could induce incorrect, application dependent behaviour. Fixed in OpenSSL 3.0.1 (Affected 3.0.0).",
+  "summary": "Issue summary: The AES-XTS cipher decryption implementation for 64 bit ARM platform contains a bug that could cause it to read past the input buffer, leading to a crash.",
+  "details": "Issue summary: The AES-XTS cipher decryption implementation for 64 bit ARM\nplatform contains a bug that could cause it to read past the input buffer,\nleading to a crash.\n\nImpact summary: Applications that use the AES-XTS algorithm on the 64 bit ARM\nplatform can crash in rare circumstances. The AES-XTS algorithm is usually\nused for disk encryption.\n\nThe AES-XTS cipher decryption implementation for 64 bit ARM platform will read\npast the end of the ciphertext buffer if the ciphertext size is 4 mod 5 in 16\nbyte blocks, e.g. 144 bytes or 1024 bytes. If the memory after the ciphertext\nbuffer is unmapped, this will trigger a crash which results in a denial of\nservice.\n\nIf an attacker can control the size and location of the ciphertext buffer\nbeing decrypted by an application using AES-XTS on 64 bit ARM, the\napplication is affected. This is fairly unlikely making this issue\na Low severity one.",
   "affected": [
     {
       "package": {
@@ -19,10 +19,10 @@
           "type": "SEMVER",
           "events": [
             {
-              "introduced": "0"
+              "introduced": "3.0.8+0"
             },
             {
-              "fixed": "1.1.1+2"
+              "fixed": "3.0.9+0"
             }
           ]
         }
@@ -32,37 +32,41 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=758754966791c537ea95241438454aa86f91f256"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=02ac9c9420275868472f33b01def01218742b8bb"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20211229-0003/"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=bc2f61ad70971869b242fc1cb445b98bad50074a"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20211214.txt"
+      "url": "https://security.netapp.com/advisory/ntap-20230908-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=758754966791c537ea95241438454aa86f91f256"
+      "url": "https://www.openssl.org/news/secadv/20230419.txt"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20211229-0003/"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=02ac9c9420275868472f33b01def01218742b8bb"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20211214.txt"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=bc2f61ad70971869b242fc1cb445b98bad50074a"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20230908-0006/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230419.txt"
     }
   ]
 }

@@ -1,9 +1,9 @@
 name: Search for upstream advisories
 
 on:
-  # schedule:
-  #   # Run at 3 AM UTC every day
-  #   - cron: '0 3 * * *'
+  schedule:
+    # Run at 3 AM UTC every day
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       haystack:
@@ -31,7 +31,7 @@ jobs:
     - name: Run search script
       id: identify
       run: |
-        julia --project=. scripts/identify_upstream_advisories.jl ${{ inputs.haystack }}
+        julia --project=. scripts/search_upstream_advisories.jl ${{ inputs.haystack }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}

@@ -1,0 +1,60 @@
+{
+  "modified": "2025-09-09T19:44:43Z",
+  "published": "2025-09-09T19:44:43Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-68",
+  "aliases": [
+    "CVE-2020-35492"
+  ],
+  "summary": "A flaw was found in cairo's image-compositor.c in all versions prior to 1.17.4.",
+  "details": "A flaw was found in cairo's image-compositor.c in all versions prior to 1.17.4. This flaw allows an attacker who can provide a crafted input file to cairo's image-compositor (for example, by convincing a user to open a file in an application using cairo, or if an application uses cairo on untrusted input) to cause a stack buffer overflow -\u003e out-of-bounds WRITE. The highest impact from this vulnerability is to confidentiality, integrity, as well as system availability.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Cairo_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.18.0+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:M/Au:N/C:P/I:P/A:P"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1898396"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202305-21"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1898396"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202305-21"
+    }
+  ]
+}

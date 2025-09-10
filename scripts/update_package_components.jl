@@ -43,7 +43,12 @@ function main()
                         tmp
                     end
                     tag = cd(dir) do
-                        readchomp(`git tag --points-at $commit`)
+                        t = try readchomp(`git tag --points-at $commit`) catch _ "" end
+                        if isempty(t)
+                            t = try readchomp(`git tag --points-at $commit\~`) catch _ "" end
+                            !isempty(t) && @info "$proj: found tag at $commit~;\n\n$(readchomp(`git show --format=oneline $commit`))"
+                        end
+                        t
                     end
                     if isempty(tag)
                         info["missing_reasons"][(jllname, jllversion, proj)] = "commit $repo @ $commit is not tagged"

@@ -11,227 +11,171 @@
 # This file is semi-automatically updated by suggested pull requests. By marking a package with an
 # exception string, you prevent further automatic updates from suggesting the advisory apply.
 
-[CVE-2016-7053]
-OpenSSL_jll = ["< 1.1.1+2"]
+[CVE-2017-9814]
+Cairo_jll = ["< 1.16.0+0"]
 
-[CVE-2016-7054]
-OpenSSL_jll = ["< 1.1.1+2"]
+[CVE-2018-18064]
+Cairo_jll = ["< 1.16.0+0"]
 
-[CVE-2016-8610]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2017-3730]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2017-3731]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2017-3732]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2017-3733]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2018-0732]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2018-0733]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2018-0734]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2018-0735]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2018-0737]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2018-0739]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2019-1543]
-OpenSSL_jll = ["< 1.1.1+2"]
+[CVE-2018-19876]
+Cairo_jll = [">= 1.16.0+0, < 1.18.0+0"]
 
 [CVE-2019-1547]
-OpenSSL_jll = ["< 1.1.1+6"]
+OpenSSL_jll = ["< 1.1.1+2"]
 
 [CVE-2019-1549]
-OpenSSL_jll = ["< 1.1.1+6"]
+OpenSSL_jll = ["< 1.1.1+2"]
 
 [CVE-2019-1551]
-OpenSSL_jll = ["< 1.1.1+6"]
+OpenSSL_jll = ["< 1.1.1+2"]
+Openresty_jll = ["< 1.19.9+0"]
 
 [CVE-2019-1552]
-OpenSSL_jll = ["< 1.1.1+6"]
-
-[CVE-2019-1559]
 OpenSSL_jll = ["< 1.1.1+2"]
 
 [CVE-2019-1563]
-OpenSSL_jll = ["< 1.1.1+6"]
+OpenSSL_jll = ["< 1.1.1+2"]
+
+[CVE-2019-17498]
+LibSSH2_jll = ["< 1.10.1+0"]
+
+[CVE-2019-6461]
+Cairo_jll = [">= 1.16.0+0, < 1.18.0+0"]
+
+[CVE-2019-6462]
+Cairo_jll = [">= 1.16.0+0, < 1.18.0+0"]
 
 [CVE-2020-1967]
-OpenSSL_jll = [">= 1.1.1+6, < 1.1.10+0"]
+OpenSSL_jll = [">= 1.1.1+2, < 1.1.10+0"]
 
 [CVE-2020-1968]
-OpenSSL_jll = ["< 1.1.1+2"]
+Openresty_jll = ["< 1.19.9+0"]
 
 [CVE-2020-1971]
 OpenSSL_jll = ["< 1.1.10+0"]
+Openresty_jll = ["< 1.19.9+0"]
+
+[CVE-2020-22218]
+LibSSH2_jll = [">= 1.10.1+0, < 1.11.0+0"]
+
+[CVE-2020-35492]
+Cairo_jll = ["< 1.18.0+0"]
 
 [CVE-2021-23839]
-OpenSSL_jll = ["< 1.1.1+2"]
+Openresty_jll = ["< 1.19.9+0"]
 
 [CVE-2021-23840]
 OpenSSL_jll = ["< 1.1.10+0"]
+Openresty_jll = ["< 1.19.9+0"]
 
 [CVE-2021-23841]
 OpenSSL_jll = ["< 1.1.10+0"]
+Openresty_jll = ["< 1.19.9+0"]
 
 [CVE-2021-3449]
-OpenSSL_jll = ["< 1.1.13+0"]
-
-[CVE-2021-3450]
-OpenSSL_jll = [">= 1.1.10+0, < 1.1.13+0"]
+OpenSSL_jll = ["< 1.1.10+0"]
 
 [CVE-2021-3711]
 OpenSSL_jll = ["< 1.1.13+0"]
 
 [CVE-2021-3712]
 OpenSSL_jll = ["< 1.1.13+0"]
+Openresty_jll = ["< 1.19.9+0"]
 
-[CVE-2021-4044]
-OpenSSL_jll = ["< 1.1.1+2"]
+[CVE-2021-4048]
+OpenBLAS32_jll = ["< 0.3.20+0"]
+OpenBLASHighCoreCount_jll = ["*"]
+OpenBLAS_jll = ["< 0.3.20+0"]
 
 [CVE-2021-4160]
-OpenSSL_jll = ["< 1.1.14+0"]
+OpenSSL_jll = ["< 1.1.13+0"]
+Openresty_jll = ["< 1.21.4+0"]
 
 [CVE-2022-0778]
-OpenSSL_jll = ["< 1.1.16+0"]
+OpenSSL_jll = ["< 1.1.14+0"]
+Openresty_jll = ["< 1.21.4+0"]
 
 [CVE-2022-1292]
 OpenSSL_jll = ["< 1.1.16+0"]
-
-[CVE-2022-1343]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2022-1434]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2022-1473]
-OpenSSL_jll = ["< 1.1.1+2"]
+Openresty_jll = ["< 1.21.4+0"]
 
 [CVE-2022-2068]
-OpenSSL_jll = ["< 1.1.17+0"]
+OpenSSL_jll = ["< 1.1.16+0"]
+Openresty_jll = ["< 1.21.4+0"]
 
 [CVE-2022-2097]
-OpenSSL_jll = ["< 1.1.19+0"]
-
-[CVE-2022-2274]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2022-3358]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2022-3602]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2022-3786]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2022-3996]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2022-4203]
-OpenSSL_jll = [">= 3.0.8+0, < 3.0.9+0"]
+OpenSSL_jll = ["< 1.1.17+0"]
+Openresty_jll = [">= 1.19.9+0, < 1.27.1+0"]
 
 [CVE-2022-4304]
-OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
+OpenSSL_jll = ["< 1.1.20+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2022-4450]
-OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
+OpenSSL_jll = ["< 1.1.20+0"]
+Openresty_jll = [">= 1.19.9+0, < 1.27.1+0"]
 
 [CVE-2023-0215]
-OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
-
-[CVE-2023-0216]
-OpenSSL_jll = [">= 3.0.8+0, < 3.0.9+0"]
-
-[CVE-2023-0217]
-OpenSSL_jll = [">= 3.0.8+0, < 3.0.9+0"]
+OpenSSL_jll = ["< 1.1.20+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-0286]
-OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
-
-[CVE-2023-0401]
-OpenSSL_jll = [">= 3.0.8+0, < 3.0.9+0"]
+OpenSSL_jll = ["< 1.1.20+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-0464]
-OpenSSL_jll = ["< 1.1.22+0", ">= 3.0.8+0, < 3.0.10+0"]
+OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-0465]
-OpenSSL_jll = ["< 1.1.22+0", ">= 3.0.8+0, < 3.0.10+0"]
+OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-0466]
-OpenSSL_jll = ["< 1.1.22+0", ">= 3.0.8+0, < 3.0.10+0"]
+OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-1255]
-OpenSSL_jll = ["< 1.1.1+2", ">= 3.0.8+0, < 3.0.10+0"]
+OpenSSL_jll = [">= 3.0.8+0, < 3.0.9+0"]
 
 [CVE-2023-2650]
-OpenSSL_jll = ["< 1.1.22+0", ">= 3.0.8+0, < 3.0.10+0"]
+OpenSSL_jll = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-2975]
-OpenSSL_jll = ["< 1.1.1+2", ">= 3.0.8+0, < 3.0.10+0"]
-
-[CVE-2023-3446]
-OpenSSL_jll = ["< 1.1.23+0", ">= 3.0.8+0, < 3.0.11+0"]
+OpenSSL_jll = [">= 3.0.8+0, < 3.0.10+0"]
 
 [CVE-2023-3817]
-OpenSSL_jll = ["< 1.1.22+0", ">= 3.0.8+0, < 3.0.11+0"]
+OpenSSL_jll = ["< 1.1.22+0", ">= 3.0.8+0, < 3.0.10+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-4807]
-OpenSSL_jll = ["< 3.0.12+0"]
+OpenSSL_jll = ["< 1.1.23+0", ">= 3.0.8+0, < 3.0.11+0"]
+Openresty_jll = [">= 1.19.9+0, < 1.27.1+0"]
+
+[CVE-2023-48795]
+LibSSH2_jll = ["< 1.11.3+0"]
 
 [CVE-2023-5363]
-OpenSSL_jll = ["< 1.1.1+2", ">= 3.0.8+0, < 3.0.13+0"]
+OpenSSL_jll = [">= 3.0.8+0, < 3.0.12+0"]
 
 [CVE-2023-5678]
-OpenSSL_jll = ["< 3.0.14+0"]
+OpenSSL_jll = ["< 3.0.13+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2023-6129]
-OpenSSL_jll = ["< 1.1.1+2", ">= 3.0.8+0, < 3.0.13+0"]
-
-[CVE-2023-6237]
-OpenSSL_jll = ["< 1.1.1+2", ">= 3.0.8+0, < 3.0.14+0"]
+OpenSSL_jll = [">= 3.0.8+0, < 3.0.13+0"]
 
 [CVE-2024-0727]
-OpenSSL_jll = ["< 3.0.14+0"]
-
-[CVE-2024-12797]
-OpenSSL_jll = ["< 1.1.1+2"]
-
-[CVE-2024-13176]
-OpenSSL_jll = ["< 3.5.0+0"]
-
-[CVE-2024-2511]
-OpenSSL_jll = ["< 3.0.15+1"]
-
-[CVE-2024-4603]
-OpenSSL_jll = ["< 1.1.1+2", ">= 3.0.8+0, < 3.0.15+1"]
-
-[CVE-2024-4741]
-OpenSSL_jll = ["< 3.0.15+1"]
-
-[CVE-2024-5535]
-OpenSSL_jll = ["< 3.0.16+0"]
+OpenSSL_jll = ["< 3.0.13+0"]
+Openresty_jll = ["< 1.27.1+0"]
 
 [CVE-2024-6119]
-OpenSSL_jll = ["< 1.1.1+2", ">= 3.0.8+0, < 3.0.16+0"]
+OpenSSL_jll = [">= 3.0.8+0, < 3.0.15+0"]
 
-[CVE-2024-9143]
-OpenSSL_jll = ["< 3.5.0+0"]
+[CVE-2025-58050]
+PCRE2_jll = [">= 10.45.0+0, < 10.46.0+0"]
 
-[CVE-2025-4575]
-OpenSSL_jll = [">= 3.5.0+0, < 3.5.2+0"]
+["JuliaWeb/HTTP.jl/GHSA-4g68-4pxg-mw93"]
+HTTP = ["<= 1.10.16"]
+URIs = ["< 1.6.0"]

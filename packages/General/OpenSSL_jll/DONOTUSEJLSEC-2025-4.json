@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:01Z",
-  "published": "2025-08-27T02:51:01Z",
+  "modified": "2025-09-08T03:26:34Z",
+  "published": "2025-09-08T03:26:34Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-4",
   "aliases": [
-    "CVE-2024-6119"
+    "CVE-2023-5678"
   ],
-  "summary": "Issue summary: Applications performing certificate name checks (e.g., TLS clients checking server certificates) may attempt to read an invalid memory address resulting in abnormal termination of the application process.",
-  "details": "Issue summary: Applications performing certificate name checks (e.g., TLS\nclients checking server certificates) may attempt to read an invalid memory\naddress resulting in abnormal termination of the application process.\n\nImpact summary: Abnormal termination of an application can a cause a denial of\nservice.\n\nApplications performing certificate name checks (e.g., TLS clients checking\nserver certificates) may attempt to read an invalid memory address when\ncomparing the expected name with an `otherName` subject alternative name of an\nX.509 certificate. This may result in an exception that terminates the\napplication program.\n\nNote that basic certificate chain validation (signatures, dates, ...) is not\naffected, the denial of service can occur only when the application also\nspecifies an expected DNS name, Email address or IP address.\n\nTLS servers rarely solicit client certificates, and even when they do, they\ngenerally don't perform a name check against a reference identifier (expected\nidentity), but rather extract the presented identity after checking the\ncertificate chain.  So TLS servers are generally not affected and the severity\nof the issue is Moderate.\n\nThe FIPS modules in 3.3, 3.2, 3.1 and 3.0 are not affected by this issue.",
+  "summary": "Issue summary: Generating excessively long X9.42 DH keys or checking excessively long X9.42 DH keys or parameters may be very slow.",
+  "details": "Issue summary: Generating excessively long X9.42 DH keys or checking\nexcessively long X9.42 DH keys or parameters may be very slow.\n\nImpact summary: Applications that use the functions DH_generate_key() to\ngenerate an X9.42 DH key may experience long delays.  Likewise, applications\nthat use DH_check_pub_key(), DH_check_pub_key_ex() or EVP_PKEY_public_check()\nto check an X9.42 DH key or X9.42 DH parameters may experience long delays.\nWhere the key or parameters that are being checked have been obtained from\nan untrusted source this may lead to a Denial of Service.\n\nWhile DH_check() performs all the necessary checks (as of CVE-2023-3817),\nDH_check_pub_key() doesn't make any of these checks, and is therefore\nvulnerable for excessively large P and Q parameters.\n\nLikewise, while DH_generate_key() performs a check for an excessively large\nP, it doesn't check for an excessively large Q.\n\nAn application that calls DH_generate_key() or DH_check_pub_key() and\nsupplies a key or parameters obtained from an untrusted source could be\nvulnerable to a Denial of Service attack.\n\nDH_generate_key() and DH_check_pub_key() are also called by a number of\nother OpenSSL functions.  An application calling any of those other\nfunctions may similarly be affected.  The other functions affected by this\nare DH_check_pub_key_ex(), EVP_PKEY_public_check(), and EVP_PKEY_generate().\n\nAlso vulnerable are the OpenSSL pkey command line application when using the\n\"-pubcheck\" option, as well as the OpenSSL genpkey command line application.\n\nThe OpenSSL SSL/TLS implementation is not affected by this issue.\n\nThe OpenSSL 3.0 and 3.1 FIPS providers are not affected by this issue.",
   "affected": [
     {
       "package": {
@@ -22,13 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
-            },
-            {
-              "introduced": "3.0.8+0"
-            },
-            {
-              "fixed": "3.0.16+0"
+              "fixed": "3.0.13+0"
             }
           ]
         }
@@ -38,41 +32,57 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/05f360d9e849a1b277db628f1f13083a7f8dd04f"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=34efaef6c103d636ab507a0cc34dca4d3aecc055"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/06d1dc3fa96a2ba5a3e22735a033012aadc9f0d6"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=710fee740904b6290fef0dd5536fbcedbc38ff0c"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/621f3729831b05ee828a3203eddb621d014ff2b2"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=db925ae2e65d0d925adef429afc37f75bd1c2017"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/7dfcee2cd2a63b2c64b9b4b0850be64cb695b0a0"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=ddeb4b6c6d527e54ce9a99cba785c0f7776e54b6"
     },
     {
       "type": "WEB",
-      "url": "https://openssl-library.org/news/secadv/20240903.txt"
+      "url": "https://www.openssl.org/news/secadv/20231106.txt"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2024/09/03/4"
+      "url": "http://www.openwall.com/lists/oss-security/2024/03/11/1"
     },
     {
       "type": "WEB",
-      "url": "https://lists.freebsd.org/archives/freebsd-security/2024-September/000303.html"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=34efaef6c103d636ab507a0cc34dca4d3aecc055"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20240912-0001/"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=710fee740904b6290fef0dd5536fbcedbc38ff0c"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=db925ae2e65d0d925adef429afc37f75bd1c2017"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=ddeb4b6c6d527e54ce9a99cba785c0f7776e54b6"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20231130-0010/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20231106.txt"
     }
   ]
 }

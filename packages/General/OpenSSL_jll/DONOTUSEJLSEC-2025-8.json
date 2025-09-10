@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:02Z",
-  "published": "2025-08-27T02:51:02Z",
+  "modified": "2025-09-08T03:26:38Z",
+  "published": "2025-09-08T03:26:38Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-8",
   "aliases": [
-    "CVE-2018-0737"
+    "CVE-2024-0727"
   ],
-  "summary": "The OpenSSL RSA Key generation algorithm has been shown to be vulnerable to a cache timing side channel attack.",
-  "details": "The OpenSSL RSA Key generation algorithm has been shown to be vulnerable to a cache timing side channel attack. An attacker with sufficient access to mount cache timing attacks during the RSA key generation process could recover the private key. Fixed in OpenSSL 1.1.0i-dev (Affected 1.1.0-1.1.0h). Fixed in OpenSSL 1.0.2p-dev (Affected 1.0.2b-1.0.2o).",
+  "summary": "Issue summary: Processing a maliciously formatted PKCS12 file may lead OpenSSL to crash leading to a potential Denial of Service attack Impact summary: Applications loading files in the PKCS12 format from untrusted sources might terminate abruptly.",
+  "details": "Issue summary: Processing a maliciously formatted PKCS12 file may lead OpenSSL\nto crash leading to a potential Denial of Service attack\n\nImpact summary: Applications loading files in the PKCS12 format from untrusted\nsources might terminate abruptly.\n\nA file in PKCS12 format can contain certificates and keys and may come from an\nuntrusted source. The PKCS12 specification allows certain fields to be NULL, but\nOpenSSL does not correctly check for this case. This can lead to a NULL pointer\ndereference that results in OpenSSL crashing. If an application processes PKCS12\nfiles from an untrusted source using the OpenSSL APIs then that application will\nbe vulnerable to this issue.\n\nOpenSSL APIs that are vulnerable to this are: PKCS12_parse(),\nPKCS12_unpack_p7data(), PKCS12_unpack_p7encdata(), PKCS12_unpack_authsafes()\nand PKCS12_newpass().\n\nWe have also fixed a similar issue in SMIME_write_PKCS7(). However since this\nfunction is related to writing data we do not consider it security significant.\n\nThe FIPS modules in 3.2, 3.1 and 3.0 are not affected by this issue.",
   "affected": [
     {
       "package": {
@@ -22,7 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
+              "fixed": "3.0.13+0"
             }
           ]
         }
@@ -32,285 +32,65 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+      "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html"
+      "url": "https://github.com/openssl/openssl/commit/09df4395b5071217b76dc7d3d2e630eb8c5a79c2"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/103766"
+      "url": "https://github.com/openssl/openssl/commit/775acfdbd0c6af9ac855f34969cdab0c0c90844a"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1040685"
+      "url": "https://github.com/openssl/openssl/commit/d135eeab8a5dbf72b3da5240bab9ddb7678dbd2c"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3221"
+      "url": "https://github.openssl.org/openssl/extended-releases/commit/03b3941d60c4bce58fab69a0c22377ab439bc0e8"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3505"
+      "url": "https://github.openssl.org/openssl/extended-releases/commit/aebaa5883e31122b404e450732dc833dc9dee539"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3932"
+      "url": "https://www.openssl.org/news/secadv/20240125.txt"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3933"
+      "url": "http://www.openwall.com/lists/oss-security/2024/03/11/1"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3935"
+      "url": "https://github.com/openssl/openssl/commit/09df4395b5071217b76dc7d3d2e630eb8c5a79c2"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=349a41da1ad88ad87825414752a8ff5fdd6a6c3f"
+      "url": "https://github.com/openssl/openssl/commit/775acfdbd0c6af9ac855f34969cdab0c0c90844a"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6939eab03a6e23d2bd2c3f5e34fe1d48e542e787"
+      "url": "https://github.com/openssl/openssl/commit/d135eeab8a5dbf72b3da5240bab9ddb7678dbd2c"
     },
     {
       "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2018/07/msg00043.html"
+      "url": "https://github.openssl.org/openssl/extended-releases/commit/03b3941d60c4bce58fab69a0c22377ab439bc0e8"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/"
+      "url": "https://github.openssl.org/openssl/extended-releases/commit/aebaa5883e31122b404e450732dc833dc9dee539"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
+      "url": "https://security.netapp.com/advisory/ntap-20240208-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://nodejs.org/en/blog/vulnerability/august-2018-security-releases/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201811-21"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20180726-0003/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://securityadvisories.paloaltonetworks.com/Home/Detail/133"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-2/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-2/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4348"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4355"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20180416.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujan2019-5072801.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-12"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-13"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-14"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-17"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/103766"
-    },
-    {
-      "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1040685"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3221"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:3505"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3932"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3933"
-    },
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2019:3935"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=349a41da1ad88ad87825414752a8ff5fdd6a6c3f"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6939eab03a6e23d2bd2c3f5e34fe1d48e542e787"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2018/07/msg00043.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://nodejs.org/en/blog/vulnerability/august-2018-security-releases/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201811-21"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20180726-0003/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://securityadvisories.paloaltonetworks.com/Home/Detail/133"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3628-2/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/3692-2/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4348"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2018/dsa-4355"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20180416.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujan2019-5072801.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpujul2019-5072835.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-12"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-13"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-14"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2018-17"
+      "url": "https://www.openssl.org/news/secadv/20240125.txt"
     }
   ]
 }

@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:03Z",
-  "published": "2025-08-27T02:51:03Z",
+  "modified": "2025-09-08T03:26:39Z",
+  "published": "2025-09-08T03:26:39Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-15",
   "aliases": [
-    "CVE-2022-4203"
+    "CVE-2023-2975"
   ],
-  "summary": "A read buffer overrun can be triggered in X.509 certificate verification, specifically in name constraint checking.",
-  "details": "A read buffer overrun can be triggered in X.509 certificate verification,\nspecifically in name constraint checking. Note that this occurs\nafter certificate chain signature verification and requires either a\nCA to have signed the malicious certificate or for the application to\ncontinue certificate verification despite failure to construct a path\nto a trusted issuer.\n\nThe read buffer overrun might result in a crash which could lead to\na denial of service attack. In theory it could also result in the disclosure\nof private memory contents (such as private keys, or sensitive plaintext)\nalthough we are not aware of any working exploit leading to memory\ncontents disclosure as of the time of release of this advisory.\n\nIn a TLS client, this can be triggered by connecting to a malicious\nserver. In a TLS server, this can be triggered if the server requests\nclient authentication and a malicious client connects.",
+  "summary": "Issue summary: The AES-SIV cipher implementation contains a bug that causes it to ignore empty associated data entries which are unauthenticated as a consequence.",
+  "details": "Issue summary: The AES-SIV cipher implementation contains a bug that causes\nit to ignore empty associated data entries which are unauthenticated as\na consequence.\n\nImpact summary: Applications that use the AES-SIV algorithm and want to\nauthenticate empty data entries as associated data can be misled by removing,\nadding or reordering such empty entries as these are ignored by the OpenSSL\nimplementation. We are currently unaware of any such applications.\n\nThe AES-SIV algorithm allows for authentication of multiple associated\ndata entries along with the encryption. To authenticate empty data the\napplication has to call EVP_EncryptUpdate() (or EVP_CipherUpdate()) with\nNULL pointer as the output buffer and 0 as the input buffer length.\nThe AES-SIV implementation in OpenSSL just returns success for such a call\ninstead of performing the associated data authentication operation.\nThe empty data thus will not be authenticated.\n\nAs this issue does not affect non-empty associated data authentication and\nwe expect it to be rare for an application to use empty associated data\nentries this is qualified as Low severity issue.",
   "affected": [
     {
       "package": {
@@ -22,7 +22,7 @@
               "introduced": "3.0.8+0"
             },
             {
-              "fixed": "3.0.9+0"
+              "fixed": "3.0.10+0"
             }
           ]
         }
@@ -32,13 +32,37 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:H"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c927a3492698c254637da836762f9b1f86cffabc"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=00e2f5eea29994d19293ec4e8c8775ba73678598"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6a83f0c958811f07e0d11dfc6b5a6a98edfd5bdc"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230714.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2023/07/15/1"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2023/07/19/5"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=00e2f5eea29994d19293ec4e8c8775ba73678598"
+    },
+    {
+      "type": "WEB",
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6a83f0c958811f07e0d11dfc6b5a6a98edfd5bdc"
     },
     {
       "type": "WEB",
@@ -46,19 +70,11 @@
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      "url": "https://security.netapp.com/advisory/ntap-20230725-0004/"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c927a3492698c254637da836762f9b1f86cffabc"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202402-08"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20230207.txt"
+      "url": "https://www.openssl.org/news/secadv/20230714.txt"
     }
   ]
 }

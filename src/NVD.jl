@@ -153,40 +153,17 @@ function fetch_cve(cveId)
     return only(fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities))
 end
 
-fetch_cpe_matches(cpe) = fetch_cpe_matches(CPE(cpe))
-fetch_cpe_matches(cpe, versions) = fetch_cpe_matches(CPE(cpe), versions)
-function fetch_cpe_matches(cpe::CPE, versions=unique((x->CPE(x.cpe.cpeName).version).(filter(x->!x.cpe.deprecated, fetch_cpes(cpe)))))
-    # Unfortunately, we cannot search for CPEs with a "*" version slot.
-    # so instead we first gather all matching CPEs, and _then_ we fetch
-    # all CPEs using them.
+function fetch_cpe_matches(cpe)
     headers = build_nvd_headers()
-    if cpe.version != "*"
-        params = Dict(
-            "cpeName" => string(cpe),
-            "resultsPerPage" => "2000",
-            "startIndex" => "0"
-        )
-        return fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities)
-    else
-        vulns = []
-        cpebase = string("cpe:2.3:", cpe.part, ":", cpe.vendor, ":", cpe.product, ":")
-        for ver in versions
-            ver == "*" && continue
-            cpeversion = CPE(string(cpebase, ver))
-            params = Dict(
-                "cpeName" => string(cpeversion),
-                "resultsPerPage" => "2000",
-                "startIndex" => "0"
-            )
-            sleep(6)
-            try
-                append!(vulns, fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities))
-            catch ex
-                @info ex
-            end
-        end
-        return unique(x->x.cve.id, vulns)
-    end
+
+    # Build initial URL with parameters
+    params = Dict(
+        "virtualMatchString" => string(cpe),
+        "resultsPerPage" => "2000",
+        "startIndex" => "0"
+    )
+
+    return fetch_all_pages(NVD_API_BASE, headers, params, :vulnerabilities)
 end
 
 function fetch_cpes(cpe)
@@ -209,8 +186,8 @@ function fetch_nvd_vulnerabilities(hours::Int = DEFAULT_HOURS)
     start_time = end_time - Hour(hours)
 
     # Format dates for NVD API (ISO 8601)
-    start_date = Dates.format(start_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
-    end_date = Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sssZ")
+    start_date = Dates.format(start_time, "yyyy-mm-ddTHH:MM:SS.sss")*"Z"
+    end_date = Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sss")*"Z"
 
     headers = build_nvd_headers()
 

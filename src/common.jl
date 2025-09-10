@@ -18,77 +18,28 @@ is_populated(::Any) = true
 
 now() = replace(Dates.format(Dates.now(TimeZones.utc_tz), TimeZones.ISOZonedDateTimeFormat), "+00:00"=>"Z") # RFC3339
 
-"""
-    VersionIshNumber
-
-A not-necessarily-SemVer version number that implements version-like
-lexicographic splitting at punctuation and numeric-like comparisons
-of digits without assuming anything about the structure of the string
-itself.
-"""
-struct VersionIshNumber
-    str::String
-    parts::Vector{String}
-end
-VersionIshNumber(str) = VersionIshNumber(strip(str), version_parts(strip(str)))
-Base.tryparse(::Type{VersionIshNumber}, str) = VersionIshNumber(str)
-Base.:(==)(a::VersionIshNumber, b::VersionIshNumber) = a.str == b.str
-Base.hash(a::VersionIshNumber, h::UInt) = hash(a.str, hash(0x30eeab00fd453583, h))
-function Base.isless(a::VersionIshNumber, b::VersionIshNumber)
-    # By splitting parts, we can _mostly_ lean on lexicographic comparison. But
-    # parts that start with a `-` are special; they typically count as pre-releases
-    # of a given version and should sort _before_ the matched part. We've already
-    # swapped them to `\0` here.
-    matched_len = min(length(a.parts), length(b.parts))
-    return isless(a.parts[1:matched_len], b.parts[1:matched_len]) ||
-           (a.parts[1:matched_len] == b.parts[1:matched_len] && (
-                length(a.parts) <= length(b.parts) ||
-                startswith(a.parts[matched_len+1], "\0"))) # This was a -
-end
-function Base.show(io::IO, a::VersionIshNumber)
-    show(io, typeof(a))
-    print(io, "(")
-    show(io, a.str)
-    print(io, ")")
-    return nothing
-end
-Base.print(io::IO, a::VersionIshNumber) = print(io, a.str)
-Base.typemin(::Type{VersionIshNumber}) = VersionIshNumber("")
-Base.typemax(::Type{VersionIshNumber}) = VersionIshNumber("\U10FFFF∞")
-
-explode_int(::Nothing) = nothing
-explode_int(d::Integer) = string(d, pad=19)
-explode_digits(x) = something(explode_int(tryparse(Int, x)), x)
-# For somewhat coherent version sorting in the absence of real semver
-function version_parts(verstr)
-    parts = split(verstr, r"(?=[\-.])") # Keep the splitter itself as part of the comparison
-    exploded_parts = [join(explode_digits(subpart) for subpart in split(part, r"(?<=\d)(?=[^\d])|(?<=[^\d])(?=\d)")) for part in parts]
-    # Parts that start with - are special; they must sort before everything else
-    return replace.(exploded_parts, r"^-"=>"\0")
-end
-
-struct VersionRange{V<:Union{VersionNumber, VersionIshNumber}}
+struct VersionRange{V<:Union{VersionNumber, VersionString}}
     lb::V
     ub::V
     lbinclusive::Bool
     ubinclusive::Bool
 end
-VersionRange(x::AbstractString) = VersionRange{VersionIshNumber}(x)
-VersionRange{T}(x::AbstractString) where {T<:Union{VersionNumber, VersionIshNumber}} = something(tryparse(VersionRange{T}, x))
-function Base.in(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionIshNumber}}
+VersionRange(x::AbstractString) = VersionRange{VersionString}(x)
+VersionRange{T}(x::AbstractString) where {T<:Union{VersionNumber, VersionString}} = something(tryparse(VersionRange{T}, x))
+function Base.in(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionString}}
     return (r.lbinclusive ? x >= r.lb : x > r.lb) &&
            (r.ubinclusive ? x <= r.ub : x < r.ub)
 end
-function Base.:(<)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionIshNumber}}
+function Base.:(<)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionString}}
     return (r.lbinclusive ? x < r.lb : x <= r.lb)
 end
-function Base.:(>)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionIshNumber}}
+function Base.:(>)(x::T, r::VersionRange{T}) where {T<:Union{VersionNumber, VersionString}}
     return (r.ubinclusive ? x > r.ub : x >= r.ub)
 end
 Base.:(==)(a::VersionRange, b::VersionRange) = (==)((a.lb, a.lbinclusive, a.ub, a.ubinclusive), (b.lb, b.lbinclusive, b.ub, b.ubinclusive))
 Base.hash(a::VersionRange, h::UInt) = hash((a.lb, a.lbinclusive, a.ub, a.ubinclusive), hash(0x80ebd9334ee9e2b1, h))
 Base.isless(a::VersionRange, b::VersionRange) = isless((a.lb, !a.lbinclusive, a.ub, a.ubinclusive), (b.lb, !b.lbinclusive, b.ub, b.ubinclusive))
-Base.tryparse(::Type{VersionRange}, x::AbstractString) = tryparse(VersionRange{VersionIshNumber}, x)
+Base.tryparse(::Type{VersionRange}, x::AbstractString) = tryparse(VersionRange{VersionString}, x)
 function Base.tryparse(::Type{VersionRange{V}}, arg::AbstractString) where {V}
     # This supports parsing both GitHub and EUVD-like range syntaxes.
     # GHSA range format is described at:
@@ -219,9 +170,10 @@ function get_registry(reg=Registry.RegistrySpec(name="General", uuid = "23338594
 end
 
 function uuids_from_name(name, reg=get_registry())
-    Registry.uuids_from_name(reg, name)
+    name == "julia" && return Base.UUID[]
+    Registry.uuids_from_name(reg, string(name))
 end
-registry_has_package(name, reg=get_registry()) = !isempty(uuids_from_name(reg, name))
+registry_has_package(name, reg=get_registry()) = !isempty(uuids_from_name(name, reg))
 
 available_versions_for_uuid(uuid) = available_versions_for_uuid(Base.UUID(uuid))
 function available_versions_for_uuid(uuid::Base.UUID, reg=get_registry())
@@ -245,7 +197,6 @@ function untar_readmes(tar_gz::AbstractString)
     return join(data, "\n")
 end
 
-
 function readme_for_pkg(name, uuid, version; reg=get_registry())
     # We intentionally side-step the package resolver here, but still lean on the Pkg server
     tree_hash = reg[uuid].info.version_info[version].git_tree_sha1
@@ -254,126 +205,169 @@ function readme_for_pkg(name, uuid, version; reg=get_registry())
     return untar_readmes(tarball)
 end
 
-const CPE_CONFIG = Ref{Dict{String,Any}}()
-cpe_config() = isdefined(CPE_CONFIG,1) ? CPE_CONFIG[] : (CPE_CONFIG[] = TOML.parsefile(joinpath(@__DIR__, "..", "cpe_config.toml")))
-upstream_versions_for_package(pkgname) = Dict(string(v)=>upstream_versions_for_package(pkgname, v) for v in available_versions_for_uuid(only(uuids_from_name(pkgname))))
-function upstream_versions_for_package(pkgname, version; force=false)
-    cpe_map = TOML.parsefile(joinpath(@__DIR__, "..", "cpe_map.toml"))
-    if !force && haskey(cpe_map, pkgname) && haskey(cpe_map[pkgname], version)
-        return cpe_map[pkgname][string(version)]
+# The two primary datastructures for connecting packages with upstream projects
+const PACKAGE_COMPONENTS = Ref{Dict{String,Any}}()
+package_components() = isassigned(PACKAGE_COMPONENTS) ? PACKAGE_COMPONENTS[] :
+    (PACKAGE_COMPONENTS[] = TOML.parsefile(joinpath(@__DIR__, "..", "package_components.toml")))
+
+const UPSTREAM_PROJECTS = Ref{Dict{String,Any}}()
+upstream_projects() = isassigned(UPSTREAM_PROJECTS) ? UPSTREAM_PROJECTS[] :
+    (UPSTREAM_PROJECTS[] = TOML.parsefile(joinpath(@__DIR__, "..", "upstream_project_info.toml")))
+
+# A computed dictionary that maps a (vendor, product) tuple to a known upstream project name
+const UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT = Ref{Dict{Tuple{String,String}, String}}()
+function upstream_projects_by_vendor_product()
+    isassigned(UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT) && return UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[]
+    d = Dict{Tuple{String,String}, String}()
+    for (project, deets) in upstream_projects()
+        products = unique(skipmissing(vcat(lowercase(project), get(split(get(deets, "cpe", ""), ":"), 5, missing))))
+        vendors = unique(skipmissing(vcat(get(deets, "vendors", String[]), get(split(get(deets, "cpe", ""), ":"), 4, missing))))
+        for v in vendors, p in products
+            haskey(d, (v,p)) && error("every vendor/product pair must uniquely identify one upstream projects")
+            d[(v,p)] = project
+        end
     end
-    config = cpe_config()
-    # First check for overrides
-    results = Dict{String, String}()
-    if pkgname in keys(config["overrides"]) && string(version) in keys(config["overrides"][pkgname])
-        merge!(results, config["overrides"][pkgname][string(version)])
-    end
-    # Then check for readme patterns
-    uuid = only(uuids_from_name(pkgname))
-    r = readme_for_pkg(pkgname, uuid, version)
-    for (regex, cpe) in config["readme-regexes"]
-        m = match(Regex(regex), r)
-        isnothing(m) && continue
-        results[cpe] = m.captures[1]
-    end
-    open("cpe_map.toml","w") do f
-        println(f, "# This file is autogenerated; use cpe_config.toml to adjust it")
-        haskey(cpe_map, pkgname) || (cpe_map[pkgname] = Dict{String, Any}())
-        cpe_map[pkgname][string(version)] = results
-        TOML.print(f, cpe_map, sorted=true, by=x->something(tryparse(VersionNumber, x), x))
-    end
-    return results
+    UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[] = d
 end
 
+function packages_with_project(proj)
+    return [pkgname for (pkgname,versioninfo) in package_components() if any(v->haskey(v,proj), values(versioninfo))]
+end
+
+
+
 function upstream_versions_used_by_cpe(cpe)
-    cpe_map = TOML.parsefile(joinpath(@__DIR__, "..", "cpe_map.toml"))
-    versions = String[]
-    for (_, pkgversions) in cpe_map
-        for (_, cpes) in pkgversions
-            for (k, v) in cpes
-                k == cpe && push!(versions, v)
+    # First find the projects that match the CPE:
+    upstream_projects = TOML.parsefile(joinpath(@__DIR__, "..", "upstream_project_info.toml"))
+    matched_projects = [k for (k,v) in upstream_projects if cpe == get(v, "cpe", nothing)]
+    # Then the _upstream_ versions of that project that are used by JLLs
+    upstream_components = TOML.parsefile(joinpath(@__DIR__, "..", "package_components.toml"))
+    versions = []
+    for (_, pkgversions) in upstream_components
+        for (_, components) in pkgversions
+            for (k, v) in components
+                k in matched_projects && push!(versions, v)
             end
         end
     end
     return unique(versions)
 end
 
-const AVAILABLE_CPES = Pair{String,String}[]
-function available_cpes()
-    if isempty(AVAILABLE_CPES)
-        cpe_map = TOML.parsefile(joinpath(@__DIR__, "..", "cpe_map.toml"))
-        for (pkg, vers) in cpe_map
-            for cpe in unique(Iterators.flatten(keys.(values(vers))))
-                push!(AVAILABLE_CPES, cpe => pkg)
-            end
-        end
-        sort!(AVAILABLE_CPES)
-    end
-    return AVAILABLE_CPES
+function package_project_version_map(pkg, proj)
+    return Dict(v => components[proj] for (v, components) in package_components()[pkg])
 end
 
-function package_cpe_version_map(pkg, cpe)
-    cpe_map = TOML.parsefile(joinpath(@__DIR__, "..", "cpe_map.toml")) # TODO: cache me
-    return Dict(k=>v[cpe] for (k,v) in cpe_map[pkg] if haskey(v, cpe))
+"""
+    convert_versions(pkg_project_map, vulnerable_range)
+
+Convert the vulnerable range from an upstream project's version numbers to the Julia packages,
+using the pkg_project_map.
+
+In practice, this uses the `package_components.toml` table and a vulnerable range from an upstream advisory.
+"""
+function convert_versions(pkg_project_map, vulnerable_range)
+    versionmap = sort([VersionNumber(k) => v for (k,v) in pkg_project_map], by=first)
+
+    versions = VersionRange{VersionNumber}[]
+    # Now walk through the Julia package's versions and push all applicable (potentially disjoint) ranges of versions
+    #
+    # There are two hard things we need to support in the pkg_project_map:
+    #   * Unknown versions are marked by "*" — we assume they're any versions between the known bounds
+    #   * There may be more than one upstream version on varying platforms. It may be String or String[]
+    first_vulnerable = v"0-"
+    last_vulnerable = nothing
+    last_known_ver = VersionString("")
+    last_unknown = nothing
+    skipped_unknowns = false
+    for (pkgver, ver) in versionmap
+        # Gather up sequential *s to cover their bounds
+        if ver == "*"
+            first_vulnerable = something(first_vulnerable, pkgver)
+            last_unknown = pkgver
+            skipped_unknowns = true
+            continue
+        end
+
+        if skipped_unknowns && overlaps(vulnerable_range, VersionRange(last_known_ver, ver isa AbstractString ? VersionString(ver) : isempty(ver) ? VersionString("∞") : maximum(VersionString.(ver)), true, false))
+            last_vulnerable = last_unknown
+        end
+
+        if any(in.(VersionString.(ver), (vulnerable_range,)))
+            first_vulnerable = something(first_vulnerable, pkgver)
+            last_vulnerable = pkgver
+        else
+            if last_vulnerable !== nothing
+                push!(versions, VersionRange(first_vulnerable, pkgver, true, false))
+            end
+            first_vulnerable = last_vulnerable = nothing
+        end
+        last_known_ver = ver isa AbstractString ? VersionString(ver) : isempty(ver) ? VersionString("") : minimum(VersionString.(ver))
+        skipped_unknowns = false
+    end
+    if first_vulnerable !== nothing && last_vulnerable !== nothing || (skipped_unknowns && overlaps(vulnerable_range, VersionRange(last_known_ver, typemax(VersionString), true, true)))
+        push!(versions, VersionRange(first_vulnerable, v"∞", true, true))
+    end
+    versions
 end
 
 function related_julia_packages(description, vendorproductversions)
     pkgs = Pair{String,String}[]
-    jlpkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
-                             (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
+    reasons = String[]
+    julia_like_pkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
+                                      (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
+    jlpkgs_mentioned = filter(registry_has_package, julia_like_pkgs_mentioned)
+    found_match = false
     for (vendor, product, version) in vendorproductversions
         # First check for a known **NON-JULIA-PACKAGE** CPE:
-        cpe = string("cpe:2.3:a:", lowercase(vendor), ":", lowercase(product))
-        matched_cpes = available_cpes()[searchsorted(available_cpes(), cpe=>"", by=lowercase∘first)]
-        if !isempty(matched_cpes)
-            # We have an upstream component! Make an educated guess at the remapped version range if we can.
-            for (cpe, pkg) in matched_cpes
-                r = tryparse(VersionRange, version)
+        if haskey(upstream_projects_by_vendor_product(), (vendor, product))
+            matched_project = upstream_projects_by_vendor_product()[(vendor, product)]
+            found_match = true
+            # We have an upstream component! Compute the remapped version range if we can.
+            matched_pkgs = packages_with_project(matched_project)
+            r = tryparse(VersionRange, version)
+            isnothing(r) && @info "$matched_project: failed to parse vulnerable version range $version"
+            for pkg in matched_pkgs
                 if isnothing(r)
-                    push!(pkgs, string(cpe, "|", pkg) => version) # We don't know how to parse this version! Use a fake package name to flag this
+                    push!(pkgs, string("?", matched_project, ":", pkg) => "$version")
                 else
-                    versionmap = sort(collect(package_cpe_version_map(pkg, cpe)), by=((pkg_version,cpe_version),)->(VersionIshNumber(cpe_version), VersionNumber(pkg_version)))
-                    # Find the extremes of Julia versions that are in the range; note that it might be possible for a version
-                    # in between the extremes to be outside the range, but we don't care. We'll assume all versions within
-                    # the extremese are vulnerable.
-                    firstidx = findfirst(in(r), VersionIshNumber.(last.(versionmap)))
-                    if isnothing(firstidx)
-                        # No vulnerable versions were ever registered
-                        # Theoretically, we could simply avoid returning anything related to advisory
-                        # but it's helpful to know that we evaluated it to be not applicable. Further
-                        # downstream tooling can omit generating the advisories.
-                        push!(pkgs, pkg => string(VersionRange(v"0-", VersionNumber(first(first(versionmap))), true, false)))
-                    else
-                        lastidx = something(findlast(in(r), VersionIshNumber.(last.(versionmap))))
-                        firstversion = firstidx == firstindex(versionmap) ? typemin(VersionNumber) : VersionNumber(versionmap[firstidx][1])
-                        lastversion  = lastidx+1 >  lastindex(versionmap) ? typemax(VersionNumber) : VersionNumber(versionmap[lastidx+1][1])
-                        push!(pkgs, pkg => string(VersionRange(firstversion, lastversion, true, false)))
-                    end
+                    append!(pkgs, pkg .=> string.(convert_versions(package_project_version_map(pkg, matched_project), r)))
                 end
             end
         elseif (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
             # A vendor or package _looks_ really julia-ish and is in the registry
+            found_match = true
             push!(pkgs, chopsuffix(product, ".jl") => version)
         elseif !isempty(jlpkgs_mentioned)
             # There are packages mentioned in the description! First look for a possible match against the given product
-            matched_product = false
             for pkg in jlpkgs_mentioned
-                (pkg == chopsuffix(product, ".jl") && registry_has_package(pkg)) || continue
+                pkg == chopsuffix(product, ".jl") || continue
                 push!(pkgs, pkg => version)
-                matched_product = true
+                found_match = true
                 break
             end
-            if !matched_product
-                # Just tag all mentioned packages with the given version info. If there's more than one
-                # mentioned, it's likely that only one applies to this particular version. But we don't know
-                append!(pkgs, jlpkgs_mentioned .=> version)
+        end
+    end
+    if !found_match && !isempty(jlpkgs_mentioned)
+        # We didn't connect any vendor/product pair with a Julia package, but there are some mentioned.
+        # if there is only one vendor/product pair here, we blindly connect all to the mentioned verions
+        # Otherwise, we prefix the packages with a ? to make this abundantly obvious
+        vendor_products = unique((x->x[1:2]).(vendorproductversions))
+        @info "Julia packages $jlpkgs_mentioned were mentioned but did not match any vendor/product pairs $vendor_products"
+        if length(vendor_products) == 1
+            @info "assumptively marking all packages with the provided versions"
+            push!(pkgs, [pkg => v for pkg in jlpkgs_mentioned, (_,_,v) in vendorproductversions])
+        else
+            @info "creating garbled identifiers"
+            for vp in vendor_products
+                vs = vendorproductversions[(x->x[1:2]).(vendorproductversions) .== (vp,)]
+                push!(pkgs, ["?$(vp[1]):$(vp[2]):" * pkg => v for pkg in jlpkgs_mentioned, (_,_,v) in vs])
             end
         end
     end
     # Combine all versions for a given package into an array, merging ranges if we have real Julia package VersionNumbers
     unique_pkg_names = unique(first.(pkgs))
     merge_versionranges = xs->map(string, merge_ranges(map(VersionRange{VersionNumber}, xs)))
-    return [p => (startswith(p, "cpe:") ? unique : merge_versionranges)(last.(pkgs[first.(pkgs) .== p])) for p in unique_pkg_names]
+    return [p => (startswith(p, "?") ? unique : merge_versionranges)(last.(pkgs[first.(pkgs) .== p])) for p in unique_pkg_names]
 end
 
 # TODO: use the above Pkg machinery for this, too
@@ -524,10 +518,10 @@ function fetch_advisory(advisory_id, package_verisioninfo=nothing)
     elseif startswith(advisory_id, "EUVD-")
         vuln = EUVD.fetch_esina(advisory_id)
         return EUVD.convert_to_osv(vuln, package_verisioninfo)
-    elseif startswith(advisory_id, "GHSA-")
-        vuln = GHSA.fetch_ghsa(advisory_id)
-        return GHSA.convert_to_osv(vuln, package_verisioninfo)
+    elseif endswith(advisory_id, r"GHSA-\w{4}-\w{4}-\w{4}")
+        vuln = GitHub.fetch_ghsa(advisory_id)
+        return GitHub.convert_to_osv(vuln, package_verisioninfo)
     else
-        throw(ArgumentError("unknown advisory prefix for $advisory_id"))
+        throw(ArgumentError("unknown advisory: $advisory_id"))
     end
 end

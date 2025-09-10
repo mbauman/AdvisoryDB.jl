@@ -1,6 +1,6 @@
 {
-  "modified": "2025-08-27T02:50:59Z",
-  "published": "2025-08-27T02:50:59Z",
+  "modified": "2025-09-08T03:26:37Z",
+  "published": "2025-09-08T03:26:37Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-17",
   "aliases": [
@@ -22,13 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.21+0"
-            },
-            {
-              "introduced": "3.0.8+0"
-            },
-            {
-              "fixed": "3.0.9+0"
+              "fixed": "1.1.20+0"
             }
           ]
         }

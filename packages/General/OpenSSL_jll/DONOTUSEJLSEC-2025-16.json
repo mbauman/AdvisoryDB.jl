@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:05Z",
-  "published": "2025-08-27T02:51:05Z",
+  "modified": "2025-09-08T03:26:38Z",
+  "published": "2025-09-08T03:26:38Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-16",
   "aliases": [
-    "CVE-2019-1563"
+    "CVE-2024-6119"
   ],
-  "summary": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack.",
-  "details": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to the CMS_decrypt or PKCS7_decrypt functions to select the correct recipient info to decrypt. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
+  "summary": "Issue summary: Applications performing certificate name checks (e.g., TLS clients checking server certificates) may attempt to read an invalid memory address resulting in abnormal termination of the application process.",
+  "details": "Issue summary: Applications performing certificate name checks (e.g., TLS\nclients checking server certificates) may attempt to read an invalid memory\naddress resulting in abnormal termination of the application process.\n\nImpact summary: Abnormal termination of an application can a cause a denial of\nservice.\n\nApplications performing certificate name checks (e.g., TLS clients checking\nserver certificates) may attempt to read an invalid memory address when\ncomparing the expected name with an `otherName` subject alternative name of an\nX.509 certificate. This may result in an exception that terminates the\napplication program.\n\nNote that basic certificate chain validation (signatures, dates, ...) is not\naffected, the denial of service can occur only when the application also\nspecifies an expected DNS name, Email address or IP address.\n\nTLS servers rarely solicit client certificates, and even when they do, they\ngenerally don't perform a name check against a reference identifier (expected\nidentity), but rather extract the presented identity after checking the\ncertificate chain.  So TLS servers are generally not affected and the severity\nof the issue is Moderate.\n\nThe FIPS modules in 3.3, 3.2, 3.1 and 3.0 are not affected by this issue.",
   "affected": [
     {
       "package": {
@@ -19,10 +19,10 @@
           "type": "SEMVER",
           "events": [
             {
-              "introduced": "0"
+              "introduced": "3.0.8+0"
             },
             {
-              "fixed": "1.1.1+6"
+              "fixed": "3.0.15+0"
             }
           ]
         }
@@ -32,253 +32,41 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00054.html"
+      "url": "https://github.com/openssl/openssl/commit/05f360d9e849a1b277db628f1f13083a7f8dd04f"
     },
     {
       "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00072.html"
+      "url": "https://github.com/openssl/openssl/commit/06d1dc3fa96a2ba5a3e22735a033012aadc9f0d6"
     },
     {
       "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00012.html"
+      "url": "https://github.com/openssl/openssl/commit/621f3729831b05ee828a3203eddb621d014ff2b2"
     },
     {
       "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00016.html"
+      "url": "https://github.com/openssl/openssl/commit/7dfcee2cd2a63b2c64b9b4b0850be64cb695b0a0"
     },
     {
       "type": "WEB",
-      "url": "http://packetstormsecurity.com/files/154467/Slackware-Security-Advisory-openssl-Updates.html"
+      "url": "https://openssl-library.org/news/secadv/20240903.txt"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=08229ad838c50f644d7e928e2eef147b4308ad64"
+      "url": "http://www.openwall.com/lists/oss-security/2024/09/03/4"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=631f94db0065c78181ca9ba5546ebc8bb3884b97"
+      "url": "https://lists.freebsd.org/archives/freebsd-security/2024-September/000303.html"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e21f8cf78a125cd3c8c0d1a1a6c8bb0b901f893f"
-    },
-    {
-      "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2019/09/msg00026.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GY6SNRJP2S7Y42GIIDO3HXPNMDYN2U3A/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZN4VVQJ3JDCHGIHV4Y2YTXBYQZ6PWQ7E/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Oct/0"
-    },
-    {
-      "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Oct/1"
-    },
-    {
-      "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Sep/25"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201911-04"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20190919-0002/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support\u0026amp%3Butm_medium=RSS"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/4376-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/4376-2/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/4504-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2019/dsa-4539"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2019/dsa-4540"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20190910.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2019-09"
-    },
-    {
-      "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00054.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-09/msg00072.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00012.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://lists.opensuse.org/opensuse-security-announce/2019-10/msg00016.html"
-    },
-    {
-      "type": "WEB",
-      "url": "http://packetstormsecurity.com/files/154467/Slackware-Security-Advisory-openssl-Updates.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=08229ad838c50f644d7e928e2eef147b4308ad64"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=631f94db0065c78181ca9ba5546ebc8bb3884b97"
-    },
-    {
-      "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e21f8cf78a125cd3c8c0d1a1a6c8bb0b901f893f"
-    },
-    {
-      "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.debian.org/debian-lts-announce/2019/09/msg00026.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GY6SNRJP2S7Y42GIIDO3HXPNMDYN2U3A/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZN4VVQJ3JDCHGIHV4Y2YTXBYQZ6PWQ7E/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Oct/0"
-    },
-    {
-      "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Oct/1"
-    },
-    {
-      "type": "WEB",
-      "url": "https://seclists.org/bugtraq/2019/Sep/25"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201911-04"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20190919-0002/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support\u0026amp%3Butm_medium=RSS"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/4376-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/4376-2/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://usn.ubuntu.com/4504-1/"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2019/dsa-4539"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.debian.org/security/2019/dsa-4540"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20190910.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2019-09"
+      "url": "https://security.netapp.com/advisory/ntap-20240912-0001/"
     }
   ]
 }

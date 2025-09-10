@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:50:59Z",
-  "published": "2025-08-27T02:50:59Z",
+  "modified": "2025-09-08T03:26:39Z",
+  "published": "2025-09-08T03:26:39Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-30",
   "aliases": [
-    "CVE-2021-3711"
+    "CVE-2019-1552"
   ],
-  "summary": "In order to decrypt SM2 encrypted data an application is expected to call the API function EVP_PKEY_decrypt().",
-  "details": "In order to decrypt SM2 encrypted data an application is expected to call the API function EVP_PKEY_decrypt(). Typically an application will call this function twice. The first time, on entry, the \"out\" parameter can be NULL and, on exit, the \"outlen\" parameter is populated with the buffer size required to hold the decrypted plaintext. The application can then allocate a sufficiently sized buffer and call EVP_PKEY_decrypt() again, but this time passing a non-NULL value for the \"out\" parameter. A bug in the implementation of the SM2 decryption code means that the calculation of the buffer size required to hold the plaintext returned by the first call to EVP_PKEY_decrypt() can be smaller than the actual size required by the second call. This can lead to a buffer overflow when EVP_PKEY_decrypt() is called by the application a second time with a buffer that is too small. A malicious attacker who is able present SM2 content for decryption to an application could cause attacker chosen data to overflow the buffer by up to a maximum of 62 bytes altering the contents of other data held after the buffer, possibly changing application behaviour or causing the application to crash. The location of the buffer is application dependent but is typically heap allocated. Fixed in OpenSSL 1.1.1l (Affected 1.1.1-1.1.1k).",
+  "summary": "OpenSSL has internal defaults for a directory tree where it can find a configuration file as well as certificates used for verification in TLS.",
+  "details": "OpenSSL has internal defaults for a directory tree where it can find a configuration file as well as certificates used for verification in TLS. This directory is most commonly referred to as OPENSSLDIR, and is configurable with the --prefix / --openssldir configuration options. For OpenSSL versions 1.1.0 and 1.1.1, the mingw configuration targets assume that resulting programs and libraries are installed in a Unix-like environment and the default prefix for program installation as well as for OPENSSLDIR should be '/usr/local'. However, mingw programs are Windows programs, and as such, find themselves looking at sub-directories of 'C:/usr/local', which may be world writable, which enables untrusted users to modify OpenSSL's default configuration, insert CA certificates, modify (or even replace) existing engine modules, etc. For OpenSSL 1.0.2, '/usr/local/ssl' is used as default for OPENSSLDIR on all Unix and Windows targets, including Visual C builds. However, some build instructions for the diverse Windows targets on 1.0.2 encourage you to specify your own --prefix. OpenSSL versions 1.1.1, 1.1.0 and 1.0.2 are affected by this issue. Due to the limited scope of affected deployments this has been assessed as low severity and therefore we are not creating new releases at this time. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
   "affected": [
     {
       "package": {
@@ -22,7 +22,7 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.13+0"
+              "fixed": "1.1.1+2"
             }
           ]
         }
@@ -32,149 +32,181 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      "score": "CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
     },
     {
       "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+      "score": "AV:L/AC:M/Au:N/C:N/I:P/A:N"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2021/08/26/2"
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-412672.pdf"
     },
     {
       "type": "WEB",
-      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=54aa9d51b09d67e90db443f682cface795f5af9e"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=59f5e75f3bced8fc0e130d72a3f582cf7b480b46"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=b15a19c148384e73338aa7c5b12652138e35ed28"
     },
     {
       "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/r18995de860f0e63635f3008fd2a6aca82394249476d21691e7c59c9e%40%3Cdev.tomcat.apache.org%3E"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=d333ebaf9c77332754a9d5e111e2f53e1de54fdd"
     },
     {
       "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/rad5d9f83f0d11fb3f8bb148d179b8a9ad7c6a17f18d70e5805a713d1%40%3Cdev.tomcat.apache.org%3E"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e32bc855a81a2d48d215c506bdeb4f598045f7e9"
     },
     {
       "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202209-02"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
     },
     {
       "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202210-02"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20210827-0010/"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20211022-0003/"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
+      "url": "https://security.netapp.com/advisory/ntap-20190823-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://www.debian.org/security/2021/dsa-4963"
+      "url": "https://support.f5.com/csp/article/K94041354"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20210824.txt"
+      "url": "https://support.f5.com/csp/article/K94041354?utm_source=f5support\u0026amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+      "url": "https://www.kb.cert.org/vuls/id/429301"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujan2022.html"
+      "url": "https://www.openssl.org/news/secadv/20190730.txt"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
+      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2021-16"
+      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2022-02"
+      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
     },
     {
       "type": "WEB",
-      "url": "http://www.openwall.com/lists/oss-security/2021/08/26/2"
+      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
     },
     {
       "type": "WEB",
-      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=59f5e75f3bced8fc0e130d72a3f582cf7b480b46"
+      "url": "https://www.tenable.com/security/tns-2019-08"
     },
     {
       "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/r18995de860f0e63635f3008fd2a6aca82394249476d21691e7c59c9e%40%3Cdev.tomcat.apache.org%3E"
+      "url": "https://www.tenable.com/security/tns-2019-09"
     },
     {
       "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/rad5d9f83f0d11fb3f8bb148d179b8a9ad7c6a17f18d70e5805a713d1%40%3Cdev.tomcat.apache.org%3E"
+      "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-412672.pdf"
     },
     {
       "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202209-02"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=54aa9d51b09d67e90db443f682cface795f5af9e"
     },
     {
       "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/202210-02"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=b15a19c148384e73338aa7c5b12652138e35ed28"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20210827-0010/"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=d333ebaf9c77332754a9d5e111e2f53e1de54fdd"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20211022-0003/"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e32bc855a81a2d48d215c506bdeb4f598045f7e9"
     },
     {
       "type": "WEB",
-      "url": "https://security.netapp.com/advisory/ntap-20240621-0006/"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
     },
     {
       "type": "WEB",
-      "url": "https://www.debian.org/security/2021/dsa-4963"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20210824.txt"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpujan2022.html"
+      "url": "https://security.netapp.com/advisory/ntap-20190823-0006/"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
+      "url": "https://support.f5.com/csp/article/K94041354"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2021-16"
+      "url": "https://support.f5.com/csp/article/K94041354?utm_source=f5support\u0026amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2022-02"
+      "url": "https://www.kb.cert.org/vuls/id/429301"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20190730.txt"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2019-08"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.tenable.com/security/tns-2019-09"
     }
   ]
 }

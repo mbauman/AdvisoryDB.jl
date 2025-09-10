@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:51:03Z",
-  "published": "2025-08-27T02:51:03Z",
+  "modified": "2025-09-08T03:26:36Z",
+  "published": "2025-09-08T03:26:36Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-11",
   "aliases": [
-    "CVE-2017-3733"
+    "CVE-2023-0465"
   ],
-  "summary": "During a renegotiation handshake if the Encrypt-Then-Mac extension is negotiated where it was not in the original handshake (or vice-versa) then this can cause OpenSSL 1.1.0 before 1.1.0e to crash (dependent on ciphersuite).",
-  "details": "During a renegotiation handshake if the Encrypt-Then-Mac extension is negotiated where it was not in the original handshake (or vice-versa) then this can cause OpenSSL 1.1.0 before 1.1.0e to crash (dependent on ciphersuite). Both clients and servers are affected.",
+  "summary": "Applications that use a non-default option when verifying certificates may be vulnerable to an attack from a malicious CA to circumvent certain checks.",
+  "details": "Applications that use a non-default option when verifying certificates may be\nvulnerable to an attack from a malicious CA to circumvent certain checks.\n\nInvalid certificate policies in leaf certificates are silently ignored by\nOpenSSL and other certificate policy checks are skipped for that certificate.\nA malicious CA could use this to deliberately assert invalid certificate policies\nin order to circumvent policy checking on the certificate altogether.\n\nPolicy processing is disabled by default but can be enabled by passing\nthe `-policy' argument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()' function.",
   "affected": [
     {
       "package": {
@@ -22,7 +22,13 @@
               "introduced": "0"
             },
             {
-              "fixed": "1.1.1+2"
+              "fixed": "1.1.21+0"
+            },
+            {
+              "introduced": "3.0.8+0"
+            },
+            {
+              "fixed": "3.0.9+0"
             }
           ]
         }
@@ -32,77 +38,81 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujan2018-3236628.html"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=10325176f3d3e98c6e2b3bf5ab1e3b334de6947a"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=1dd43e0709fece299b15208f36cc7c76209ba0bb"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/96269"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=b013765abfa80036dc779dd0e50602c57bb3bf95"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037846"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=facfb1ab745646e97a1920977ae4a9965ea61d5c"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/4ad93618d26a3ea23d36ad5498ff4f59eff3a4d2"
+      "url": "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html"
     },
     {
       "type": "WEB",
-      "url": "https://h20566.www2.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbgn03728en_us"
+      "url": "https://security.gentoo.org/glsa/202402-08"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20170216.txt"
+      "url": "https://security.netapp.com/advisory/ntap-20230414-0001/"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+      "url": "https://www.debian.org/security/2023/dsa-5417"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujan2018-3236628.html"
+      "url": "https://www.openssl.org/news/secadv/20230328.txt"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=10325176f3d3e98c6e2b3bf5ab1e3b334de6947a"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/96269"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=1dd43e0709fece299b15208f36cc7c76209ba0bb"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037846"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=b013765abfa80036dc779dd0e50602c57bb3bf95"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/4ad93618d26a3ea23d36ad5498ff4f59eff3a4d2"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=facfb1ab745646e97a1920977ae4a9965ea61d5c"
     },
     {
       "type": "WEB",
-      "url": "https://h20566.www2.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbgn03728en_us"
+      "url": "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20170216.txt"
+      "url": "https://security.gentoo.org/glsa/202402-08"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+      "url": "https://security.netapp.com/advisory/ntap-20230414-0001/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2023/dsa-5417"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.openssl.org/news/secadv/20230328.txt"
     }
   ]
 }

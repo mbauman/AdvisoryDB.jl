@@ -1,13 +1,13 @@
 {
-  "modified": "2025-08-27T02:50:59Z",
-  "published": "2025-08-27T02:50:59Z",
+  "modified": "2025-09-08T03:26:36Z",
+  "published": "2025-09-08T03:26:36Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-22",
   "aliases": [
-    "CVE-2017-3732"
+    "CVE-2019-1549"
   ],
-  "summary": "There is a carry propagating bug in the x86_64 Montgomery squaring procedure in OpenSSL 1.0.2 before 1.0.2k and 1.1.0 before 1.1.0d.",
-  "details": "There is a carry propagating bug in the x86_64 Montgomery squaring procedure in OpenSSL 1.0.2 before 1.0.2k and 1.1.0 before 1.1.0d. No EC algorithms are affected. Analysis suggests that attacks against RSA and DSA as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH are considered just feasible (although very difficult) because most of the work necessary to deduce information about a private key may be performed offline. The amount of resources required for such an attack would be very significant and likely only accessible to a limited number of attackers. An attacker would additionally need online access to an unpatched system using the target private key in a scenario with persistent DH parameters and a private key that is shared between multiple clients. For example this can occur by default in OpenSSL DHE based SSL/TLS ciphersuites. Note: This issue is very similar to CVE-2015-3193 but must be treated as a separate problem.",
+  "summary": "OpenSSL 1.1.1 introduced a rewritten random number generator (RNG).",
+  "details": "OpenSSL 1.1.1 introduced a rewritten random number generator (RNG). This was intended to include protection in the event of a fork() system call in order to ensure that the parent and child processes did not share the same RNG state. However this protection was not being used in the default case. A partial mitigation for this issue is that the output from a high precision timer is mixed into the RNG state so the likelihood of a parent and child process sharing state is significantly reduced. If an application already calls OPENSSL_init_crypto() explicitly using OPENSSL_INIT_ATFORK then this problem does not occur at all. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c).",
   "affected": [
     {
       "package": {
@@ -32,157 +32,133 @@
   "severity": [
     {
       "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
     },
     {
       "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+      "score": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
     }
   ],
   "references": [
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujan2018-3236628.html"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=1b0fe00e2704b5e20334a16d3c9099d1ba2ef1be"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujul2017-3236622.html"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GY6SNRJP2S7Y42GIIDO3HXPNMDYN2U3A/"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZN4VVQJ3JDCHGIHV4Y2YTXBYQZ6PWQ7E/"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/95814"
+      "url": "https://seclists.org/bugtraq/2019/Oct/1"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037717"
+      "url": "https://security.netapp.com/advisory/ntap-20190919-0002/"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2185"
+      "url": "https://support.f5.com/csp/article/K44070243"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2186"
+      "url": "https://support.f5.com/csp/article/K44070243?utm_source=f5support\u0026amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2187"
+      "url": "https://usn.ubuntu.com/4376-1/"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2568"
+      "url": "https://www.debian.org/security/2019/dsa-4539"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2575"
+      "url": "https://www.openssl.org/news/secadv/20190910.txt"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2713"
+      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/a59b90bf491410f1f2bc4540cc21f1980fd14c5b"
+      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://security.FreeBSD.org/advisories/FreeBSD-SA-17:02.openssl.asc"
+      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201702-07"
+      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://support.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03838en_us"
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
     },
     {
       "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20170126.txt"
+      "url": "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=1b0fe00e2704b5e20334a16d3c9099d1ba2ef1be"
     },
     {
       "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GY6SNRJP2S7Y42GIIDO3HXPNMDYN2U3A/"
     },
     {
       "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2017-04"
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZN4VVQJ3JDCHGIHV4Y2YTXBYQZ6PWQ7E/"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujan2018-3236628.html"
+      "url": "https://seclists.org/bugtraq/2019/Oct/1"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpujul2017-3236622.html"
+      "url": "https://security.netapp.com/advisory/ntap-20190919-0002/"
     },
     {
       "type": "WEB",
-      "url": "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html"
+      "url": "https://support.f5.com/csp/article/K44070243"
     },
     {
       "type": "WEB",
-      "url": "http://www.securityfocus.com/bid/95814"
+      "url": "https://support.f5.com/csp/article/K44070243?utm_source=f5support\u0026amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
-      "url": "http://www.securitytracker.com/id/1037717"
+      "url": "https://usn.ubuntu.com/4376-1/"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2185"
+      "url": "https://www.debian.org/security/2019/dsa-4539"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2186"
+      "url": "https://www.openssl.org/news/secadv/20190910.txt"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2187"
+      "url": "https://www.oracle.com/security-alerts/cpuapr2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2568"
+      "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2575"
+      "url": "https://www.oracle.com/security-alerts/cpujul2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://access.redhat.com/errata/RHSA-2018:2713"
+      "url": "https://www.oracle.com/security-alerts/cpuoct2020.html"
     },
     {
       "type": "WEB",
-      "url": "https://github.com/openssl/openssl/commit/a59b90bf491410f1f2bc4540cc21f1980fd14c5b"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.FreeBSD.org/advisories/FreeBSD-SA-17:02.openssl.asc"
-    },
-    {
-      "type": "WEB",
-      "url": "https://security.gentoo.org/glsa/201702-07"
-    },
-    {
-      "type": "WEB",
-      "url": "https://support.hpe.com/hpsc/doc/public/display?docLocale=en_US\u0026docId=emr_na-hpesbhf03838en_us"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.openssl.org/news/secadv/20170126.txt"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
-    },
-    {
-      "type": "WEB",
-      "url": "https://www.tenable.com/security/tns-2017-04"
+      "url": "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html"
     }
   ]
 }
