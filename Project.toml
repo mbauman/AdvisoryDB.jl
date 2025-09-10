@@ -15,8 +15,15 @@ Tar = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
 
 [compat]
+julia = "1.11"
 CodecZlib = "0.7.8"
 DataStructures = "0.19.0"
 Pkg = "1.11.0"
 Tar = "1.10.0"
 TimeZones = "1.22.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
