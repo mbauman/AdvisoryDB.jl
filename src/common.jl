@@ -478,7 +478,7 @@ function corresponding_jlsec_id(package, id, aliases=String[])
         end
     end
     # And then search for the first match
-    for alias in vcat(id, sort(aliases))
+    for alias in vcat(id, chopprefix(id, r".*(?=GHSA-\w{4}-\w{4}-\w{4}$)"), sort(aliases))
         haskey(jlsec_aliases, alias) && return jlsec_aliases[alias]
     end
     return nothing

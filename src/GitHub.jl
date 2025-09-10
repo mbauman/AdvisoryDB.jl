@@ -147,12 +147,11 @@ function fetch_ghsa(ghsa)
     m = match(r"([^/]+)/([^/]+)/(?:security[/-]advisories/)?(GHSA-\w{4}-\w{4}-\w{4})$", ghsa)
     isnothing(m) && throw(ArgumentError("unknown GHSA identifier $ghsa"))
     owner, repo, id = m.captures
-    ## According to the documentation, I should be able to simply `fetch_repo_ghsa` for public GHSAs
-    ## but it seems to require auth beyond public readable.
-    # return fetch_repo_ghsa(owner, repo, id)
-    ## Instead we must filter through all repo advisories to get the one we want:
-    advisories = fetch_repo_advisories("$owner/$repo")
-    return only(filter(x->x.ghsa_id == id, advisories))
+    # I don't fully understand, but this returns 401s with a valid read token:
+    return fetch_repo_ghsa(owner, repo, id)
+    # And it sometimes seems to be more reliable to filter through all repo advisories:
+    # advisories = fetch_repo_advisories("$owner/$repo")
+    # return only(filter(x->x.ghsa_id == id, advisories))
 end
 
 function vuln_id(vuln, input=nothing)
@@ -164,7 +163,10 @@ end
 
 function fetch_repo_ghsa(org, repo, ghsa)
     url = "$GITHUB_API_BASE/repos/$org/$repo/security-advisories/$ghsa"
-    return fetch_single_page(url, build_headers())
+    return fetch_single_page(url, [
+        "Accept" => "application/vnd.github+json",
+        "User-Agent" => "Julia-Advisory-Fetcher/1.0"
+    ])[1] # Disable the token for this endpoint
 end
 
 function fetch_database_ghsa(ghsa)
@@ -307,18 +309,21 @@ function convert_to_osv(advisory, package_versioninfo = nothing)
         osv["references"] = references
     end
 
-    db = Dict()
+    osv["database_specific"] = Dict{String,Any}()
+    osv["database_specific"]["source"] = Dict("id" => advisory.ghsa_id, "url" => advisory.url)
+
+    githubdb = Dict()
     if exists(advisory, :cwe_ids)
-        db["cwe_ids"] = collect(advisory.cwe_ids)
+        githubdb["cwe_ids"] = collect(advisory.cwe_ids)
     end
     if exists(advisory, :severity)
-        db["severity"] = advisory.severity
+        githubdb["severity"] = advisory.severity
     end
     if exists(advisory, :state)
-        db["state"] = advisory.state
+        githubdb["state"] = advisory.state
     end
-    if !isempty(db)
-        osv["database_specific"] = db
+    if !isempty(githubdb)
+        osv["database_specific"]["source_database"] = githubdb
     end
     return osv
 end
