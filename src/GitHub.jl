@@ -163,10 +163,7 @@ end
 
 function fetch_repo_ghsa(org, repo, ghsa)
     url = "$GITHUB_API_BASE/repos/$org/$repo/security-advisories/$ghsa"
-    return fetch_single_page(url, [
-        "Accept" => "application/vnd.github+json",
-        "User-Agent" => "Julia-Advisory-Fetcher/1.0"
-    ])[1] # Disable the token for this endpoint
+    return fetch_single_page(url, build_headers())[1]
 end
 
 function fetch_database_ghsa(ghsa)

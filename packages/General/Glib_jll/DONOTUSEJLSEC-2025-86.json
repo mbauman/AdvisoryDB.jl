@@ -1,0 +1,52 @@
+{
+  "modified": "2025-09-10T20:21:32Z",
+  "published": "2025-09-10T20:21:32Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-86",
+  "aliases": [
+    "CVE-2025-4056"
+  ],
+  "summary": "A flaw was found in GLib.",
+  "details": "A flaw was found in GLib. A denial of service on Windows platforms may occur if an application attempts to spawn a program using long command lines.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Glib_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.84.3+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/security/cve/CVE-2025-4056"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2362826"
+    },
+    {
+      "type": "WEB",
+      "url": "https://gitlab.gnome.org/GNOME/glib/-/issues/3668"
+    }
+  ]
+}
