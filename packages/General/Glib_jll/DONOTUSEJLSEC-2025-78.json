@@ -1,40 +1,4 @@
 {
-  "modified": "2025-09-10T20:21:38Z",
-  "published": "2025-09-10T20:21:38Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-78",
-  "aliases": [
-    "CVE-2024-34397"
-  ],
-  "summary": "An issue was discovered in GNOME GLib before 2.78.5, and 2.79.x and 2.80.x before 2.80.1.",
-  "details": "An issue was discovered in GNOME GLib before 2.78.5, and 2.79.x and 2.80.x before 2.80.1. When a GDBus-based client subscribes to signals from a trusted system service such as NetworkManager on a shared computer, other users of the same computer can send spoofed D-Bus signals that the GDBus-based client will wrongly interpret as having been sent by the trusted system service. This could lead to the GDBus-based client behaving incorrectly, with an application-dependent impact.",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Glib_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "2.80.2+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:P/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:L"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -100,5 +64,41 @@
       "type": "WEB",
       "url": "https://www.openwall.com/lists/oss-security/2024/05/07/5"
     }
-  ]
+  ],
+  "published": "2025-09-10T20:21:38Z",
+  "aliases": [
+    "CVE-2024-34397"
+  ],
+  "modified": "2025-09-11T14:46:01.817Z",
+  "id": "DONOTUSEJLSEC-2025-78",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Glib_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.80.2+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:P/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:L"
+    }
+  ],
+  "summary": "An issue was discovered in GNOME GLib before 2.78.5, and 2.79.x and 2.80.x before 2.80.1.",
+  "schema_version": "1.7.2",
+  "details": "An issue was discovered in GNOME GLib before 2.78.5, and 2.79.x and 2.80.x before 2.80.1. When a GDBus-based client subscribes to signals from a trusted system service such as NetworkManager on a shared computer, other users of the same computer can send spoofed D-Bus signals that the GDBus-based client will wrongly interpret as having been sent by the trusted system service. This could lead to the GDBus-based client behaving incorrectly, with an application-dependent impact."
 }

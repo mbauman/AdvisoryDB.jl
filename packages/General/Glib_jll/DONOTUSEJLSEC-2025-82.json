@@ -1,44 +1,4 @@
 {
-  "modified": "2025-09-10T20:21:33Z",
-  "published": "2025-09-10T20:21:33Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-82",
-  "aliases": [
-    "CVE-2021-28153"
-  ],
-  "summary": "An issue was discovered in GNOME GLib before 2.66.8.",
-  "details": "An issue was discovered in GNOME GLib before 2.66.8. When g_file_replace() is used with G_FILE_CREATE_REPLACE_DESTINATION to replace a path that is a dangling symlink, it incorrectly also creates the target of the symlink as an empty file, which could conceivably have security relevance if the symlink is attacker-controlled. (If the path is a symlink to a file that already exists, then the contents of that file correctly remain unchanged.)",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Glib_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "2.68.1+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -88,5 +48,45 @@
       "type": "WEB",
       "url": "https://security.netapp.com/advisory/ntap-20210416-0003/"
     }
-  ]
+  ],
+  "published": "2025-09-10T20:21:33Z",
+  "aliases": [
+    "CVE-2021-28153"
+  ],
+  "modified": "2025-09-11T14:45:51.414Z",
+  "id": "DONOTUSEJLSEC-2025-82",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Glib_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.68.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
+    }
+  ],
+  "summary": "An issue was discovered in GNOME GLib before 2.66.8.",
+  "schema_version": "1.7.2",
+  "details": "An issue was discovered in GNOME GLib before 2.66.8. When g_file_replace() is used with G_FILE_CREATE_REPLACE_DESTINATION to replace a path that is a dangling symlink, it incorrectly also creates the target of the symlink as an empty file, which could conceivably have security relevance if the symlink is attacker-controlled. (If the path is a symlink to a file that already exists, then the contents of that file correctly remain unchanged.)"
 }

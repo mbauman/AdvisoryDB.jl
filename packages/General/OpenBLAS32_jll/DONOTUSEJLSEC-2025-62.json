@@ -1,44 +1,4 @@
 {
-  "modified": "2025-09-08T15:18:17Z",
-  "published": "2025-09-08T15:18:17Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-62",
-  "aliases": [
-    "CVE-2021-4048"
-  ],
-  "summary": "An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack through version 3.10.0, as also used in OpenBLAS before version 0.3.18.",
-  "details": "An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack through version 3.10.0, as also used in OpenBLAS before version 0.3.18. Specially crafted inputs passed to these functions could cause an application using lapack to crash or possibly disclose portions of its memory.",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "OpenBLAS32_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "0.3.20+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:P/I:N/A:P"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -112,5 +72,45 @@
       "type": "WEB",
       "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DROZM4M2QRKSD6FBO4BHSV2QMIRJQPHT/"
     }
-  ]
+  ],
+  "published": "2025-09-08T15:18:17Z",
+  "aliases": [
+    "CVE-2021-4048"
+  ],
+  "modified": "2025-09-11T14:45:49.299Z",
+  "id": "DONOTUSEJLSEC-2025-62",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenBLAS32_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "0.3.20+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:P/I:N/A:P"
+    }
+  ],
+  "summary": "An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack through version 3.10.0, as also used in OpenBLAS before version 0.3.18.",
+  "schema_version": "1.7.2",
+  "details": "An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack through version 3.10.0, as also used in OpenBLAS before version 0.3.18. Specially crafted inputs passed to these functions could cause an application using lapack to crash or possibly disclose portions of its memory."
 }

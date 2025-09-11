@@ -1,40 +1,4 @@
 {
-  "modified": "2025-09-08T03:26:36Z",
-  "published": "2025-09-08T03:26:36Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-43",
-  "aliases": [
-    "CVE-2023-0465"
-  ],
-  "summary": "Applications that use a non-default option when verifying certificates may be vulnerable to an attack from a malicious CA to circumvent certain checks.",
-  "details": "Applications that use a non-default option when verifying certificates may be\nvulnerable to an attack from a malicious CA to circumvent certain checks.\n\nInvalid certificate policies in leaf certificates are silently ignored by\nOpenSSL and other certificate policy checks are skipped for that certificate.\nA malicious CA could use this to deliberately assert invalid certificate policies\nin order to circumvent policy checking on the certificate altogether.\n\nPolicy processing is disabled by default but can be enabled by passing\nthe `-policy' argument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()' function.",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Openresty_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.27.1+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -108,5 +72,41 @@
       "type": "WEB",
       "url": "https://www.openssl.org/news/secadv/20230328.txt"
     }
-  ]
+  ],
+  "published": "2025-09-08T03:26:36Z",
+  "aliases": [
+    "CVE-2023-0465"
+  ],
+  "modified": "2025-09-11T14:45:49.110Z",
+  "id": "DONOTUSEJLSEC-2025-43",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Openresty_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.27.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  ],
+  "summary": "Applications that use a non-default option when verifying certificates may be vulnerable to an attack from a malicious CA to circumvent certain checks.",
+  "schema_version": "1.7.2",
+  "details": "Applications that use a non-default option when verifying certificates may be\nvulnerable to an attack from a malicious CA to circumvent certain checks.\n\nInvalid certificate policies in leaf certificates are silently ignored by\nOpenSSL and other certificate policy checks are skipped for that certificate.\nA malicious CA could use this to deliberately assert invalid certificate policies\nin order to circumvent policy checking on the certificate altogether.\n\nPolicy processing is disabled by default but can be enabled by passing\nthe `-policy' argument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()' function."
 }

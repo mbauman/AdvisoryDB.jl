@@ -1,40 +1,4 @@
 {
-  "modified": "2025-09-08T03:26:39Z",
-  "published": "2025-09-08T03:26:39Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-48",
-  "aliases": [
-    "CVE-2023-0464"
-  ],
-  "summary": "A security vulnerability has been identified in all supported versions of OpenSSL related to the verification of X.509 certificate chains that include policy constraints.",
-  "details": "A security vulnerability has been identified in all supported versions\n\nof OpenSSL related to the verification of X.509 certificate chains\nthat include policy constraints.  Attackers may be able to exploit this\nvulnerability by creating a malicious certificate chain that triggers\nexponential use of computational resources, leading to a denial-of-service\n(DoS) attack on affected systems.\n\nPolicy processing is disabled by default but can be enabled by passing\nthe `-policy' argument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()' function.",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Openresty_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.27.1+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -120,5 +84,41 @@
       "type": "WEB",
       "url": "https://www.openssl.org/news/secadv/20230322.txt"
     }
-  ]
+  ],
+  "published": "2025-09-08T03:26:39Z",
+  "aliases": [
+    "CVE-2023-0464"
+  ],
+  "modified": "2025-09-11T14:45:53.893Z",
+  "id": "DONOTUSEJLSEC-2025-48",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Openresty_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.27.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ],
+  "summary": "A security vulnerability has been identified in all supported versions of OpenSSL related to the verification of X.509 certificate chains that include policy constraints.",
+  "schema_version": "1.7.2",
+  "details": "A security vulnerability has been identified in all supported versions\n\nof OpenSSL related to the verification of X.509 certificate chains\nthat include policy constraints.  Attackers may be able to exploit this\nvulnerability by creating a malicious certificate chain that triggers\nexponential use of computational resources, leading to a denial-of-service\n(DoS) attack on affected systems.\n\nPolicy processing is disabled by default but can be enabled by passing\nthe `-policy' argument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()' function."
 }

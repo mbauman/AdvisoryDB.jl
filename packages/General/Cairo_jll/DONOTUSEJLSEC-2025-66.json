@@ -1,13 +1,36 @@
 {
-  "modified": "2025-09-09T19:44:41Z",
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/TeamSeri0us/pocs/tree/master/gerbv"
+    },
+    {
+      "type": "WEB",
+      "url": "https://gitlab.freedesktop.org/cairo/cairo/issues/353"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.apache.org/thread.html/rf9fa47ab66495c78bb4120b0754dd9531ca2ff0430f6685ac9b07772%40%3Cdev.mina.apache.org%3E"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/TeamSeri0us/pocs/tree/master/gerbv"
+    },
+    {
+      "type": "WEB",
+      "url": "https://gitlab.freedesktop.org/cairo/cairo/issues/353"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.apache.org/thread.html/rf9fa47ab66495c78bb4120b0754dd9531ca2ff0430f6685ac9b07772%40%3Cdev.mina.apache.org%3E"
+    }
+  ],
   "published": "2025-09-09T19:44:41Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-66",
   "aliases": [
     "CVE-2019-6462"
   ],
-  "summary": "An issue was discovered in cairo 1.16.0.",
-  "details": "An issue was discovered in cairo 1.16.0. There is an infinite loop in the function _arc_error_normalized in the file cairo-arc.c, related to _arc_max_angle_for_tolerance_normalized.",
+  "modified": "2025-09-11T14:45:56.314Z",
+  "id": "DONOTUSEJLSEC-2025-66",
   "affected": [
     {
       "package": {
@@ -39,30 +62,7 @@
       "score": "AV:N/AC:M/Au:N/C:N/I:N/A:P"
     }
   ],
-  "references": [
-    {
-      "type": "WEB",
-      "url": "https://github.com/TeamSeri0us/pocs/tree/master/gerbv"
-    },
-    {
-      "type": "WEB",
-      "url": "https://gitlab.freedesktop.org/cairo/cairo/issues/353"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/rf9fa47ab66495c78bb4120b0754dd9531ca2ff0430f6685ac9b07772%40%3Cdev.mina.apache.org%3E"
-    },
-    {
-      "type": "WEB",
-      "url": "https://github.com/TeamSeri0us/pocs/tree/master/gerbv"
-    },
-    {
-      "type": "WEB",
-      "url": "https://gitlab.freedesktop.org/cairo/cairo/issues/353"
-    },
-    {
-      "type": "WEB",
-      "url": "https://lists.apache.org/thread.html/rf9fa47ab66495c78bb4120b0754dd9531ca2ff0430f6685ac9b07772%40%3Cdev.mina.apache.org%3E"
-    }
-  ]
+  "summary": "An issue was discovered in cairo 1.16.0.",
+  "schema_version": "1.7.2",
+  "details": "An issue was discovered in cairo 1.16.0. There is an infinite loop in the function _arc_error_normalized in the file cairo-arc.c, related to _arc_max_angle_for_tolerance_normalized."
 }

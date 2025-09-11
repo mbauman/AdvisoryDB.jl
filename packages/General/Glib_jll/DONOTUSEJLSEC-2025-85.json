@@ -1,44 +1,4 @@
 {
-  "modified": "2025-09-10T20:21:35Z",
-  "published": "2025-09-10T20:21:35Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-85",
-  "aliases": [
-    "CVE-2021-27219"
-  ],
-  "summary": "An issue was discovered in GNOME GLib before 2.66.6 and 2.67.x before 2.67.3.",
-  "details": "An issue was discovered in GNOME GLib before 2.66.6 and 2.67.x before 2.67.3. The function g_bytes_new has an integer overflow on 64-bit platforms due to an implicit cast from 64 bits to 32 bits. The overflow could potentially lead to memory corruption.",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Glib_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "2.68.1+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -96,5 +56,45 @@
       "type": "WEB",
       "url": "https://security.netapp.com/advisory/ntap-20210319-0004/"
     }
-  ]
+  ],
+  "published": "2025-09-10T20:21:35Z",
+  "aliases": [
+    "CVE-2021-27219"
+  ],
+  "modified": "2025-09-11T14:45:56.834Z",
+  "id": "DONOTUSEJLSEC-2025-85",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Glib_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.68.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+    }
+  ],
+  "summary": "An issue was discovered in GNOME GLib before 2.66.6 and 2.67.x before 2.67.3.",
+  "schema_version": "1.7.2",
+  "details": "An issue was discovered in GNOME GLib before 2.66.6 and 2.67.x before 2.67.3. The function g_bytes_new has an integer overflow on 64-bit platforms due to an implicit cast from 64 bits to 32 bits. The overflow could potentially lead to memory corruption."
 }

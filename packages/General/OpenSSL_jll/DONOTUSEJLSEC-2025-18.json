@@ -1,44 +1,4 @@
 {
-  "modified": "2025-09-08T03:26:39Z",
-  "published": "2025-09-08T03:26:39Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-18",
-  "aliases": [
-    "CVE-2019-1563"
-  ],
-  "summary": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack.",
-  "details": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to the CMS_decrypt or PKCS7_decrypt functions to select the correct recipient info to decrypt. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "OpenSSL_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.1.1+2"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -74,7 +34,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
+      "url": "https://kc.mcafee.com/corporate/index?page=content&id=SB10365"
     },
     {
       "type": "WEB",
@@ -110,7 +70,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support\u0026amp%3Butm_medium=RSS"
+      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support&amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
@@ -194,7 +154,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
+      "url": "https://kc.mcafee.com/corporate/index?page=content&id=SB10365"
     },
     {
       "type": "WEB",
@@ -230,7 +190,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support\u0026amp%3Butm_medium=RSS"
+      "url": "https://support.f5.com/csp/article/K97324400?utm_source=f5support&amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
@@ -280,5 +240,45 @@
       "type": "WEB",
       "url": "https://www.tenable.com/security/tns-2019-09"
     }
-  ]
+  ],
+  "published": "2025-09-08T03:26:39Z",
+  "aliases": [
+    "CVE-2019-1563"
+  ],
+  "modified": "2025-09-11T14:46:07.897Z",
+  "id": "DONOTUSEJLSEC-2025-18",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.1+2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+    }
+  ],
+  "summary": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack.",
+  "schema_version": "1.7.2",
+  "details": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to the CMS_decrypt or PKCS7_decrypt functions to select the correct recipient info to decrypt. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s)."
 }

@@ -1,44 +1,4 @@
 {
-  "modified": "2025-09-08T03:26:38Z",
-  "published": "2025-09-08T03:26:38Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-50",
-  "aliases": [
-    "CVE-2020-1968"
-  ],
-  "summary": "The Raccoon attack exploits a flaw in the TLS specification which can lead to an attacker being able to compute the pre-master secret in connections which have used a Diffie-Hellman (DH) based ciphersuite.",
-  "details": "The Raccoon attack exploits a flaw in the TLS specification which can lead to an attacker being able to compute the pre-master secret in connections which have used a Diffie-Hellman (DH) based ciphersuite. In such a case this would result in the attacker being able to eavesdrop on all encrypted communications sent over that TLS connection. The attack can only be exploited if an implementation re-uses a DH secret across multiple TLS connections. Note that this issue only impacts DH ciphersuites and not ECDH ciphersuites. This issue affects OpenSSL 1.0.2 which is out of support and no longer receiving public updates. OpenSSL 1.1.1 is not vulnerable to this issue. Fixed in OpenSSL 1.0.2w (Affected 1.0.2-1.0.2v).",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Openresty_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.19.9+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -120,5 +80,45 @@
       "type": "WEB",
       "url": "https://www.oracle.com/security-alerts/cpuoct2021.html"
     }
-  ]
+  ],
+  "published": "2025-09-08T03:26:38Z",
+  "aliases": [
+    "CVE-2020-1968"
+  ],
+  "modified": "2025-09-11T14:45:52.118Z",
+  "id": "DONOTUSEJLSEC-2025-50",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Openresty_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.19.9+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+    }
+  ],
+  "summary": "The Raccoon attack exploits a flaw in the TLS specification which can lead to an attacker being able to compute the pre-master secret in connections which have used a Diffie-Hellman (DH) based ciphersuite.",
+  "schema_version": "1.7.2",
+  "details": "The Raccoon attack exploits a flaw in the TLS specification which can lead to an attacker being able to compute the pre-master secret in connections which have used a Diffie-Hellman (DH) based ciphersuite. In such a case this would result in the attacker being able to eavesdrop on all encrypted communications sent over that TLS connection. The attack can only be exploited if an implementation re-uses a DH secret across multiple TLS connections. Note that this issue only impacts DH ciphersuites and not ECDH ciphersuites. This issue affects OpenSSL 1.0.2 which is out of support and no longer receiving public updates. OpenSSL 1.1.1 is not vulnerable to this issue. Fixed in OpenSSL 1.0.2w (Affected 1.0.2-1.0.2v)."
 }

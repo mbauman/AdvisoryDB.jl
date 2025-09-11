@@ -1,44 +1,4 @@
 {
-  "modified": "2025-09-10T20:21:38Z",
-  "published": "2025-09-10T20:21:38Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-91",
-  "aliases": [
-    "CVE-2019-13012"
-  ],
-  "summary": "The keyfile settings backend in GNOME GLib (aka glib2.0) before 2.60.0 creates directories using g_file_make_directory_with_parents (kfsb-\u003edir, NULL, NULL) and files using g_file_replace_contents (kfsb-\u003efile, contents, length, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, NULL, NULL).",
-  "details": "The keyfile settings backend in GNOME GLib (aka glib2.0) before 2.60.0 creates directories using g_file_make_directory_with_parents (kfsb-\u003edir, NULL, NULL) and files using g_file_replace_contents (kfsb-\u003efile, contents, length, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, NULL, NULL). Consequently, it does not properly restrict directory (and file) permissions. Instead, for directories, 0777 permissions are used; for files, default file permissions are used. This is similar to CVE-2019-12450.",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Glib_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "2.68.1+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -136,5 +96,45 @@
       "type": "WEB",
       "url": "https://usn.ubuntu.com/4049-2/"
     }
-  ]
+  ],
+  "published": "2025-09-10T20:21:38Z",
+  "aliases": [
+    "CVE-2019-13012"
+  ],
+  "modified": "2025-09-11T14:46:01.904Z",
+  "id": "DONOTUSEJLSEC-2025-91",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Glib_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.68.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
+    }
+  ],
+  "summary": "The keyfile settings backend in GNOME GLib (aka glib2.0) before 2.60.0 creates directories using g_file_make_directory_with_parents (kfsb->dir, NULL, NULL) and files using g_file_replace_contents (kfsb->file, contents, length, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, NULL, NULL).",
+  "schema_version": "1.7.2",
+  "details": "The keyfile settings backend in GNOME GLib (aka glib2.0) before 2.60.0 creates directories using g_file_make_directory_with_parents (kfsb->dir, NULL, NULL) and files using g_file_replace_contents (kfsb->file, contents, length, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, NULL, NULL). Consequently, it does not properly restrict directory (and file) permissions. Instead, for directories, 0777 permissions are used; for files, default file permissions are used. This is similar to CVE-2019-12450."
 }

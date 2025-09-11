@@ -1,44 +1,4 @@
 {
-  "modified": "2025-09-08T03:26:38Z",
-  "published": "2025-09-08T03:26:38Z",
-  "schema_version": "1.7.2",
-  "id": "DONOTUSEJLSEC-2025-12",
-  "aliases": [
-    "CVE-2019-1547"
-  ],
-  "summary": "Normally in OpenSSL EC groups always have a co-factor present and this is used in side channel resistant code paths.",
-  "details": "Normally in OpenSSL EC groups always have a co-factor present and this is used in side channel resistant code paths. However, in some cases, it is possible to construct a group using explicit parameters (instead of using a named curve). In those cases it is possible that such a group does not have the cofactor present. This can occur even where all the parameters match a known named curve. If such a curve is used then OpenSSL falls back to non-side channel resistant code paths which may result in full key recovery during an ECDSA signature operation. In order to be vulnerable an attacker would have to have the ability to time the creation of a large number of signatures where explicit parameters with no co-factor present are in use by an application using libcrypto. For the avoidance of doubt libssl is not vulnerable because explicit parameters are never used. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "OpenSSL_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.1.1+2"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:L/AC:M/Au:N/C:P/I:N/A:N"
-    }
-  ],
   "references": [
     {
       "type": "WEB",
@@ -78,7 +38,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
+      "url": "https://kc.mcafee.com/corporate/index?page=content&id=SB10365"
     },
     {
       "type": "WEB",
@@ -126,7 +86,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://support.f5.com/csp/article/K73422160?utm_source=f5support\u0026amp%3Butm_medium=RSS"
+      "url": "https://support.f5.com/csp/article/K73422160?utm_source=f5support&amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
@@ -218,7 +178,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10365"
+      "url": "https://kc.mcafee.com/corporate/index?page=content&id=SB10365"
     },
     {
       "type": "WEB",
@@ -266,7 +226,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://support.f5.com/csp/article/K73422160?utm_source=f5support\u0026amp%3Butm_medium=RSS"
+      "url": "https://support.f5.com/csp/article/K73422160?utm_source=f5support&amp%3Butm_medium=RSS"
     },
     {
       "type": "WEB",
@@ -320,5 +280,45 @@
       "type": "WEB",
       "url": "https://www.tenable.com/security/tns-2019-09"
     }
-  ]
+  ],
+  "published": "2025-09-08T03:26:38Z",
+  "aliases": [
+    "CVE-2019-1547"
+  ],
+  "modified": "2025-09-11T14:45:52.782Z",
+  "id": "DONOTUSEJLSEC-2025-12",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.1+2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:L/AC:M/Au:N/C:P/I:N/A:N"
+    }
+  ],
+  "summary": "Normally in OpenSSL EC groups always have a co-factor present and this is used in side channel resistant code paths.",
+  "schema_version": "1.7.2",
+  "details": "Normally in OpenSSL EC groups always have a co-factor present and this is used in side channel resistant code paths. However, in some cases, it is possible to construct a group using explicit parameters (instead of using a named curve). In those cases it is possible that such a group does not have the cofactor present. This can occur even where all the parameters match a known named curve. If such a curve is used then OpenSSL falls back to non-side channel resistant code paths which may result in full key recovery during an ECDSA signature operation. In order to be vulnerable an attacker would have to have the ability to time the creation of a large number of signatures where explicit parameters with no co-factor present are in use by an application using libcrypto. For the avoidance of doubt libssl is not vulnerable because explicit parameters are never used. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s)."
 }
