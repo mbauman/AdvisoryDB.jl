@@ -1,0 +1,104 @@
+{
+  "modified": "2025-09-11T17:47:08Z",
+  "published": "2025-09-11T17:47:08Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-96",
+  "aliases": [
+    "CVE-2019-20454"
+  ],
+  "summary": "An out-of-bounds read was discovered in PCRE before 10.34 when the pattern \\X is JIT compiled and used to match specially crafted subjects in non-UTF mode.",
+  "details": "An out-of-bounds read was discovered in PCRE before 10.34 when the pattern \\X is JIT compiled and used to match specially crafted subjects in non-UTF mode. Applications that use PCRE to parse untrusted input may be vulnerable to this flaw, which would allow an attacker to crash the application. The flaw occurs in do_extuni_no_utf in pcre2_jit_compile.c.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "PCRE2_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "10.34.0+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.0/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://bugs.exim.org/show_bug.cgi?id=2421"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugs.php.net/bug.php?id=78338"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1735494"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2023/03/msg00014.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/OQRAHYHLRNMBTPR3KXVM27NSZP3KTOPI/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202006-16"
+    },
+    {
+      "type": "WEB",
+      "url": "https://vcs.pcre.org/pcre2?view=revision\u0026revision=1092"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugs.exim.org/show_bug.cgi?id=2421"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugs.php.net/bug.php?id=78338"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1735494"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2023/03/msg00014.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/OQRAHYHLRNMBTPR3KXVM27NSZP3KTOPI/"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.gentoo.org/glsa/202006-16"
+    },
+    {
+      "type": "WEB",
+      "url": "https://vcs.pcre.org/pcre2?view=revision\u0026revision=1092"
+    }
+  ]
+}
