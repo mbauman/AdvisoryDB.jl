@@ -1,5 +1,5 @@
 {
-  "modified": "2025-09-10T20:21:35Z",
+  "modified": "2025-09-11T16:56:28.764Z",
   "published": "2025-09-10T20:21:35Z",
   "schema_version": "1.7.2",
   "id": "DONOTUSEJLSEC-2025-79",
@@ -20,6 +20,9 @@
           "events": [
             {
               "introduced": "2.76.5+0"
+            },
+            {
+              "fixed": "2.86.0+0"
             }
           ]
         }
