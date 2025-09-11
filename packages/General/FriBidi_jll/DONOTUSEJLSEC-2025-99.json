@@ -1,0 +1,72 @@
+{
+  "modified": "2025-09-11T18:19:09Z",
+  "published": "2025-09-11T18:19:09Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-99",
+  "aliases": [
+    "CVE-2022-25309"
+  ],
+  "summary": "A heap-based buffer overflow flaw was found in the Fribidi package and affects the fribidi_cap_rtl_to_unicode() function of the fribidi-char-sets-cap-rtl.c file.",
+  "details": "A heap-based buffer overflow flaw was found in the Fribidi package and affects the fribidi_cap_rtl_to_unicode() function of the fribidi-char-sets-cap-rtl.c file. This flaw allows an attacker to pass a specially crafted file to the Fribidi application with the '--caprtl' option, leading to a crash and causing a denial of service.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "FriBidi_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.0.14+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/security/cve/CVE-2022-25309"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2047896"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/fribidi/fribidi/commit/f22593b82b5d1668d1997dbccd10a9c31ffea3b3"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/fribidi/fribidi/issues/182"
+    },
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/security/cve/CVE-2022-25309"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2047896"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/fribidi/fribidi/commit/f22593b82b5d1668d1997dbccd10a9c31ffea3b3"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/fribidi/fribidi/issues/182"
+    }
+  ]
+}

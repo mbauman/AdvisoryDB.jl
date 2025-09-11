@@ -1,0 +1,96 @@
+{
+  "modified": "2025-09-11T18:19:02Z",
+  "published": "2025-09-11T18:19:02Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-102",
+  "aliases": [
+    "CVE-2023-22742"
+  ],
+  "summary": "libgit2 is a cross-platform, linkable library implementation of Git.",
+  "details": "libgit2 is a cross-platform, linkable library implementation of Git. When using an SSH remote with the optional libssh2 backend, libgit2 does not perform certificate checking by default. Prior versions of libgit2 require the caller to set the `certificate_check` field of libgit2's `git_remote_callbacks` structure - if a certificate check callback is not set, libgit2 does not perform any certificate checking. This means that by default - without configuring a certificate check callback, clients will not perform validation on the server SSH keys and may be subject to a man-in-the-middle attack. Users are encouraged to upgrade to v1.4.5 or v1.5.1. Users unable to upgrade should ensure that all relevant certificates are manually checked.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "LibGit2_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.6.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:H/A:N"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2023/11/06/5"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/42e5db98b963ae503229c63e44e06e439df50e56"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/cd6f679af401eda1f172402006ef8265f8bd58ea"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v1.4.5"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v1.5.1"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/security/advisories/GHSA-8643-3wh5-rmjq"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.libssh2.org"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2023/11/06/5"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/42e5db98b963ae503229c63e44e06e439df50e56"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/cd6f679af401eda1f172402006ef8265f8bd58ea"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v1.4.5"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v1.5.1"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/security/advisories/GHSA-8643-3wh5-rmjq"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.libssh2.org"
+    }
+  ]
+}

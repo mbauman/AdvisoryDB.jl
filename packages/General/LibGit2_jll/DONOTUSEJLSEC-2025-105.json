@@ -1,0 +1,100 @@
+{
+  "modified": "2025-09-11T18:19:02Z",
+  "published": "2025-09-11T18:19:02Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-105",
+  "aliases": [
+    "CVE-2020-12278"
+  ],
+  "summary": "An issue was discovered in libgit2 before 0.28.4 and 0.9x before 0.99.0.",
+  "details": "An issue was discovered in libgit2 before 0.28.4 and 0.9x before 0.99.0. path.c mishandles equivalent filenames that exist because of NTFS Alternate Data Streams. This may allow remote code execution when cloning a repository. This issue is similar to CVE-2019-1352.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "LibGit2_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "0.28.5+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/git/git/security/advisories/GHSA-5wph-8frv-58vj"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/3f7851eadca36a99627ad78cbe56a40d3776ed01"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/e1832eb20a7089f6383cfce474f213157f5300cb"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v0.28.4"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v0.99.0"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2022/03/msg00031.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2023/02/msg00034.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/git/git/security/advisories/GHSA-5wph-8frv-58vj"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/3f7851eadca36a99627ad78cbe56a40d3776ed01"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/commit/e1832eb20a7089f6383cfce474f213157f5300cb"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v0.28.4"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libgit2/libgit2/releases/tag/v0.99.0"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2022/03/msg00031.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2023/02/msg00034.html"
+    }
+  ]
+}

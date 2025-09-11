@@ -1,0 +1,76 @@
+{
+  "modified": "2025-09-11T18:19:10Z",
+  "published": "2025-09-11T18:19:10Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-106",
+  "aliases": [
+    "CVE-2020-24994"
+  ],
+  "summary": "Stack overflow in the parse_tag function in libass/ass_parse.c in libass before 0.15.0 allows remote...",
+  "details": "Stack overflow in the parse_tag function in libass/ass_parse.c in libass before 0.15.0 allows remote attackers to cause a denial of service or remote code execution via a crafted file.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "libass_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "0.15.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:M/Au:N/C:P/I:P/A:P"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/commit/6835731c2fe4164a0c50bc91d12c43b2a2b4e"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/issues/422"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/issues/422#issuecomment-806002919"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/issues/423"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/commit/6835731c2fe4164a0c50bc91d12c43b2a2b4e"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/issues/422"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/issues/422#issuecomment-806002919"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/libass/libass/issues/423"
+    }
+  ]
+}
