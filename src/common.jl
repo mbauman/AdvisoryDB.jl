@@ -510,19 +510,25 @@ function create!(pkg, osv)
     end
 end
 
+stringify_keys(x) = x
+stringify_keys(x::AbstractArray) = stringify_keys.(x)
+stringify_keys(x::AbstractDict) = Dict(string(k)=>stringify_keys(v) for (k,v) in x)
+
 function update!(jlsec_path::AbstractString, osv)
     # JSON3 gives us Symbol keys, but the osv has strings (TODO, this is messy)
-    jlsec = copy(JSON3.read(jlsec_path))
+    original_jlsec = JSON3.read(jlsec_path)
+    jlsec = stringify_keys(original_jlsec)
     updated = false
-    for key in union(keys(jlsec), Symbol.(keys(osv)))
-        key in (:id, :modified, :published) && continue
-        if haskey(osv, string(key)) && (get(jlsec, key, nothing) != osv[string(key)])
-            jlsec[key] = osv[string(key)]
+    for key in union(keys(jlsec), keys(osv))
+        key in ("id", "modified", "published") && continue
+        if haskey(osv, key) && (get(jlsec, key, "sentinel: wNVPEsdcSJ4N") != osv[key])
+            @info "updating $(basename(jlsec_path)) because $key differs"
+            jlsec[key] = osv[key]
             updated = true
         end
     end
     if updated
-        jlsec[:modified] = now()
+        jlsec["modified"] = now()
         open(jlsec_path, "w") do f
             JSON3.pretty(f, jlsec, JSON3.AlignmentContext(indent=2))
         end
