@@ -100,6 +100,11 @@ Openresty_jll = ["< 1.19.9+0"]
 [CVE-2021-3800]
 Glib_jll = ["< 2.68.1+0"]
 
+[CVE-2021-4048]
+OpenBLAS32_jll = ["< 0.3.20+0"]
+OpenBLASHighCoreCount_jll = ["*"]
+OpenBLAS_jll = ["< 0.3.20+0"]
+
 [CVE-2021-4160]
 OpenSSL_jll = ["< 1.1.13+0"]
 Openresty_jll = ["< 1.21.4+0"]
