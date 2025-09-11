@@ -1,0 +1,56 @@
+{
+  "modified": "2025-09-11T17:47:13Z",
+  "published": "2025-09-11T17:47:13Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-95",
+  "aliases": [
+    "CVE-2022-41409"
+  ],
+  "summary": "Integer overflow vulnerability in pcre2test before 10.41 allows attackers to cause a denial of servi...",
+  "details": "Integer overflow vulnerability in pcre2test before 10.41 allows attackers to cause a denial of service or other unspecified impacts via negative input.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "PCRE2_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "10.41.0+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/PCRE2Project/pcre2/commit/94e1c001761373b7d9450768aa15d04c25547a35"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/PCRE2Project/pcre2/issues/141"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/PCRE2Project/pcre2/commit/94e1c001761373b7d9450768aa15d04c25547a35"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/PCRE2Project/pcre2/issues/141"
+    }
+  ]
+}
