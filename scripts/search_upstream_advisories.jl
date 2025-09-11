@@ -24,7 +24,7 @@ function main()
             advisories[(vuln.cve.id, pkg)] = versioninfo
         end
     elseif startswith(input, "EUVD")
-        vuln = EUVD.fetch_esina(input)
+        vuln = EUVD.fetch_enisa(input)
         pkgs = EUVD.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from EUVD")
         specific_advisory_import = true
