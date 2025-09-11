@@ -550,3 +550,22 @@ function fetch_advisory(advisory_id, package_verisioninfo=nothing)
         throw(ArgumentError("unknown advisory: $advisory_id"))
     end
 end
+
+function fetch_product_matches(vendor, product)
+    cpe = "cpe:2.3:a:$vendor:$product"
+    nvds = NVD.fetch_cpe_matches(cpe)
+    @info "got $(length(nvds)) advisories from NVD"
+    euvds = EUVD.fetch_product_matches(vendor, product)
+    @info "got $(length(euvds)) advisories from EUVD"
+    missing_ids = setdiff(filter(startswith("CVE"), EUVD.vuln_id.(euvds)), (x->x.cve.id).(nvds))
+    @info "adding another $(min(length(missing_ids),200)) advisories from NVD"
+    for missing_id in missing_ids[1:min(end, 200)] # 20 minutes
+        sleep(6)
+        try
+            push!(nvds, NVD.fetch_cve(missing_id))
+        catch ex
+            @info ex
+        end
+    end
+    return nvds, euvds
+end

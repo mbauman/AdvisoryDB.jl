@@ -43,25 +43,20 @@ function main()
         end
     else
         # A larger joint EUVD/NVD search, either by vendor:product or time
-        if contains(input, ":")
+        if startswith(input, "--project")
+            _, proj= split(input, [' ','='])
+            vendorproducts = [k for (k,v) in AdvisoryDB.upstream_projects_by_vendor_product() if v == proj]
+            nvds = []
+            euvds = []
+            for (vendor, product) in vendorproducts
+                nvdspart, euvdspart = AdvisoryDB.fetch_product_matches(vendor, product)
+                append!(nvds, nvdspart)
+                append!(euvds, euvdspart)
+            end
+        elseif contains(input, ":")
             _, vendor, product = rsplit(":"*input, ":", limit=3, keepempty=true)
             info["haystack"] = "search $vendor/$product"
-            cpe = "cpe:2.3:a:$vendor:$product"
-            nvds = NVD.fetch_cpe_matches(cpe)
-            @info "got $(length(nvds)) advisories from NVD"
-            euvds = EUVD.fetch_product_matches(vendor, product)
-            @info "got $(length(euvds)) advisories from EUVD"
-            # EUVD's search is
-            missing_ids = setdiff(filter(startswith("CVE"), EUVD.vuln_id.(euvds)), (x->x.cve.id).(nvds))
-            @info "adding another $(min(length(missing_ids),200)) advisories from NVD"
-            for missing_id in missing_ids[1:min(end, 200)] # 20 minutes
-                sleep(6)
-                try
-                    push!(nvds, NVD.fetch_cve(missing_id))
-                catch ex
-                    @info ex
-                end
-            end
+            nvds, euvds = AdvisoryDB.fetch_product_matches(vendor, product)
         else
             info["haystack"] = "searching recent NVD changes and EUVD publications"
             nvds = NVD.fetch_nvd_vulnerabilities()
