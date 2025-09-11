@@ -1,0 +1,48 @@
+{
+  "modified": "2025-09-11T18:19:03Z",
+  "published": "2025-09-11T18:19:03Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-108",
+  "aliases": [
+    "CVE-2023-34824"
+  ],
+  "summary": "fdkaac before 1.0.5 was discovered to contain a heap buffer overflow in caf_info function in caf_rea...",
+  "details": "fdkaac before 1.0.5 was discovered to contain a heap buffer overflow in caf_info function in caf_reader.c.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "libfdk_aac_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.0.2+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/nu774/fdkaac/issues/55"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/nu774/fdkaac/issues/55"
+    }
+  ]
+}
