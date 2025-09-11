@@ -41,7 +41,7 @@ jobs:
       run: |
         [[ $(git ls-files --others --modified --exclude-standard) ]] && echo "changes=true" >> $GITHUB_OUTPUT || echo "no changes"
         if [ -n "${{ inputs.haystack }}" ]; then
-          branch_name="search-$(echo "${{ inputs.haystack }}" | sed 's/[^a-zA-Z0-9-]/_/g') | sed 's/^-*//g'"
+          branch_name="search-$(echo "${{ inputs.haystack }}" | sed 's/[^a-zA-Z0-9-]/_/g' | sed 's/^-*//g)'"
         else
           branch_name="search-$(date -u +"%Y%m%dT%H%M%SZ")"
         fi
