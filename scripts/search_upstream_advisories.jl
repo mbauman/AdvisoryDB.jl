@@ -48,9 +48,12 @@ function main()
             info["haystack"] = "search $vendor/$product"
             cpe = "cpe:2.3:a:$vendor:$product"
             nvds = NVD.fetch_cpe_matches(cpe)
+            @info "got $(length(nvds)) advisories from NVD"
             euvds = EUVD.fetch_product_matches(vendor, product)
+            @info "got $(length(euvds)) advisories from EUVD"
             # EUVD's search is
             missing_ids = setdiff(filter(startswith("CVE"), EUVD.vuln_id.(euvds)), (x->x.cve.id).(nvds))
+            @info "adding another $(min(length(missing_ids),200)) advisories from NVD"
             for missing_id in missing_ids[1:min(end, 200)] # 20 minutes
                 sleep(6)
                 try
@@ -126,8 +129,6 @@ function main()
             n_created += 1
         end
         # This is a partial order sort, but these should be non-overlapping
-        # TODO: Merge overlapping ranges here before saving them — they may overlap in cases where the Julia package
-        #   didn't follow all upstream versions and thus does not require disjoint ranges
         saved_advisory[pkg] = sort(version_ranges, by=x->something(tryparse(VersionRange{VersionNumber}, x), x), lt=<)
     end
 
@@ -146,7 +147,7 @@ function main()
     version_trouble_str = isempty(troubled_versions) ? "" :
         """
 
-        There are $(length(troubled_versions)) advisories that apply to all registered versions: $(collect(troubled_versions))
+        There are $(length(troubled_versions)) advisories that apply to all registered versions: $(string(collect(troubled_versions)))
         $troubled_info_str
 
         """

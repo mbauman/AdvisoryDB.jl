@@ -511,11 +511,12 @@ function create!(pkg, osv)
 end
 
 function update!(jlsec_path::AbstractString, osv)
+    # JSON3 gives us Symbol keys, but the osv has strings (TODO, this is messy)
     jlsec = copy(JSON3.read(jlsec_path))
     updated = false
     for key in union(keys(jlsec), Symbol.(keys(osv)))
         key in (:id, :modified, :published) && continue
-        if haskey(osv, key) && (get(jlsec, key, nothing) != osv[key])
+        if haskey(osv, string(key)) && (get(jlsec, key, nothing) != osv[string(key)])
             jlsec[key] = osv[string(key)]
             updated = true
         end
