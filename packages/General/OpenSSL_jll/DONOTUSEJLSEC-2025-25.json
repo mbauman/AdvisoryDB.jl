@@ -1,4 +1,44 @@
 {
+  "modified": "2025-09-08T03:26:38Z",
+  "published": "2025-09-08T03:26:38Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-25",
+  "aliases": [
+    "CVE-2021-3449"
+  ],
+  "summary": "An OpenSSL TLS server may crash if sent a maliciously crafted renegotiation ClientHello message from a client.",
+  "details": "An OpenSSL TLS server may crash if sent a maliciously crafted renegotiation ClientHello message from a client. If a TLSv1.2 renegotiation ClientHello omits the signature_algorithms extension (where it was present in the initial ClientHello), but includes a signature_algorithms_cert extension then a NULL pointer dereference will result, leading to a crash and a denial of service attack. A server is only vulnerable if it has TLSv1.2 and renegotiation enabled (which is the default configuration). OpenSSL TLS clients are not impacted by this issue. All OpenSSL 1.1.1 versions are affected by this issue. Users of these versions should upgrade to OpenSSL 1.1.1k. OpenSSL 1.0.2 is not impacted by this issue. Fixed in OpenSSL 1.1.1k (Affected 1.1.1-1.1.1j).",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.10+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:M/Au:N/C:N/I:N/A:P"
+    }
+  ],
   "references": [
     {
       "type": "WEB",
@@ -34,7 +74,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content&id=SB10356"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10356"
     },
     {
       "type": "WEB",
@@ -150,7 +190,7 @@
     },
     {
       "type": "WEB",
-      "url": "https://kc.mcafee.com/corporate/index?page=content&id=SB10356"
+      "url": "https://kc.mcafee.com/corporate/index?page=content\u0026id=SB10356"
     },
     {
       "type": "WEB",
@@ -232,45 +272,5 @@
       "type": "WEB",
       "url": "https://www.tenable.com/security/tns-2021-10"
     }
-  ],
-  "published": "2025-09-08T03:26:38Z",
-  "aliases": [
-    "CVE-2021-3449"
-  ],
-  "modified": "2025-09-11T14:45:51.255Z",
-  "id": "DONOTUSEJLSEC-2025-25",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "OpenSSL_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.1.10+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:M/Au:N/C:N/I:N/A:P"
-    }
-  ],
-  "summary": "An OpenSSL TLS server may crash if sent a maliciously crafted renegotiation ClientHello message from a client.",
-  "schema_version": "1.7.2",
-  "details": "An OpenSSL TLS server may crash if sent a maliciously crafted renegotiation ClientHello message from a client. If a TLSv1.2 renegotiation ClientHello omits the signature_algorithms extension (where it was present in the initial ClientHello), but includes a signature_algorithms_cert extension then a NULL pointer dereference will result, leading to a crash and a denial of service attack. A server is only vulnerable if it has TLSv1.2 and renegotiation enabled (which is the default configuration). OpenSSL TLS clients are not impacted by this issue. All OpenSSL 1.1.1 versions are affected by this issue. Users of these versions should upgrade to OpenSSL 1.1.1k. OpenSSL 1.0.2 is not impacted by this issue. Fixed in OpenSSL 1.1.1k (Affected 1.1.1-1.1.1j)."
+  ]
 }

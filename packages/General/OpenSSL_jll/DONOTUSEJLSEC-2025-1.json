@@ -1,4 +1,44 @@
 {
+  "modified": "2025-09-08T03:26:39Z",
+  "published": "2025-09-08T03:26:39Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-1",
+  "aliases": [
+    "CVE-2022-1292"
+  ],
+  "summary": "The c_rehash script does not properly sanitise shell metacharacters to prevent command injection.",
+  "details": "The c_rehash script does not properly sanitise shell metacharacters to prevent command injection. This script is distributed by some operating systems in a manner where it is automatically executed. On such operating systems, an attacker could execute arbitrary commands with the privileges of the script. Use of the c_rehash script is considered obsolete and should be replaced by the OpenSSL rehash command line tool. Fixed in OpenSSL 3.0.3 (Affected 3.0.0,3.0.1,3.0.2). Fixed in OpenSSL 1.1.1o (Affected 1.1.1-1.1.1n). Fixed in OpenSSL 1.0.2ze (Affected 1.0.2-1.0.2zd).",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.16+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:C/I:C/A:C"
+    }
+  ],
   "references": [
     {
       "type": "WEB",
@@ -116,45 +156,5 @@
       "type": "WEB",
       "url": "https://www.oracle.com/security-alerts/cpujul2022.html"
     }
-  ],
-  "published": "2025-09-08T03:26:39Z",
-  "aliases": [
-    "CVE-2022-1292"
-  ],
-  "modified": "2025-09-11T14:45:59.242Z",
-  "id": "DONOTUSEJLSEC-2025-1",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "OpenSSL_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.1.16+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:C/I:C/A:C"
-    }
-  ],
-  "summary": "The c_rehash script does not properly sanitise shell metacharacters to prevent command injection.",
-  "schema_version": "1.7.2",
-  "details": "The c_rehash script does not properly sanitise shell metacharacters to prevent command injection. This script is distributed by some operating systems in a manner where it is automatically executed. On such operating systems, an attacker could execute arbitrary commands with the privileges of the script. Use of the c_rehash script is considered obsolete and should be replaced by the OpenSSL rehash command line tool. Fixed in OpenSSL 3.0.3 (Affected 3.0.0,3.0.1,3.0.2). Fixed in OpenSSL 1.1.1o (Affected 1.1.1-1.1.1n). Fixed in OpenSSL 1.0.2ze (Affected 1.0.2-1.0.2zd)."
+  ]
 }

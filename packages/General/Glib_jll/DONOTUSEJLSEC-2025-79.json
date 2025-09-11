@@ -1,20 +1,13 @@
 {
-  "references": [
-    {
-      "type": "WEB",
-      "url": "https://access.redhat.com/security/cve/CVE-2025-6052"
-    },
-    {
-      "type": "WEB",
-      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2372666"
-    }
-  ],
+  "modified": "2025-09-10T20:21:35Z",
   "published": "2025-09-10T20:21:35Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-79",
   "aliases": [
     "CVE-2025-6052"
   ],
-  "modified": "2025-09-11T14:45:56.041Z",
-  "id": "DONOTUSEJLSEC-2025-79",
+  "summary": "A flaw was found in how GLib’s GString manages memory when adding data to strings.",
+  "details": "A flaw was found in how GLib’s GString manages memory when adding data to strings. If a string is already very large, combining it with more input can cause a hidden overflow in the size calculation. This makes the system think it has enough memory when it doesn’t. As a result, data may be written past the end of the allocated memory, leading to crashes or memory corruption.",
   "affected": [
     {
       "package": {
@@ -27,9 +20,6 @@
           "events": [
             {
               "introduced": "2.76.5+0"
-            },
-            {
-              "fixed": "2.86.0+0"
             }
           ]
         }
@@ -42,7 +32,14 @@
       "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
     }
   ],
-  "summary": "A flaw was found in how GLib’s GString manages memory when adding data to strings.",
-  "schema_version": "1.7.2",
-  "details": "A flaw was found in how GLib’s GString manages memory when adding data to strings. If a string is already very large, combining it with more input can cause a hidden overflow in the size calculation. This makes the system think it has enough memory when it doesn’t. As a result, data may be written past the end of the allocated memory, leading to crashes or memory corruption."
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://access.redhat.com/security/cve/CVE-2025-6052"
+    },
+    {
+      "type": "WEB",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2372666"
+    }
+  ]
 }

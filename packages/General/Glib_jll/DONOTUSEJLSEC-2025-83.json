@@ -1,4 +1,40 @@
 {
+  "modified": "2025-09-10T20:21:34Z",
+  "published": "2025-09-10T20:21:34Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-83",
+  "aliases": [
+    "CVE-2021-3800"
+  ],
+  "summary": "A flaw was found in glib before version 2.63.6.",
+  "details": "A flaw was found in glib before version 2.63.6. Due to random charset alias, pkexec can leak content from files owned by privileged users to unprivileged ones under the right condition.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Glib_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.68.1+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+    }
+  ],
   "references": [
     {
       "type": "WEB",
@@ -48,41 +84,5 @@
       "type": "WEB",
       "url": "https://www.openwall.com/lists/oss-security/2017/06/23/8"
     }
-  ],
-  "published": "2025-09-10T20:21:34Z",
-  "aliases": [
-    "CVE-2021-3800"
-  ],
-  "modified": "2025-09-11T14:45:52.943Z",
-  "id": "DONOTUSEJLSEC-2025-83",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Glib_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "2.68.1+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
-    }
-  ],
-  "summary": "A flaw was found in glib before version 2.63.6.",
-  "schema_version": "1.7.2",
-  "details": "A flaw was found in glib before version 2.63.6. Due to random charset alias, pkexec can leak content from files owned by privileged users to unprivileged ones under the right condition."
+  ]
 }

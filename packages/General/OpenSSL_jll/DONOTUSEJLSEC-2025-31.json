@@ -1,4 +1,44 @@
 {
+  "modified": "2025-09-08T03:26:39Z",
+  "published": "2025-09-08T03:26:39Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-31",
+  "aliases": [
+    "CVE-2019-1551"
+  ],
+  "summary": "There is an overflow bug in the x64_64 Montgomery squaring procedure used in exponentiation with 512-bit moduli.",
+  "details": "There is an overflow bug in the x64_64 Montgomery squaring procedure used in exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH512 are considered just feasible. However, for an attack the target would have to re-use the DH512 private key, which is not recommended anyway. Also applications directly using the low level API BN_mod_exp may be affected if they use BN_FLG_CONSTTIME. Fixed in OpenSSL 1.1.1e (Affected 1.1.1-1.1.1d). Fixed in OpenSSL 1.0.2u (Affected 1.0.2-1.0.2t).",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "OpenSSL_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.1.1+2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+    }
+  ],
   "references": [
     {
       "type": "WEB",
@@ -192,45 +232,5 @@
       "type": "WEB",
       "url": "https://www.tenable.com/security/tns-2021-10"
     }
-  ],
-  "published": "2025-09-08T03:26:39Z",
-  "aliases": [
-    "CVE-2019-1551"
-  ],
-  "modified": "2025-09-11T14:45:57.063Z",
-  "id": "DONOTUSEJLSEC-2025-31",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "OpenSSL_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.1.1+2"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
-    }
-  ],
-  "summary": "There is an overflow bug in the x64_64 Montgomery squaring procedure used in exponentiation with 512-bit moduli.",
-  "schema_version": "1.7.2",
-  "details": "There is an overflow bug in the x64_64 Montgomery squaring procedure used in exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH512 are considered just feasible. However, for an attack the target would have to re-use the DH512 private key, which is not recommended anyway. Also applications directly using the low level API BN_mod_exp may be affected if they use BN_FLG_CONSTTIME. Fixed in OpenSSL 1.1.1e (Affected 1.1.1-1.1.1d). Fixed in OpenSSL 1.0.2u (Affected 1.0.2-1.0.2t)."
+  ]
 }

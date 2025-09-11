@@ -1,4 +1,44 @@
 {
+  "modified": "2025-09-09T19:44:43Z",
+  "published": "2025-09-09T19:44:43Z",
+  "schema_version": "1.7.2",
+  "id": "DONOTUSEJLSEC-2025-65",
+  "aliases": [
+    "CVE-2017-9814"
+  ],
+  "summary": "cairo-truetype-subset.c in cairo 1.15.6 and earlier allows remote attackers to cause a denial of ser...",
+  "details": "cairo-truetype-subset.c in cairo 1.15.6 and earlier allows remote attackers to cause a denial of service (out-of-bounds read) because of mishandling of an unexpected malloc(0) call.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "Julia",
+        "name": "Cairo_jll"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.16.0+0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V2",
+      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+    }
+  ],
   "references": [
     {
       "type": "WEB",
@@ -32,45 +72,5 @@
       "type": "WEB",
       "url": "https://security.gentoo.org/glsa/201904-01"
     }
-  ],
-  "published": "2025-09-09T19:44:43Z",
-  "aliases": [
-    "CVE-2017-9814"
-  ],
-  "modified": "2025-09-11T14:46:08.406Z",
-  "id": "DONOTUSEJLSEC-2025-65",
-  "affected": [
-    {
-      "package": {
-        "ecosystem": "Julia",
-        "name": "Cairo_jll"
-      },
-      "ranges": [
-        {
-          "type": "SEMVER",
-          "events": [
-            {
-              "introduced": "0"
-            },
-            {
-              "fixed": "1.16.0+0"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "severity": [
-    {
-      "type": "CVSS_V3",
-      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-    },
-    {
-      "type": "CVSS_V2",
-      "score": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
-    }
-  ],
-  "summary": "cairo-truetype-subset.c in cairo 1.15.6 and earlier allows remote attackers to cause a denial of ser...",
-  "schema_version": "1.7.2",
-  "details": "cairo-truetype-subset.c in cairo 1.15.6 and earlier allows remote attackers to cause a denial of service (out-of-bounds read) because of mishandling of an unexpected malloc(0) call."
+  ]
 }
