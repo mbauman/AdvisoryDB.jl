@@ -248,7 +248,7 @@ function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
 
     for vuln in vulnerabilities
-        if !isempty(related_julia_packages(vuln))
+        if !isempty(related_julia_packages(vuln)[1])
             push!(julia_vulnerabilities, vuln)
         end
     end
@@ -336,7 +336,7 @@ function convert_to_osv(vuln, package_versioninfo = nothing)
     end
 
     # Affected _Julia_ packages, either explicitly passed
-    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(vuln) : [package_versioninfo]
+    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(vuln)[1] : [package_versioninfo]
     affected = []
     for (package, versioninfo) in package_versioninfos
         affected_entry = Dict{String, Any}()

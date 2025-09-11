@@ -178,6 +178,7 @@ url_regexes = [
     'https://curl\.haxx\.se/download/curl-(.+)\.t',
 ]
 cpe = "cpe:2.3:a:curl_project:curl"
+vendors = ["curl", "haxx"]
 
 [libgit2]
 repo = 'https://github.com/libgit2/libgit2.git'

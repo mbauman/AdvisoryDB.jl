@@ -126,7 +126,7 @@ function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
 
     for vuln in vulnerabilities
-        if !isempty(related_julia_packages(vuln))
+        if !isempty(related_julia_packages(vuln)[1])
             push!(julia_vulnerabilities, vuln)
         end
     end
@@ -193,14 +193,14 @@ function convert_to_osv(vuln)
     # Affected _Julia_ packages, connecting CPE data to the package.
     affected = []
     vpv = vendor_product_versions(vuln)
-    julia_packages = related_julia_packages(vuln.description, vpv)
+    julia_packages, _ = related_julia_packages(vuln.description, vpv)
     if isempty(julia_packages)
         error("cannot convert an unrelated vulnerability to OSV. These should be filtered.")
     end
     # There are two cases; either the advisory is about the Julia package itself or its about an upstream component
     affected_entries = Dict(pkg => Dict{String,Any}("package"=>Dict("ecosystem"=>"Julia","name"=>pkg)) for pkg in julia_packages)
     for (vendor, product, version) in vpv
-        for pkg in related_julia_packages(vuln.description, [(vendor, product)])
+        for (pkg, _) in related_julia_packages(vuln.description, [(vendor, product)])
             entry = affected_entries[pkg]
             # The hard part is getting the version ranges right
             versions = get(entry, "versions", String[])

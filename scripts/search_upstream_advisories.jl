@@ -17,7 +17,7 @@ function main()
     specific_advisory_import = false
     if startswith(input, "CVE")
         vuln = NVD.fetch_cve(input)
-        pkgs = NVD.related_julia_packages(vuln)
+        pkgs, _ = NVD.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from NVD")
         specific_advisory_import = true
         for (pkg, versioninfo) in pkgs
@@ -25,7 +25,7 @@ function main()
         end
     elseif startswith(input, "EUVD")
         vuln = EUVD.fetch_enisa(input)
-        pkgs = EUVD.related_julia_packages(vuln)
+        pkgs, _ = EUVD.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from EUVD")
         specific_advisory_import = true
         vuln_id = EUVD.vuln_id(vuln)
@@ -34,7 +34,7 @@ function main()
         end
     elseif endswith(input, r"GHSA-\w{4}-\w{4}-\w{4}")
         vuln = GitHub.fetch_ghsa(input)
-        pkgs = GitHub.related_julia_packages(vuln)
+        pkgs, _ = GitHub.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from GitHub")
         specific_advisory_import = true
         vuln_id = GitHub.vuln_id(vuln, input)
@@ -46,68 +46,62 @@ function main()
         if contains(input, ":")
             _, vendor, product = rsplit(":"*input, ":", limit=3, keepempty=true)
             info["haystack"] = "search $vendor/$product"
-            # Start with NVD; typically the best information but may be limited
             cpe = "cpe:2.3:a:$vendor:$product"
             nvds = NVD.fetch_cpe_matches(cpe)
             euvds = EUVD.fetch_product_matches(vendor, product)
+            # EUVD's search is
+            missing_ids = setdiff(filter(startswith("CVE"), EUVD.vuln_id.(euvds)), (x->x.cve.id).(nvds))
+            for missing_id in missing_ids[1:min(end, 200)] # 20 minutes
+                sleep(6)
+                try
+                    push!(nvds, NVD.fetch_cve(missing_id))
+                catch ex
+                    @info ex
+                end
+            end
         else
             info["haystack"] = "searching recent NVD changes and EUVD publications"
             nvds = NVD.fetch_nvd_vulnerabilities()
             euvds = EUVD.fetch_vulnerabilities()
         end
 
+        joint_ids = intersect(filter(startswith("CVE"), EUVD.vuln_id.(euvds)), (x->x.cve.id).(nvds))
+
         push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
-            pkgs = NVD.related_julia_packages(vuln)
+            pkgs, troubles = NVD.related_julia_packages(vuln)
             for (pkg, versioninfo) in pkgs
-                if startswith(pkg, "?") && contains(pkg, ":")
-                    upstream, pkg = rsplit(pkg[2:end], ":", limit=2, keepempty=true)
-                    push!(info["version_trouble"], "[$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) has unconverted upstream ($upstream) versions for $pkg: $versioninfo")
-                    versioninfo = ["*"]
-                end
                 advisories[(vuln.cve.id, pkg)] = versioninfo
             end
+            if !isempty(troubles)
+                if vuln.cve.id in joint_ids
+                    euvd = euvds[EUVD.vuln_id.(euvds) .== vuln.cve.id][1]
+                    euvd_pkgs, euvd_troubles = EUVD.related_julia_packages(euvd)
+                    for (pkg, versioninfo) in euvd_pkgs
+                        (haskey(advisories, (vuln.cve.id, pkg)) && advisories[(vuln.cve.id, pkg)] != ["*"]) && continue
+                        advisories[(vuln.cve.id, pkg)] = versioninfo
+                    end
+                    if !iempty(euvd_troubles)
+                        push!(info["version_trouble"], "* [$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) and [EUVD](https://euvd.enisa.europa.eu/vulnerability/$(euvd.id)) both reported problems:\n  * EUVD: " * join(euvd_troubles, "\n  *  EUVD: ") * "\n  * NVD: " * join(troubles, "\n  * NVD: "))
+                    end
+                end
+                push!(info["version_trouble"], "* [$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) reported problems:\n  *" * join(troubles, "\n  * "))
+            end
         end
-        # Add EUVD
+        # Add remaining EUVDs
         push!(info["haystack_total"], "$(length(euvds)) advisories from EUVD")
         nvd_fixups = 0
         for vuln in euvds
-            pkgs = EUVD.related_julia_packages(vuln)
             vuln_id = EUVD.vuln_id(vuln)
+            vuln_id in joint_ids && continue
+            pkgs, troubles = EUVD.related_julia_packages(vuln)
             for (pkg, versioninfo) in pkgs
-                if startswith(pkg, "?") && contains(pkg, ":")
-                    upstream, pkg = rsplit(pkg[2:end], ":", limit=2, keepempty=true)
-                    push!(info["version_trouble"], "[$vuln_id (EUVD)](https://euvd.enisa.europa.eu/vulnerability/$(vuln.id)) has unconverted upstream ($upstream) versions for $pkg: $versioninfo")
-                    versioninfo = ["*"]
-                end
-                if haskey(advisories, (vuln_id, pkg))
-                    # We need to decide who has better information; EUVD or NVD. Trust NVD more if there's something there.
-                    cve_info = advisories[(vuln_id, pkg)]
-                    if !isempty(cve_info) && cve_info != [""] && cve_info != ["*"] && !isnothing(tryparse(AdvisoryDB.VersionRange{VersionNumber}, cve_info[1]))
-                        continue # This qualifies as "good" information
-                    end
-                end
-                # Sometimes EUVD picks up advisories that our NVD search didn't return.
-                # It's worth going back to see if we can pick up better information from there
-                # one-by-one
-                if versioninfo == ["*"] && vuln_id ∉ (x->x.cve.id).(nvds)
-                    try
-                        sleep(6)
-                        vuln = NVD.fetch_cve(vuln_id)
-                        pkgs = NVD.related_julia_packages(vuln)
-                        for (nvd_pkg, nvd_info) in pkgs
-                            pkg == nvd_pkg || continue
-                            versioninfo = nvd_info # Can't be worse!
-                            nvd_fixups += 1
-                        end
-                    catch ex
-                        @info ex
-                    end
-                end
                 advisories[(vuln_id, pkg)] = versioninfo
             end
+            if !isempty(troubles)
+                push!(info["version_trouble"], "* [$vuln_id (EUVD)](https://euvd.enisa.europa.eu/vulnerability/$(vuln.id)) reported problems:\n  *" * join(troubles, "\n  * "))
+            end
         end
-        nvd_fixups > 0 && push!(info["haystack_total"], "another $nvd_fixups advisories EUVD found with data fixed up by NVD")
     end
 
     n_created = 0
@@ -148,12 +142,13 @@ function main()
     println(io, "title=[automatic] $verb $n_total $advisory_str for $pkg_str")
     haystack_results_str = join(info["haystack_total"], ", ", " and ")
     troubled_versions = filter(((k,v),)->v==["*"], advisories)
-    troubled_info_strs = ["* $vuln. " * join(last.(split.(filter(startswith(vuln), info["version_trouble"]), ":", limit=2)), "; ") for ((vuln,pkg), _) in troubled_versions]
+    troubled_info_str = join(info["version_trouble"], "\n")
     version_trouble_str = isempty(troubled_versions) ? "" :
         """
 
-        Versioning trouble was reported for $(length(troubled_versions)) advisories:
-        $(join(troubled_info_strs, "\n"))
+        There are $(length(troubled_versions)) advisories that apply to all registered versions: $(collect(troubled_versions))
+        $troubled_info_str
+
         """
     skips_str = isempty(info["skips"]) ? "" :
         """
