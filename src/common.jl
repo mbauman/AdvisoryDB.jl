@@ -318,8 +318,7 @@ function related_julia_packages(description, vendorproductversions)
     # 3. It's pessimistically returned because we failed to parse a Julia version
     # 4. It's pessimistically returned because we failed to match a mentioned Julia package to a product
     upstream_version_failures = Pair{String, Pair{String, String}}[]
-    version_failures = Pair{String, String}[]
-    reasons = String[]
+    whys = Dict{String, Vector{String}}()
     julia_like_pkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
                                       (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
     jlpkgs_mentioned = filter(registry_has_package, julia_like_pkgs_mentioned)
@@ -335,9 +334,11 @@ function related_julia_packages(description, vendorproductversions)
             for pkg in matched_pkgs
                 if isnothing(r)
                     push!(pkgs, pkg => "*")
-                    push!(upstream_version_failures, pkg => (matched_project => version))
+                    push!(get!(Vector{String}, whys, pkg), "failed to parse upstream $matched_project range `$(repr(version))`; this became `\"*\"`")
                 else
-                    append!(pkgs, pkg .=> string.(convert_versions(package_project_version_map(pkg, matched_project), r)))
+                    pkg_vers = string.(convert_versions(package_project_version_map(pkg, matched_project), r))
+                    append!(pkgs, pkg .=> pkg_vers)
+                    push!(get!(Vector{String}, whys, pkg), "upstream $matched_project range `$(repr(version))` became `$(repr(pkg_vers))`")
                 end
             end
         else
@@ -348,9 +349,10 @@ function related_julia_packages(description, vendorproductversions)
                 pkg = chopsuffix(product, ".jl")
                 if isnothing(r)
                     push!(pkgs, pkg => "*")
-                    push!(version_failures, pkg => version)
+                    push!(get!(Vector{String}, whys, pkg), "failed to parse version range `$(repr(version))`; this became `\"*\"`")
                 else
                     push!(pkgs, pkg => version)
+                    push!(get!(Vector{String}, whys, pkg), "used version range `$(repr(version))` directly")
                 end
             elseif !isempty(jlpkgs_mentioned)
                 # There are packages mentioned in the description! First look for a possible match against the given product
@@ -359,9 +361,10 @@ function related_julia_packages(description, vendorproductversions)
                     found_match = true
                     if isnothing(r)
                         push!(pkgs, pkg => "*")
-                        push!(version_failures, pkg => version)
+                        push!(get!(Vector{String}, whys, pkg), "failed to parse version range `$(repr(version))`; this became `\"*\"`")
                     else
                         push!(pkgs, pkg => version)
+                        push!(get!(Vector{String}, whys, pkg), "used version range `$(repr(version))` directly")
                     end
                     break
                 end
@@ -374,18 +377,14 @@ function related_julia_packages(description, vendorproductversions)
         # Otherwise, we prefix the packages with a ? to make this abundantly obvious
         vendor_products = unique((x->x[1:2]).(vendorproductversions))
         push!(pkgs, jlpkgs_mentioned .=> "*")
-        push!(reasons, "failed to connect any of the mentioned packages $jlpkgs_mentioned to a product: $vendor_products")
+        for pkg in jlpkgs_mentioned
+            push!(get!(Vector{String}, whys, pkg), "failed to connect any of the mentioned packages $jlpkgs_mentioned to a product: $vendor_products")
+        end
     end
-    # Gather and report any failure information
-    failed_upstreams = unique(first.(last.(upstream_version_failures)))
-    append!(reasons, [(fails = upstream_version_failures[first.(last.(upstream_version_failures)) .== upstream];
-        "failed to parse $upstream versions $(last.(last.(fails))) (for packages $(first.(fails))") for upstream in failed_upstreams])
-    failed_pkgs = unique(first.(version_failures))
-    append!(reasons, ["failed to parse $pkg versions $(last.(version_failures[first.(version_failures) .== pkg]))" for pkg in failed_pkgs])
 
     # Combine all versions for a given package into an array, merging ranges
     unique_pkg_names = unique(first.(pkgs))
-    return [p => string.(merge_ranges(VersionRange{VersionNumber}.(last.(pkgs[first.(pkgs) .== p])))) for p in unique_pkg_names], reasons
+    return [(p, string.(merge_ranges(VersionRange{VersionNumber}.(last.(pkgs[first.(pkgs) .== p])))), unique(whys[p])) for p in unique_pkg_names]
 end
 
 # TODO: use the above Pkg machinery for this, too

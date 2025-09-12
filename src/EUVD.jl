@@ -126,7 +126,7 @@ function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
 
     for vuln in vulnerabilities
-        if !isempty(related_julia_packages(vuln)[1])
+        if !isempty(related_julia_packages(vuln))
             push!(julia_vulnerabilities, vuln)
         end
     end
@@ -138,7 +138,7 @@ vuln_id(vuln) = get(filter(startswith("CVE-"),  split(get(vuln, :aliases, ""))),
                 get(filter(startswith("GHSA-"), split(get(vuln, :aliases, ""))), 1, vuln.id))
 
 parse_euvd_datetime(str) = string(DateTime(str, dateformat"u d, y, H:M:S p")) * "Z" # TODO: WHAT'S THE TIMEZONE??
-function convert_to_osv(vuln)
+function convert_to_osv(vuln, package_versioninfo = nothing)
     osv = Dict{String, Any}()
 
     # Required OSV fields
@@ -191,49 +191,17 @@ function convert_to_osv(vuln)
     end
 
     # Affected _Julia_ packages, connecting CPE data to the package.
+    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(vuln) : [package_versioninfo]
     affected = []
-    vpv = vendor_product_versions(vuln)
-    julia_packages, _ = related_julia_packages(vuln.description, vpv)
-    if isempty(julia_packages)
-        error("cannot convert an unrelated vulnerability to OSV. These should be filtered.")
-    end
-    # There are two cases; either the advisory is about the Julia package itself or its about an upstream component
-    affected_entries = Dict(pkg => Dict{String,Any}("package"=>Dict("ecosystem"=>"Julia","name"=>pkg)) for pkg in julia_packages)
-    for (vendor, product, version) in vpv
-        for (pkg, _) in related_julia_packages(vuln.description, [(vendor, product)])
-            entry = affected_entries[pkg]
-            # The hard part is getting the version ranges right
-            versions = get(entry, "versions", String[])
-            range_events = get(entry, "_range_events", Dict{String,String}[]) # To be fixed up later; this needs to be nested
-            for range in strip.(split(version, ","))
-                isempty(range) && continue
-                # EUVD's version strings are a disaster. If we're lucky, we get a clear < or ≤ operator with bounds
-                # Sometimes this is comma separated, but that's rare.
-                m = match(r"^\s*(\S+)?\s*([<≤])\s*(\S+)\s*$", range)
-                isnothing(m) && contains(range, r"[<≤]") && error("failed to parse range $range")
-                if isnothing(m)
-                    push!(versions, range)
-                else
-                    lb, op, ub = m.captures
-                    push!(range_events, Dict("introduced" => something(lb, "0")))
-                    push!(range_events, Dict((op=='<' ? "fixed" : "last_affected") => ub))
-                end
-            end
-            if !isempty(versions)
-                entry["versions"] = versions
-            end
-            if !isempty(range_events)
-                entry["_range_events"] = range_events
-            end
-        end
-    end
-    affected = []
-    for (pkg, entry) in affected_entries
-        if haskey(entry, "_range_events")
-            entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>entry["_range_events"])]
-            delete!(entry, "_range_events")
-        end
-        push!(affected, entry)
+    for (package, versioninfo) in package_versioninfos
+        affected_entry = Dict{String, Any}()
+        affected_entry["package"] = Dict(
+            "ecosystem" => "Julia",
+            "name" => package
+        )
+        range_events = AdvisoryDB.osv_events(AdvisoryDB.VersionRange{VersionNumber}.(versioninfo))
+        affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
+        push!(affected, affected_entry)
     end
     if !isempty(affected)
         osv["affected"] = affected
