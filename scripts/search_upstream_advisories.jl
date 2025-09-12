@@ -9,6 +9,8 @@ function main()
     upstream_advisories = isfile(upstream_advisories_file) ? TOML.parsefile(upstream_advisories_file) : Dict{String, Any}()
     input = get(ARGS, 1, "")
     advisories = Dict{Tuple{String,String},Any}()
+    advisory_details = Dict{Tuple{String,String},Any}()
+    advisory_sources = Dict{Tuple{String,String},Any}()
     info = Dict{String,Any}()
     info["haystack"] = input
     info["haystack_total"] = String[]
@@ -17,29 +19,35 @@ function main()
     specific_advisory_import = false
     if startswith(input, "CVE")
         vuln = NVD.fetch_cve(input)
-        pkgs, _ = NVD.related_julia_packages(vuln)
+        pkgs = NVD.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from NVD")
         specific_advisory_import = true
-        for (pkg, versioninfo) in pkgs
+        for (pkg, versioninfo, whys) in pkgs
             advisories[(vuln.cve.id, pkg)] = versioninfo
+            advisory_details[(vuln.cve.id, pkg)] = whys
+            advisory_sources[(vuln.cve.id, pkg)] = "[$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id))"
         end
     elseif startswith(input, "EUVD")
         vuln = EUVD.fetch_enisa(input)
-        pkgs, _ = EUVD.related_julia_packages(vuln)
+        pkgs = EUVD.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from EUVD")
         specific_advisory_import = true
         vuln_id = EUVD.vuln_id(vuln)
-        for (pkg, versioninfo) in pkgs
+        for (pkg, versioninfo, whys) in pkgs
             advisories[(vuln_id, pkg)] = versioninfo
+            advisory_details[(vuln.cve.id, pkg)] = whys
+            advisory_sources[(vuln.cve.id, pkg)] = "[$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id))"
         end
     elseif endswith(input, r"GHSA-\w{4}-\w{4}-\w{4}")
         vuln = GitHub.fetch_ghsa(input)
-        pkgs, _ = GitHub.related_julia_packages(vuln)
+        pkgs = GitHub.related_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from GitHub")
         specific_advisory_import = true
         vuln_id = GitHub.vuln_id(vuln, input)
-        for (pkg, versioninfo) in pkgs
+        for (pkg, versioninfo, whys) in pkgs
             advisories[(vuln_id, pkg)] = versioninfo
+            advisory_details[(vuln_id, pkg)] = whys
+            advisory_sources[(vuln_id, pkg)] = "[$vuln_id (GHSA)]($(vuln.html_url))"
         end
     else
         # A larger joint EUVD/NVD search, either by vendor:product or time
@@ -67,23 +75,25 @@ function main()
 
         push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
-            pkgs, troubles = NVD.related_julia_packages(vuln)
-            for (pkg, versioninfo) in pkgs
+            pkgs = NVD.related_julia_packages(vuln)
+            had_trouble = false
+            for (pkg, versioninfo, whys) in pkgs
                 advisories[(vuln.cve.id, pkg)] = versioninfo
+                advisory_details[(vuln.cve.id, pkg)] = whys
+                advisory_sources[(vuln.cve.id, pkg)] = "[$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id))"
+                had_trouble |= any(startswith("fail"), whys) || versioninfo == ["*"]
             end
-            if !isempty(troubles)
+            if had_trouble
                 if vuln.cve.id in joint_ids
                     euvd = euvds[EUVD.vuln_id.(euvds) .== vuln.cve.id][1]
-                    euvd_pkgs, euvd_troubles = EUVD.related_julia_packages(euvd)
-                    for (pkg, versioninfo) in euvd_pkgs
+                    euvd_pkgs = EUVD.related_julia_packages(euvd)
+                    for (pkg, versioninfo, whys) in euvd_pkgs
                         (haskey(advisories, (vuln.cve.id, pkg)) && advisories[(vuln.cve.id, pkg)] != ["*"]) && continue
                         advisories[(vuln.cve.id, pkg)] = versioninfo
-                    end
-                    if !iempty(euvd_troubles)
-                        push!(info["version_trouble"], "* [$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) and [EUVD](https://euvd.enisa.europa.eu/vulnerability/$(euvd.id)) both reported problems:\n  * EUVD: " * join(euvd_troubles, "\n  *  EUVD: ") * "\n  * NVD: " * join(troubles, "\n  * NVD: "))
+                        advisory_details[(vuln.cve.id, pkg)] = whys
+                        advisory_sources[(vuln.cve.id, pkg)] = "[EUVD](https://euvd.enisa.europa.eu/vulnerability/$(euvd.id))"
                     end
                 end
-                push!(info["version_trouble"], "* [$(vuln.cve.id) (NVD)](https://nvd.nist.gov/vuln/detail/$(vuln.cve.id)) reported problems:\n  *" * join(troubles, "\n  * "))
             end
         end
         # Add remaining EUVDs
@@ -92,12 +102,11 @@ function main()
         for vuln in euvds
             vuln_id = EUVD.vuln_id(vuln)
             vuln_id in joint_ids && continue
-            pkgs, troubles = EUVD.related_julia_packages(vuln)
-            for (pkg, versioninfo) in pkgs
+            pkgs = EUVD.related_julia_packages(vuln)
+            for (pkg, versioninfo, whys) in pkgs
                 advisories[(vuln_id, pkg)] = versioninfo
-            end
-            if !isempty(troubles)
-                push!(info["version_trouble"], "* [$vuln_id (EUVD)](https://euvd.enisa.europa.eu/vulnerability/$(vuln.id)) reported problems:\n  *" * join(troubles, "\n  * "))
+                advisory_details[(vuln_id, pkg)] = whys
+                advisory_sources[(vuln_id, pkg)] = "[$vuln_id (EUVD)](https://euvd.enisa.europa.eu/vulnerability/$(euvd.id))"
             end
         end
     end
@@ -136,28 +145,74 @@ function main()
     n_total = n_updated+n_created
     advisory_str = n_total == 1 ? "advisory" : "advisories"
     println(io, "title=[automatic] $verb $n_total $advisory_str for $pkg_str")
-    haystack_results_str = join(info["haystack_total"], ", ", " and ")
-    troubled_versions = filter(((k,v),)->v==["*"], advisories)
-    troubled_info_str = join(info["version_trouble"], "\n")
-    version_trouble_str = isempty(troubled_versions) ? "" :
-        """
+    println(io, "body<<BODY_EOF")
+    println(io, "This action searched `", info["haystack"], "`, checking ", join(info["haystack_total"], ", ", " and "), " for advisories that pertain here. ",
+        "It identified ", n_total, " ", advisory_str, " as being related to the Julia package(s): ", join("**" .* unique_pkgs .* "**", ", ", ", and "), ".")
+    println(io)
+    divide(f, x) = return (filter(f, x), filter(!f, x))
 
-        There are $(length(troubled_versions)) advisories that apply to all registered versions: $(string(collect(troubled_versions)))
-        $troubled_info_str
+    # Now break the identified advisories into three sections.  First, advisories for which we reported clear failures:
+    failed_advisories, advisories = divide(((k,v),)->any(startswith("fail"), advisory_details[k]), advisories)
 
-        """
-    skips_str = isempty(info["skips"]) ? "" :
-        """
+    failed_ids = unique(id for (id, pkg) in keys(failed_advisories))
+    !isempty(failed_ids) && println(io, "### $(length(unique(failed_ids))) advisories had obvious failures\n\nThese advisories seem to apply to a Julia package but had trouble identifying exactly how and at which versions.")
+    for id in failed_ids
+        pkgs = last.(filter(==(id)∘first, keys(failed_advisories)))
+        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for pkg in pkgs
+            println(io, "    * **$pkg**, using data from ", advisory_sources[(id, pkg)])
+            println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
+        end
+    end
+    !isempty(failed_ids) && println(io)
 
-        There were $(length(info["skips"])) advisories skipped for the following reasons:
-        $(join("* " .* info["skips"], "\n"))
-        """
+    # Next advisories for which all versions apply
+    star_advisories, advisories = divide(==(["*"])∘last, advisories)
+    star_ids = unique(id for (id, pkg) in keys(star_advisories))
+    !isempty(star_ids) && println(io, "### $(length(unique(star_ids))) advisories apply to all registered versions of a package\n\nThese advisories had no obvious failures but computed a range without bounds.")
+    for id in star_ids
+        pkgs = last.(filter(==(id)∘first, keys(star_advisories)))
+        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for pkg in pkgs
+            println(io, "    * **$pkg**, using data from ", advisory_sources[(id, pkg)])
+            println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
+        end
+    end
+    !isempty(star_ids) && println(io)
+
+    # Next advisories for which there's an unbounded upper range
+    unbounded_advisories, advisories = divide(((_,v),)->any(!AdvisoryDB.has_upper_bound∘VersionRange, v), advisories)
+    unbounded_ids = unique(id for (id, pkg) in keys(unbounded_advisories))
+    !isempty(unbounded_ids) && println(io, "### $(length(unique(unbounded_ids))) advisories apply to all registered versions of a package\n\nThese advisories had no obvious failures but computed a range without bounds.")
+    for id in unbounded_ids
+        pkgs = last.(filter(==(id)∘first, keys(unbounded_advisories)))
+        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for pkg in pkgs
+            println(io, "    * **$pkg** computed `$(repr(advisories[(id, pkg)]))` using data from ", advisory_sources[(id, pkg)])
+            println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
+        end
+    end
+    !isempty(unbounded_ids) && println(io)
+
+    # And finally all remaining advisories.
+    remaining_ids = unique(id for (id, pkg) in keys(advisories))
+    !isempty(advisories) && println(io, "### $(length(unique(advisories))) advisories found concrete vulnerable ranges\n\n")
+    for id in remaining_ids
+        pkgs = last.(filter(==(id)∘first, keys(advisories)))
+        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for pkg in pkgs
+            println(io, "    * **$pkg** computed `$(repr(advisories[(id, pkg)]))` using data from ", advisory_sources[(id, pkg)])
+            println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
+        end
+    end
+    !isempty(advisories) && println(io)
+
+    if !isempty(info["skips"])
+        println(io, "There were $(length(info["skips"])) advisories skipped for the following reasons:")
+        println(io, join("* " .* info["skips"], "\n"))
+        println(io)
+    end
     println(io, """
-        body<<BODY_EOF
-        This action searched `$(info["haystack"])`, checking $haystack_results_str for relevancy. It identified $n_total $advisory_str as being related to the Julia package(s): $(join("**" .* unique_pkgs .* "**", ", ", ", and ")).
-        $version_trouble_str
-        $skips_str
-
         The version ranges tagged here should be confirmed or adjusted, and if the particular advisory is not applicable to a given package, its value should instead be a string detailing the rationale.
         BODY_EOF""")
     seekstart(io)

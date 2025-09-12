@@ -279,7 +279,7 @@ function convert_to_osv(advisory, package_versioninfo = nothing)
         osv["severity"] = severities
     end
 
-    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(advisory)[1] : [package_versioninfo]
+    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(advisory) : [package_versioninfo]
     affected = []
     for (package, versioninfo) in package_versioninfos
         affected_entry = Dict{String, Any}()
