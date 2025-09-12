@@ -106,7 +106,7 @@ function main()
             for (pkg, versioninfo, whys) in pkgs
                 advisories[(vuln_id, pkg)] = versioninfo
                 advisory_details[(vuln_id, pkg)] = whys
-                advisory_sources[(vuln_id, pkg)] = "[$vuln_id (EUVD)](https://euvd.enisa.europa.eu/vulnerability/$(euvd.id))"
+                advisory_sources[(vuln_id, pkg)] = "[$vuln_id (EUVD)](https://euvd.enisa.europa.eu/vulnerability/$(vuln.id))"
             end
         end
     end
@@ -188,7 +188,7 @@ function main()
         pkgs = last.(filter(==(id)∘first, keys(unbounded_advisories)))
         println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for pkg in pkgs
-            println(io, "    * **$pkg** computed `$(repr(advisories[(id, pkg)]))` using data from ", advisory_sources[(id, pkg)])
+            println(io, "    * **$pkg** computed `$(repr(unbounded_advisories[(id, pkg)]))` using data from ", advisory_sources[(id, pkg)])
             println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
         end
     end
