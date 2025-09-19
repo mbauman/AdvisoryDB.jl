@@ -163,4 +163,6 @@ function main()
     foreach(println, eachline(io)) # Also log to stdout
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end
