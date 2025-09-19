@@ -287,9 +287,7 @@ function advisory(vuln)
     end
 
     return Advisory(;
-        withdrawn = if lowercase(get(vuln.cve, :vulnStatus, "")) == "rejected"
-            vuln.cve.lastModified * "Z" # There's no specific withdrawn date; use the last modified as a proxy
-        end,
+        withdrawn = lowercase(get(vuln.cve, :vulnStatus, "")) == "rejected",
         upstream_type => String[vuln.cve.id],
         # related -- nothing structured
         summary = extract_summary(english_description(vuln)),

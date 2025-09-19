@@ -260,7 +260,7 @@ function advisory(vuln)
     end
 
     return Advisory(;
-        withdrawn = get(vuln, :withdrawn_at, nothing),
+        withdrawn = exists(vuln, :withdrawn_at),
         upstream_type => aliases,
         # related -- nothing structured
         summary = get(vuln, :summary, nothing),

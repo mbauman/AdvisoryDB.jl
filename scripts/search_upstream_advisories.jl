@@ -64,8 +64,8 @@ function main()
         end
 
         for vuln in nvds
-            adv = NVD.advisory(vuln)
             @info "NVD $(vuln.cve.id)"
+            adv = NVD.advisory(vuln)
             if isempty(adv.affected) || !all(AdvisoryDB.has_upper_bound, adv.affected)
                 # See if we can get a tighter answer with EUVD data
                 euvd = get(euvds[EUVD.vuln_id.(euvds) .== vuln.cve.id], 1) do
@@ -73,7 +73,7 @@ function main()
                     try EUVD.fetch_enisa(vuln.cve.id) catch _; nothing end
                 end
                 isnothing(euvd) && continue
-                @info "EUVD $(EUVD.vuln_id(euvd))"
+                @info "EUVD $(euvd.id)"
                 euvd_adv = EUVD.advisory(euvd)
                 if !isempty(euvd_adv.affected) && all(AdvisoryDB.has_upper_bound, euvd_adv.affected)
                     adv.affected = euvd_adv.affected

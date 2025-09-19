@@ -123,7 +123,7 @@ Represent an advisory using OSV schema's definitions for nearly all its fields. 
     id::Union{String,Nothing} = nothing # This is required, but may not exist before publish
     modified::DateTime = Dates.now(Dates.UTC)
     published::Union{DateTime, Nothing} = nothing
-    withdrawn::Union{DateTime, Nothing} = nothing
+    withdrawn::Union{DateTime, Bool} = false # When true, this must dynamically be populated
     aliases::Vector{String} = String[]
     upstream::Vector{String} = String[]
     related::Vector{String} = String[]
@@ -160,8 +160,14 @@ to_toml_frontmatter(A::AbstractArray) = [to_toml_frontmatter_collection(x, A) fo
 to_toml_frontmatter_collection(x, _) = to_toml_frontmatter(x)
 function to_toml_frontmatter(a::Advisory)
     return OrderedDict{String,Any}(
-        string(f) => to_toml_frontmatter(f == :affected ? filter(is_vulnerable, getproperty(a, f)) : getproperty(a, f))
-        for f in fieldnames(Advisory) if is_populated(getproperty(a, f)) && f ∉ (:summary, :details))
+        string(f) => to_toml_frontmatter(
+            f == :affected ? filter(is_vulnerable, getproperty(a, f)) :
+            f == :withdrawn && a.withdrawn isa Bool ? ifelse(a.withdrawn, Dates.now(), nothing) :
+            getproperty(a, f))
+        for f in fieldnames(Advisory) if
+            is_populated(getproperty(a, f)) &&
+            (f ∉ (:summary, :details, :withdrawn) ||
+                (f == :withdrawn && (a.withdrawn isa Dates.DateTime || a.withdrawn))))
 end
 to_toml_frontmatter(s::Severity) = to_toml_frontmatter_collection(s, [s])
 function to_toml_frontmatter_collection(s::Severity, xs)
