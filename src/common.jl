@@ -352,10 +352,10 @@ function affected_julia_packages(description, vendorproductversions)
             isnothing(advisory_type) || @assert(advisory_type == "upstream", "advisory directly lists $pkg, but it also finds upstream components")
             advisory_type = "upstream"
         else
-            r = tryparse(VersionRange{VersionNumber}, version)
             if (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
                 # A vendor or package _looks_ really julia-ish and is in the registry
                 found_match = true
+                r = tryparse(VersionRange{VersionNumber}, version)
                 pkg = chopsuffix(product, ".jl")
                 pkgs[pkg]["$vendor:$product"][version] = [something(r, VersionRange{VersionNumber}("*"))]
                 isnothing(advisory_type) || @assert(advisory_type == "alias", "advisory directly lists $pkg, but it also finds upstream components")
@@ -365,6 +365,7 @@ function affected_julia_packages(description, vendorproductversions)
                 for pkg in jlpkgs_mentioned
                     pkg == chopsuffix(product, ".jl") || continue
                     found_match = true
+                    r = tryparse(VersionRange{VersionNumber}, version)
                     pkgs[pkg]["$vendor:$product"][version] = [something(r, VersionRange{VersionNumber}("*"))]
                     isnothing(advisory_type) || @assert(advisory_type == "alias", "advisory directly lists $pkg, but it also finds upstream components")
                     advisory_type = "alias"
