@@ -5,7 +5,7 @@ using JSON3
 using Dates
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists, VersionRange, VersionString
+using ..AdvisoryDB: AdvisoryDB, exists, VersionRange, VersionString, Credit, Reference, Severity, Advisory
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
@@ -225,104 +225,60 @@ function vendor_product_versions(advisory)
     return vpv
 end
 
-related_julia_packages(advisory) = AdvisoryDB.related_julia_packages(get(advisory, :description, ""), vendor_product_versions(advisory))
+affected_julia_packages(advisory) = AdvisoryDB.affected_julia_packages(get(advisory, :description, ""), vendor_product_versions(advisory))
 
-function convert_to_osv(advisory, package_versioninfo = nothing)
-    osv = Dict{String, Any}()
+function advisory(vuln)
+    affected = affected_julia_packages(vuln)
+    upstream_type = Dict("alias"=>:aliases,"upstream"=>:upstream)[get(unique(map(x->x.source_type, affected)), 1, "alias")]
 
-    osv["schema_version"] = "1.7.2"
-    osv["id"] = "DONOTUSEJLSEC-0000"
-    osv["published"] = AdvisoryDB.now()
-    osv["modified"] = AdvisoryDB.now()
+    # Aliases are in multiple places:
+    aliases = String[vuln.ghsa_id]
+    exists(vuln, :cve_id) && push!(aliases, vuln.cve_id)
+    exists(vuln, :identifiers) && append!(aliases, getproperty.(vuln.identifiers, :value))
+    unique!(aliases)
 
-    if exists(advisory, :withdrawn_at)
-        osv["withdrawn"] = advisory.withdrawn_at
-    end
-    aliases = [advisory.ghsa_id]
-    if exists(advisory, :cve_id)
-        push!(aliases, advisory.cve_id)
-    end
-    osv["aliases"] = aliases
-
-    # No upstream information is represented in GHSA
-    # No structured related information is represented in GHSA
-    if exists(advisory, :summary)
-        osv["summary"] = advisory.summary
-    end
-    if exists(advisory, :description)
-        osv["details"] = advisory.description
-    end
     # GitHub stores severities all over the place
-    severities = []
-    if exists(advisory, :cvss_severities, :cvss_v3, :vector_string)
-        push!(severities, Dict(
-            "type" => "CVSS_V3",
-            "score" => advisory.cvss_severities.cvss_v3.vector_string
-        ))
+    severities = Severity[]
+    if exists(vuln, :cvss_severities, :cvss_v3, :vector_string)
+        push!(severities, Severity("CVSS_V3", vuln.cvss_severities.cvss_v3.vector_string))
     end
-    if exists(advisory, :cvss_severities, :cvss_v4, :vector_string)
-        push!(severities, Dict(
-            "type" => "CVSS_V4",
-            "score" => advisory.cvss_severities.cvss_v4.vector_string
-        ))
+    if exists(vuln, :cvss_severities, :cvss_v4, :vector_string)
+        push!(severities, Severity("CVSS_V4", vuln.cvss_severities.cvss_v4.vector_string))
     end
-    if exists(advisory, :cvss, :vector_string) &&
-            !(advisory.cvss.vector_string in getindex.(severities, "score"))
-        cvss_ver = match(r"^CVSS:([34])", vs)
-        isnothing(cvss_ver) && error("Unknown CVSS vector string: $(advisory.cvss.vector_string) in $(advisory.ghsa_id)")
-        push!(severities, Dict(
-            "type" => "CVSS_V$cvss_ver",
-            "score" => advisory.cvss.vector_string
-        ))
-    end
-    if !isempty(severities)
-        osv["severity"] = severities
+    if exists(vuln, :cvss, :vector_string)
+        push!(severities, Severity(vuln.cvss.vector_string))
     end
 
-    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(advisory) : [package_versioninfo]
-    affected = []
-    for (package, versioninfo) in package_versioninfos
-        affected_entry = Dict{String, Any}()
-        affected_entry["package"] = Dict(
-            "ecosystem" => "Julia",
-            "name" => package
+    # Credits are also messy
+    credits = Credit[]
+    for c in something(get(vuln, :credits, nothing), [])
+        name = something(get(c, :login, nothing), get(get(c, :user, Dict()), :login, nothing), missing)
+        ismissing(name) && continue
+        contact = get(get(c, :user, Dict()), :html_url, nothing)
+        type = get(c, :type)
+        push!(credits, Credit(name, contact === nothing ? String[] : [contact], type))
+    end
+
+    return Advisory(;
+        withdrawn = get(vuln, :withdrawn_at, nothing),
+        upstream_type => aliases,
+        # related -- nothing structured
+        summary = get(vuln, :summary, nothing),
+        details = get(vuln, :description, nothing),
+        severity = severities,
+        affected = affected,
+        references = [Reference(url=ref) for ref in something(get(vuln, :references, nothing), [])],
+        credits = credits,
+        database_specific = Dict{String,Any}("source" => Dict(
+            "id" => vuln.ghsa_id,
+            "modified" => vuln.updated_at,
+            "published" => vuln.published_at,
+            "imported" => AdvisoryDB.now(),
+            "url" => vuln.url,
+            "html_url" => vuln.html_url
+            )
         )
-        range_events = AdvisoryDB.osv_events(AdvisoryDB.VersionRange{VersionNumber}.(versioninfo))
-        affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
-        push!(affected, affected_entry)
-    end
-    if !isempty(affected)
-        osv["affected"] = affected
-    end
-
-    references = []
-    if haskey(advisory, :html_url)
-        push!(references, Dict(
-            "type" => "ADVISORY",
-            "url" => advisory.html_url
-        ))
-    end
-    if !isempty(references)
-        osv["references"] = references
-    end
-
-    osv["database_specific"] = Dict{String,Any}()
-    osv["database_specific"]["source"] = Dict("id" => advisory.ghsa_id, "url" => advisory.url)
-
-    githubdb = Dict()
-    if exists(advisory, :cwe_ids)
-        githubdb["cwe_ids"] = collect(advisory.cwe_ids)
-    end
-    if exists(advisory, :severity)
-        githubdb["severity"] = advisory.severity
-    end
-    if exists(advisory, :state)
-        githubdb["state"] = advisory.state
-    end
-    if !isempty(githubdb)
-        osv["database_specific"]["source_database"] = githubdb
-    end
-    return osv
+    )
 end
 
 

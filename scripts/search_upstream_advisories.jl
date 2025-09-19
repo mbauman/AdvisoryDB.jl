@@ -19,7 +19,7 @@ function main()
     specific_advisory_import = false
     if startswith(input, "CVE")
         vuln = NVD.fetch_cve(input)
-        pkgs = NVD.related_julia_packages(vuln)
+        pkgs = NVD.affected_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from NVD")
         specific_advisory_import = true
         for (pkg, versioninfo, whys) in pkgs
@@ -29,7 +29,7 @@ function main()
         end
     elseif startswith(input, "EUVD")
         vuln = EUVD.fetch_enisa(input)
-        pkgs = EUVD.related_julia_packages(vuln)
+        pkgs = EUVD.affected_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from EUVD")
         specific_advisory_import = true
         vuln_id = EUVD.vuln_id(vuln)
@@ -40,7 +40,7 @@ function main()
         end
     elseif endswith(input, r"GHSA-\w{4}-\w{4}-\w{4}")
         vuln = GitHub.fetch_ghsa(input)
-        pkgs = GitHub.related_julia_packages(vuln)
+        pkgs = GitHub.affected_julia_packages(vuln)
         push!(info["haystack_total"], "1 advisory from GitHub")
         specific_advisory_import = true
         vuln_id = GitHub.vuln_id(vuln, input)
@@ -75,7 +75,7 @@ function main()
 
         push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
-            pkgs = NVD.related_julia_packages(vuln)
+            pkgs = NVD.affected_julia_packages(vuln)
             had_trouble = false
             for (pkg, versioninfo, whys) in pkgs
                 advisories[(vuln.cve.id, pkg)] = versioninfo
@@ -86,7 +86,7 @@ function main()
             if had_trouble
                 if vuln.cve.id in joint_ids
                     euvd = euvds[EUVD.vuln_id.(euvds) .== vuln.cve.id][1]
-                    euvd_pkgs = EUVD.related_julia_packages(euvd)
+                    euvd_pkgs = EUVD.affected_julia_packages(euvd)
                     for (pkg, versioninfo, whys) in euvd_pkgs
                         (haskey(advisories, (vuln.cve.id, pkg)) && advisories[(vuln.cve.id, pkg)] != ["*"]) && continue
                         advisories[(vuln.cve.id, pkg)] = versioninfo
@@ -102,7 +102,7 @@ function main()
         for vuln in euvds
             vuln_id = EUVD.vuln_id(vuln)
             vuln_id in joint_ids && continue
-            pkgs = EUVD.related_julia_packages(vuln)
+            pkgs = EUVD.affected_julia_packages(vuln)
             for (pkg, versioninfo, whys) in pkgs
                 advisories[(vuln_id, pkg)] = versioninfo
                 advisory_details[(vuln_id, pkg)] = whys

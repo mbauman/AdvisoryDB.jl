@@ -6,13 +6,14 @@ using Dates: Dates, DateTime, @dateformat_str
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists
+using ..AdvisoryDB: AdvisoryDB, exists, Reference, Severity, Advisory
 
 # https://euvd.enisa.europa.eu/apidoc
 const API_BASE = "https://euvdservices.enisa.europa.eu/api"
 const DEFAULT_HOURS = 25
 
 # I have no idea what mismatched vendor/product lengths mean.
+# Often all products are aligned with a vendor
 # Sometimes they are broadcasting the same vendor across multiple products (e.g., EUVD-2025-1837)
 # Sometimes it seems like ENISA just gave up on populating vendors (e.g., EUVD-2022-53926)
 function vpzip(vendors,products)
@@ -98,6 +99,11 @@ function fetch_enisa(id)
     return fetch_page(string(API_BASE, "/enisaid?id=", id), headers)
 end
 
+function fetch_advisory(id)
+    headers = build_headers()
+    return fetch_page(string(API_BASE, "/advisory?id=", id), headers)
+end
+
 function fetch_product_matches(vendor, product)
     headers = build_headers()
 
@@ -120,13 +126,13 @@ function fetch_vulnerabilities()
     return fetch_all_pages(string(API_BASE, "/search"), headers, params)
 end
 
-related_julia_packages(vuln) = AdvisoryDB.related_julia_packages(vuln.description, vendor_product_versions(vuln))
+affected_julia_packages(vuln) = AdvisoryDB.affected_julia_packages(vuln.description, vendor_product_versions(vuln))
 
 function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
 
     for vuln in vulnerabilities
-        if !isempty(related_julia_packages(vuln))
+        if !isempty(affected_julia_packages(vuln))
             push!(julia_vulnerabilities, vuln)
         end
     end
@@ -137,92 +143,35 @@ end
 vuln_id(vuln) = get(filter(startswith("CVE-"),  split(get(vuln, :aliases, ""))), 1,
                 get(filter(startswith("GHSA-"), split(get(vuln, :aliases, ""))), 1, vuln.id))
 
-parse_euvd_datetime(str) = string(DateTime(str, dateformat"u d, y, H:M:S p")) * "Z" # TODO: WHAT'S THE TIMEZONE??
-function convert_to_osv(vuln, package_versioninfo = nothing)
-    osv = Dict{String, Any}()
+parse_euvd_datetime(str) = string(DateTime(str, dateformat"u d, y, H:M:S p")) * "Z" # TODO: confirm timezone is UTC
+function advisory(vuln)
+    affected = affected_julia_packages(vuln)
+    upstream_type = Dict("alias"=>:aliases,"upstream"=>:upstream)[get(unique(map(x->x.source_type, affected)), 1, "alias")]
 
-    # Required OSV fields
-    osv["schema_version"] = "1.7.2"
-    osv["id"] = vuln.id
-    osv["modified"] = parse_euvd_datetime(vuln.dateUpdated)
-
-    # Optional fields
-    if exists(vuln, :datePublished)
-        osv["published"] = parse_euvd_datetime(vuln.datePublished)
-    end
-    # No withdrawn information?
-    # Aliases are typically missing GHSAs; those could come from references.
-    aliases = String[]
-    if exists(vuln, :aliases)
-        append!(aliases, strip.(split(vuln.aliases, "\n"; keepempty=false)))
-    end
-    if !isempty(aliases)
-        osv["aliases"] = aliases
-    end
-    # No upstream information
-    # No related tags (beyond references)
-
-    # Summary and details from descriptions, using English only
-    if exists(vuln, :description)
-        description = vuln.description
-        flat_description = replace(description, r"\s+"=>" ")
-        # Use first sentence as summary, full text as details
-        if length(flat_description) > 100
-            summary_end = findfirst(". ", flat_description)
-            if summary_end !== nothing
-                osv["summary"] = flat_description[1:summary_end[1]]
-                osv["details"] = description
+    return Advisory(;
+        # withdrawn -- not structured; it's unstructured plaintext in the description :(
+        upstream_type => String[vuln.id, strip.(split(get(vuln, :aliases, ""), "\n"; keepempty=false))...],
+        # related -- nothing structured
+        summary = if exists(vuln, :description) extract_summary(vuln.description) end,
+        details = get(vuln, :description, nothing),
+        severity = if exists(vuln, :baseScoreVector) && exists(vuln, :baseScoreVersion)
+                Severity[Severity(type = "CVSS_V"*vuln.baseScoreVersion[1], score = string(vuln.baseScoreVector))]
             else
-                osv["summary"] = flat_description[1:min(100, length(description))] * "..."
-                osv["details"] = description
-            end
-        else
-            osv["summary"] = flat_description
-            osv["details"] = description
-        end
-    end
-
-    # CVSS severity information
-    if exists(vuln, :baseScoreVector) && exists(vuln, :baseScoreVersion)
-        osv["severity"] = [Dict(
-            "type" => "CVSS_V"*vuln.baseScoreVersion[1],
-            "score" => string(vuln.baseScoreVector)
-        )]
-    end
-
-    # Affected _Julia_ packages, connecting CPE data to the package.
-    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(vuln) : [package_versioninfo]
-    affected = []
-    for (package, versioninfo) in package_versioninfos
-        affected_entry = Dict{String, Any}()
-        affected_entry["package"] = Dict(
-            "ecosystem" => "Julia",
-            "name" => package
+                Severity[]
+            end,
+        affected = affected,
+        references = [Reference(url=ref) for ref in split(get(vuln, :references, ""), "\n"; keepempty=false)],
+        # credits -- not structured
+        database_specific = Dict{String,Any}("source" => Dict(
+            "id" => vuln.id,
+            "modified" => if exists(vuln, :dateUpdated) parse_euvd_datetime(vuln.dateUpdated) end,
+            "published" => if exists(vuln, :datePublished) parse_euvd_datetime(vuln.datePublished) end,
+            "imported" => AdvisoryDB.now(),
+            "url" => string(API_BASE, "/enisaid?id=", vuln.id),
+            "html_url" => string("https://euvd.enisa.europa.eu/vulnerability/", vuln.id)
+            )
         )
-        range_events = AdvisoryDB.osv_events(AdvisoryDB.VersionRange{VersionNumber}.(versioninfo))
-        affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
-        push!(affected, affected_entry)
-    end
-    if !isempty(affected)
-        osv["affected"] = affected
-    end
-
-    # References
-    references = []
-    if haskey(vuln, :references)
-        for ref in split(vuln.references, "\n")
-            push!(references, Dict(
-                "type" => "WEB",
-                "url" => ref
-            ))
-        end
-    end
-    if !isempty(references)
-        osv["references"] = references
-    end
-
-    # No structured credits
-    return osv
+    )
 end
 
 end

@@ -3,7 +3,7 @@ using TOML: TOML
 using Pkg: Pkg, Registry
 using Tar: Tar
 using CodecZlib: GzipDecompressorStream
-using DataStructures: OrderedDict as Dict
+using DataStructures: OrderedDict, DefaultDict
 using Dates: Dates
 using TimeZones: TimeZones
 
@@ -122,20 +122,20 @@ function overlaps(a::VersionRange, b::VersionRange)
 end
 function merge_ranges(ranges)
     ranges = issorted(ranges) ? ranges : sort(ranges)
-    new_ranges = []
-    rng = ranges[1]
-    for i in 2:length(ranges)
-        # Incrementally widen `rng` to "gobble up" any subsequent ranges it overlaps or _touches_, if at least one endpoint is inclusive)
-        if overlaps(rng, ranges[i]) || (rng.ub == ranges[i].lb && (rng.ubinclusive || ranges[i].lbinclusive))
-            ubtuple = max(upper_bound_tuple(rng), upper_bound_tuple(ranges[i]))
-            rng = VersionRange(rng.lb, ubtuple[1], rng.lbinclusive, ubtuple[2])
+    new_ranges = eltype(ranges)[]
+    base = nothing
+    for rng in ranges
+        base === nothing && (base = rng; continue) # first iteration
+        # Incrementally widen `base` to "gobble up" any subsequent ranges it overlaps or _touches_ (if at least one endpoint is inclusive)
+        if overlaps(base, rng) || (base.ub == rng.lb && (base.ubinclusive || rng.lbinclusive))
+            ubtuple = max(upper_bound_tuple(base), upper_bound_tuple(rng))
+            base = VersionRange(base.lb, ubtuple[1], base.lbinclusive, ubtuple[2])
         else
-            push!(new_ranges, rng)
-            rng = ranges[i]
+            push!(new_ranges, base)
+            base = rng
         end
-        i += 1
     end
-    push!(new_ranges, rng)
+    base !== nothing && push!(new_ranges, base)
     return new_ranges
 end
 
@@ -155,6 +155,22 @@ function osv_events(rng::VersionRange)
         end
     end # Otherwise we lean on the implicit "limit" = "*" event
     return events
+end
+
+function extract_summary(description)
+    N = lastindex(description)
+    double_newline = something(findfirst("\n\n", description), N:N)[1]
+    if double_newline < 100
+        return strip(chopprefix(description[1:double_newline], r"^#+"))
+    end
+
+    flat_description = replace(description, r"\s+"=>" ")
+    summary_end = findfirst(". ", flat_description)
+    if summary_end !== nothing
+        flat_description[1:prevind(flat_description, summary_end[1])]
+    else
+        flat_description[1:min(thisind(flat_description, 100), end)] * "..."
+    end
 end
 
 function get_registry(reg=Registry.RegistrySpec(name="General", uuid = "23338594-aafe-5451-b93e-139f81909106"); depot=Pkg.depots1())
@@ -310,20 +326,18 @@ function convert_versions(pkg_project_map, vulnerable_range)
     versions
 end
 
-function related_julia_packages(description, vendorproductversions)
-    pkgs = Pair{String,String}[]
-    # There are four reasons why this might return a "*" range
+function affected_julia_packages(description, vendorproductversions)
+    pkgs = DefaultDict{String, Any}(()->DefaultDict{String, Any}(()->OrderedDict{String, Any}()))
+    # There are three reasons why this might return a ["*"] range
     # 1. That's the correct answer
-    # 2. It's pessimistically returned because we failed to parse an upstream version
-    # 3. It's pessimistically returned because we failed to parse a Julia version
-    # 4. It's pessimistically returned because we failed to match a mentioned Julia package to a product
-    upstream_version_failures = Pair{String, Pair{String, String}}[]
-    whys = Dict{String, Vector{String}}()
+    # 2. It's pessimistically returned because we failed to parse the versions reported in the advisory
+    # 3. It's pessimistically returned because we failed to match a mentioned Julia package to a product
     julia_like_pkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
                                       (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
     jlpkgs_mentioned = filter(registry_has_package, julia_like_pkgs_mentioned)
     found_match = false
-    for (vendor, product, version) in vendorproductversions
+    advisory_type = nothing
+    for (vendor, product, version) in unique(vendorproductversions)
         # First check for a known **NON-JULIA-PACKAGE** CPE:
         if haskey(upstream_projects_by_vendor_product(), (vendor, product))
             matched_project = upstream_projects_by_vendor_product()[(vendor, product)]
@@ -332,40 +346,28 @@ function related_julia_packages(description, vendorproductversions)
             matched_pkgs = packages_with_project(matched_project)
             r = tryparse(VersionRange, version)
             for pkg in matched_pkgs
-                if isnothing(r)
-                    push!(pkgs, pkg => "*")
-                    push!(get!(Vector{String}, whys, pkg), "failed to parse upstream $matched_project range `$(repr(version))`; this became `\"*\"`")
-                else
-                    pkg_vers = string.(convert_versions(package_project_version_map(pkg, matched_project), r))
-                    append!(pkgs, pkg .=> pkg_vers)
-                    push!(get!(Vector{String}, whys, pkg), "upstream $matched_project range `$(repr(version))` became `$(repr(pkg_vers))`")
-                end
+                pkgs[pkg]["$vendor:$product"][version] = isnothing(r) ?
+                    [VersionRange{VersionNumber}("*")] : convert_versions(package_project_version_map(pkg, matched_project), r)
             end
+            isnothing(advisory_type) || @assert(advisory_type == "upstream", "advisory directly lists $pkg, but it also finds upstream components")
+            advisory_type = "upstream"
         else
             r = tryparse(VersionRange{VersionNumber}, version)
             if (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
                 # A vendor or package _looks_ really julia-ish and is in the registry
                 found_match = true
                 pkg = chopsuffix(product, ".jl")
-                if isnothing(r)
-                    push!(pkgs, pkg => "*")
-                    push!(get!(Vector{String}, whys, pkg), "failed to parse version range `$(repr(version))`; this became `\"*\"`")
-                else
-                    push!(pkgs, pkg => version)
-                    push!(get!(Vector{String}, whys, pkg), "used version range `$(repr(version))` directly")
-                end
+                pkgs[pkg]["$vendor:$product"][version] = [something(r, VersionRange{VersionNumber}("*"))]
+                isnothing(advisory_type) || @assert(advisory_type == "alias", "advisory directly lists $pkg, but it also finds upstream components")
+                advisory_type = "alias"
             elseif !isempty(jlpkgs_mentioned)
                 # There are packages mentioned in the description! First look for a possible match against the given product
                 for pkg in jlpkgs_mentioned
                     pkg == chopsuffix(product, ".jl") || continue
                     found_match = true
-                    if isnothing(r)
-                        push!(pkgs, pkg => "*")
-                        push!(get!(Vector{String}, whys, pkg), "failed to parse version range `$(repr(version))`; this became `\"*\"`")
-                    else
-                        push!(pkgs, pkg => version)
-                        push!(get!(Vector{String}, whys, pkg), "used version range `$(repr(version))` directly")
-                    end
+                    pkgs[pkg]["$vendor:$product"][version] = [something(r, VersionRange{VersionNumber}("*"))]
+                    isnothing(advisory_type) || @assert(advisory_type == "alias", "advisory directly lists $pkg, but it also finds upstream components")
+                    advisory_type = "alias"
                     break
                 end
             end
@@ -373,18 +375,28 @@ function related_julia_packages(description, vendorproductversions)
     end
     if !found_match && !isempty(jlpkgs_mentioned)
         # We didn't connect any vendor/product pair with a Julia package, but there are some mentioned.
-        # if there is only one vendor/product pair here, we blindly connect all to the mentioned verions
-        # Otherwise, we prefix the packages with a ? to make this abundantly obvious
-        vendor_products = unique((x->x[1:2]).(vendorproductversions))
-        push!(pkgs, jlpkgs_mentioned .=> "*")
+        # TODO: this could potentially do better by trying to correlate the listed versions against
+        # the registered ones, but this is quite the rare case and not worth worrying too much about
+        @warn "failed to match the mentioned packages to a product with a version"
+        @warn "assuming that all mentioned products are vulnerable at all versions"
         for pkg in jlpkgs_mentioned
-            push!(get!(Vector{String}, whys, pkg), "failed to connect any of the mentioned packages $jlpkgs_mentioned to a product: $vendor_products")
+            for (vendor, product, version) in unique(vendorproductversions)
+                pkgs[pkg]["$vendor:$product"][version] = [VersionRange{VersionNumber}("*")]
+            end
         end
+        advisory_type = "alias"
     end
 
-    # Combine all versions for a given package into an array, merging ranges
-    unique_pkg_names = unique(first.(pkgs))
-    return [(p, string.(merge_ranges(VersionRange{VersionNumber}.(last.(pkgs[first.(pkgs) .== p])))), unique(whys[p])) for p in unique_pkg_names]
+    # return pkgs
+    vulns = PackageVulnerability[]
+    for (pkg, source_mapping) in pkgs
+        sort!.(values(source_mapping), by=x->something(tryparse(AdvisoryDB.VersionRange, x), x))
+        push!(vulns, PackageVulnerability(pkg,
+            merge_ranges(sort(collect(Iterators.flatten(v for (proj,map) in source_mapping for (_,v) in map)))),
+            advisory_type,
+            source_mapping))
+    end
+    return vulns
 end
 
 # TODO: use the above Pkg machinery for this, too
