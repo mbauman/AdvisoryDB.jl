@@ -236,11 +236,11 @@ function upstream_projects_by_vendor_product()
     isassigned(UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT) && return UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[]
     d = Dict{Tuple{String,String}, String}()
     for (project, deets) in upstream_projects()
-        products = unique(skipmissing(vcat(lowercase(project), get(split(get(deets, "cpe", ""), ":"), 5, missing))))
+        products = unique(skipmissing(vcat(project, get(split(get(deets, "cpe", ""), ":"), 5, missing))))
         vendors = unique(skipmissing(vcat(get(deets, "vendors", String[]), get(split(get(deets, "cpe", ""), ":"), 4, missing))))
         for v in vendors, p in products
-            haskey(d, (v,p)) && error("every vendor/product pair must uniquely identify one upstream projects")
-            d[(v,p)] = project
+            haskey(d, (lowercase(v),lowercase(p))) && d[(lowercase(v),lowercase(p))] != project && error("every vendor/product pair must uniquely identify (case-insensitive) one upstream projects")
+            d[(lowercase(v),lowercase(p))] = project
         end
     end
     UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[] = d
@@ -339,8 +339,8 @@ function affected_julia_packages(description, vendorproductversions)
     advisory_type = nothing
     for (vendor, product, version) in unique(vendorproductversions)
         # First check for a known **NON-JULIA-PACKAGE** CPE:
-        if haskey(upstream_projects_by_vendor_product(), (vendor, product))
-            matched_project = upstream_projects_by_vendor_product()[(vendor, product)]
+        if haskey(upstream_projects_by_vendor_product(), (lowercase(vendor), lowercase(product)))
+            matched_project = upstream_projects_by_vendor_product()[(lowercase(vendor), lowercase(product))]
             found_match = true
             # We have an upstream component! Compute the remapped version range if we can.
             matched_pkgs = packages_with_project(matched_project)
