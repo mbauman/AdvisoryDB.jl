@@ -28,58 +28,73 @@ function main()
             end
         elseif contains(input, ":")
             _, vendor, product = rsplit(":"*input, ":", limit=3, keepempty=true)
-            info["haystack"] = "search $vendor/$product"
             nvds, euvds = AdvisoryDB.fetch_product_matches(vendor, product)
         else
-            info["haystack"] = "searching recent NVD changes and EUVD publications"
+            info["haystack"] = "recent NVD/EUVD changes/publications"
             nvds = NVD.fetch_nvd_vulnerabilities()
             euvds = EUVD.fetch_vulnerabilities()
         end
 
+        found_nvds = length(nvds)
+        found_euvds = length(euvds)
+        additional_nvds = 0
+        additional_euvds = 0
         joint_ids = intersect(filter(startswith("CVE"), EUVD.vuln_id.(euvds)), (x->x.cve.id).(nvds))
 
+        missing_nvds = found_euvds - length(joint_ids)
         for vuln in euvds
-            # EUVD is largely useful in having a sloppier search. Sometimes they have more recently-populated
-            # product/version data. But we still trust NVD first, only falling back to EUVD. This finds applicable
-            # advisories and adds them to the NVD pile.
+            # EUVD is largely useful in having a sloppier search and some more-recently-populated
+            # product/version data. Always trust NVD first, only falling back to EUVD. This finds
+            # applicable advisories and adds them to the NVD pile. Ideally, this would always add
+            # all the missing NVDs here, but that's quite expensive at 6 seconds per fetch.
             vuln_id = EUVD.vuln_id(vuln)
-            vuln_id in joint_ids && continue
-            euvd_adv = EUVD.advisory(vuln)
-            AdvisoryDB.is_vulnerable(euvd_adv) || continue
+            @info "EUVD $vuln_id"
             startswith(vuln_id, "CVE") || continue
-            sleep(6)
-            try
-                push!(nvds, NVD.fetch_cve(vuln_id))
-            catch _
+            vuln_id in joint_ids && continue
+            # Only add the missing NVD advisory if there are only a few (6 minutes worth) or we know it's relevant
+            if missing_nvds <= 100 || AdvisoryDB.is_vulnerable(EUVD.advisory(vuln))
+                sleep(6)
+                try
+                    additional_nvds += 1
+                    push!(nvds, NVD.fetch_cve(vuln_id))
+                catch ex
+                    @info "failed to fetch NVD $vuln_id" ex
+                end
             end
         end
 
-        push!(info["haystack_total"], "$(length(nvds)) advisories from NVD")
         for vuln in nvds
             adv = NVD.advisory(vuln)
-            AdvisoryDB.is_vulnerable(adv) || continue
-            advisories[vuln.cve.id] = adv
-            if any(!AdvisoryDB.has_upper_bound, adv.affected)
+            @info "NVD $(vuln.cve.id)"
+            if isempty(adv.affected) || !all(AdvisoryDB.has_upper_bound, adv.affected)
                 # See if we can get a tighter answer with EUVD data
                 euvd = get(euvds[EUVD.vuln_id.(euvds) .== vuln.cve.id], 1) do
+                    additional_euvds += 1
                     try EUVD.fetch_enisa(vuln.cve.id) catch _; nothing end
                 end
                 isnothing(euvd) && continue
+                @info "EUVD $(EUVD.vuln_id(euvd))"
                 euvd_adv = EUVD.advisory(euvd)
-                if all(AdvisoryDB.has_upper_bound(euvd_adv.affected))
+                if !isempty(euvd_adv.affected) && all(AdvisoryDB.has_upper_bound, euvd_adv.affected)
                     adv.affected = euvd_adv.affected
                     adv.database_specific["affected_source"] = euvd_adv.database_specific["source"]
                 end
             end
+            if AdvisoryDB.is_vulnerable(adv)
+                advisories[vuln.cve.id] = adv
+            end
         end
+        push!(info["haystack_total"], "$found_nvds (+$additional_nvds) advisories from NVD")
+        push!(info["haystack_total"], "$found_euvds (+$additional_euvds) from EUVD")
     end
 
     # Now create or update the found advisories:
     n_modified = 0
     for (id, advisory) in advisories
+        @info "JLSEC $id"
         dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(Dates.year(Dates.now()))))
         file = joinpath(dir, "DONOTUSEJLSEC-0000-$id.md")
-        n_existing += isfile(file)
+        n_modified += isfile(file)
         open(file, "w") do io
             AdvisoryDB.print(io, advisory)
         end
@@ -91,7 +106,7 @@ function main()
     io = open(get(ENV, "GITHUB_OUTPUT", tempname()), "a+")
     verb = n_modified > 0 && n_created == 0 ? "Update" :
            n_modified == 0 && n_created > 0 ? "Publish" : "Publish and update"
-    unique_pkgs = unique(Iterators.flatten(vulnerable_packages.(values(advisories))))
+    unique_pkgs = unique(Iterators.flatten(AdvisoryDB.vulnerable_packages.(values(advisories))))
     pkg_str = length(unique_pkgs) <= 3 ? join(unique_pkgs, ", ", " and ") : "$(length(unique_pkgs)) packages"
     advisory_str = n_total == 1 ? "advisory" : "advisories"
     println(io, "title=[automatic] $verb $n_total $advisory_str for $pkg_str")
@@ -104,59 +119,69 @@ function main()
 
     # Now break the identified advisories into three sections.  First, advisories for which failed to parse the upstream version:
     failed_advisories, advisories = divide(((_,v),)->any(isnothing, (tryparse(AdvisoryDB.VersionRange, r) for entry in v.affected for (_,source_map) in entry.source_mapping for (r, _) in source_map)), advisories)
-
-    failed_ids = unique(keys(failed_advisories))
-    !isempty(failed_ids) && println(io, "### $(length(unique(failed_ids))) advisories failed to parse the source version range\n\nThese advisories seem to apply to a Julia package but had trouble identifying exactly how and at which versions.")
-    for id in failed_ids
-    #     pkgs = last.(filter(==(id)∘first, keys(failed_advisories)))
-    #     println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
-    #     for pkg in pkgs
-    #         println(io, "    * **$pkg**, using data from ", advisory_sources[(id, pkg)])
-    #         println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
-    #     end
+    !isempty(failed_advisories) && println(io, "### $(length(failed_advisories)) advisories failed to parse the source version range\n\nThese advisories seem to apply to a Julia package but had trouble identifying exactly how and at which versions.")
+    for (id, adv) in sort(failed_advisories)
+        pkgs = AdvisoryDB.vulnerable_packages(adv)
+        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for entry in adv.affected
+            println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Failures include:")
+            for (source, version_map) in entry.source_mapping
+                for (v, _) in version_map
+                    isnothing(tryparse(AdvisoryDB.VersionRange, v)) || continue
+                    println(io, "        * `", source, "` version `", v, "`")
+                end
+            end
+        end
     end
-    # !isempty(failed_ids) && println(io)
+    !isempty(failed_advisories) && println(io)
 
-    # # Next advisories for which all versions apply
-    # star_advisories, advisories = divide(==(["*"])∘last, advisories)
-    # star_ids = unique(id for (id, pkg) in keys(star_advisories))
-    # !isempty(star_ids) && println(io, "### $(length(unique(star_ids))) advisories apply to all registered versions of a package\n\nThese advisories had no obvious failures but computed a range without bounds.")
-    # for id in star_ids
-    #     pkgs = last.(filter(==(id)∘first, keys(star_advisories)))
-    #     println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
-    #     for pkg in pkgs
-    #         println(io, "    * **$pkg**, using data from ", advisory_sources[(id, pkg)])
-    #         println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
-    #     end
-    # end
-    # !isempty(star_ids) && println(io)
+    # Next advisories for which all versions apply
+    star_advisories, advisories = divide(((_,x),)->any(entry->entry.ranges==[VersionRange{VersionNumber}("*")], x.affected), advisories)
+    !isempty(star_advisories) && println(io, "### $(length(star_advisories)) advisories apply to all registered versions of a package\n\nThese advisories had no obvious failures but computed a range without bounds.")
+    for (id, adv) in sort(star_advisories)
+        pkgs = AdvisoryDB.vulnerable_packages(adv)
+        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for entry in adv.affected
+            println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Unbounded mappings are:")
+            for (source, version_map) in entry.source_mapping
+                for (v, r) in version_map
+                    r == [VersionRange{VersionNumber}("*")] || continue
+                    println(io, "        * `", source, "` version `", v, "`")
+                end
+            end
+        end
+    end
+    !isempty(star_advisories) && println(io)
 
-    # # Next advisories for which there's an unbounded upper range
-    # unbounded_advisories, advisories = divide(((_,v),)->any(!AdvisoryDB.has_upper_bound∘VersionRange, v), advisories)
-    # unbounded_ids = unique(id for (id, pkg) in keys(unbounded_advisories))
-    # !isempty(unbounded_ids) && println(io, "### $(length(unique(unbounded_ids))) advisories apply to all registered versions of a package\n\nThese advisories had no obvious failures but computed a range without bounds.")
-    # for id in unbounded_ids
-    #     pkgs = last.(filter(==(id)∘first, keys(unbounded_advisories)))
-    #     println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
-    #     for pkg in pkgs
-    #         println(io, "    * **$pkg** computed `$(repr(unbounded_advisories[(id, pkg)]))` using data from ", advisory_sources[(id, pkg)])
-    #         println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
-    #     end
-    # end
-    # !isempty(unbounded_ids) && println(io)
+    # Next advisories for which there's an unbounded upper range
+    unbounded_advisories, advisories = divide(((_,x),)->any(entry->any(!AdvisoryDB.has_upper_bound, entry.ranges), x.affected), advisories)
+    !isempty(unbounded_advisories) && println(io, "### $(length(unbounded_advisories)) advisories apply to the latest version of a package and do not have a patch")
+    for (id, adv) in sort(unbounded_advisories)
+        pkgs = AdvisoryDB.vulnerable_packages(adv)
+        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for entry in adv.affected
+            println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Unbounded mappings are:")
+            for (source, version_map) in entry.source_mapping
+                for (v, r) in version_map
+                    AdvisoryDB.has_upper_bound(r) && continue
+                    println(io, "        * `", source, "` version `", v, "` mapped to `[", join(string.(r), ", "), "]`")
+                end
+            end
+        end
+    end
+    !isempty(unbounded_advisories) && println(io)
 
-    # # And finally all remaining advisories.
-    # remaining_ids = unique(id for (id, pkg) in keys(advisories))
-    # !isempty(advisories) && println(io, "### $(length(unique(advisories))) advisories found concrete vulnerable ranges\n\n")
-    # for id in remaining_ids
-    #     pkgs = last.(filter(==(id)∘first, keys(advisories)))
-    #     println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
-    #     for pkg in pkgs
-    #         println(io, "    * **$pkg** computed `$(repr(advisories[(id, pkg)]))` using data from ", advisory_sources[(id, pkg)])
-    #         println(io, "        * " * join(advisory_details[(id, pkg)], "\n        * "))
-    #     end
-    # end
-    # !isempty(advisories) && println(io)
+    # And finally all remaining advisories.
+    !isempty(advisories) && println(io, "### $(length(advisories)) advisories found concrete vulnerable ranges\n\n")
+    for (id, adv) in sort(advisories)
+        pkgs = AdvisoryDB.vulnerable_packages(adv)
+        html_url = get(adv.database_specific, "affected_source", adv.database_specific["source"])["html_url"]
+        println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        for entry in adv.affected
+            println(io, "    * **$(entry.pkg)** at `[$(join('"'.*string.(entry.ranges).*'"', ", "))]`, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`")
+        end
+    end
+    !isempty(advisories) && println(io)
 
     println(io, "BODY_EOF")
     seekstart(io)
