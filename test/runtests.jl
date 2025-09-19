@@ -38,12 +38,12 @@ end
     vpv = [("lapack_project", "lapack", "<= 3.10.0"), ("openblas_project", "openblas", "< 0.3.18"), ("julialang", "julia", "<= 1.6.3"), ("julialang", "julia", "= 1.7.0-beta1"), ("julialang", "julia", "= 1.7.0-beta2"), ("julialang", "julia", "= 1.7.0-beta3"), ("julialang", "julia", "= 1.7.0-beta4"), ("julialang", "julia", "= 1.7.0-rc1"), ("redhat", "ceph_storage", "= 2.0"), ("redhat", "ceph_storage", "= 3.0"), ("redhat", "ceph_storage", "= 4.0"), ("redhat", "ceph_storage", "= 5.0"), ("redhat", "openshift_container_storage", "= 4.0"), ("redhat", "openshift_data_foundation", "= 4.0"), ("redhat", "enterprise_linux", "= 8.0"), ("fedoraproject", "fedora", "= 34"), ("fedoraproject", "fedora", "= 35")]
 
     matches = AdvisoryDB.affected_julia_packages(desc, vpv)
-    @test "julia" ∉ first.(matches)
-    @test "OpenBLAS_jll" in first.(matches)
-    @test "OpenBLAS32_jll" in first.(matches)
-    @test "OpenBLASHighCoreCount_jll" in first.(matches)
+    @test "julia" ∉ (x->x.pkg).(matches)
+    @test "OpenBLAS_jll" in (x->x.pkg).(matches)
+    @test "OpenBLAS32_jll" in (x->x.pkg).(matches)
+    @test "OpenBLASHighCoreCount_jll" in (x->x.pkg).(matches)
 
-    @test !any(contains("∞"), (x->x[2])(only(matches[first.(matches) .== "OpenBLASHighCoreCount_jll"])))
+    @test only(matches[(x->x.pkg).(matches) .== "OpenBLASHighCoreCount_jll"]).ranges == [AdvisoryDB.VersionRange{VersionNumber}("*")]
 end
 
 using AdvisoryDB: convert_versions, VersionRange
