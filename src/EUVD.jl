@@ -6,7 +6,7 @@ using Dates: Dates, DateTime, @dateformat_str
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists, Reference, Severity, Advisory
+using ..AdvisoryDB: AdvisoryDB, exists, Reference, Severity, Advisory, extract_summary
 
 # https://euvd.enisa.europa.eu/apidoc
 const API_BASE = "https://euvdservices.enisa.europa.eu/api"
@@ -16,17 +16,22 @@ const DEFAULT_HOURS = 25
 # Often all products are aligned with a vendor
 # Sometimes they are broadcasting the same vendor across multiple products (e.g., EUVD-2025-1837)
 # Sometimes it seems like ENISA just gave up on populating vendors (e.g., EUVD-2022-53926)
+# Sometimes they are broadcasting the same product across multiple vendor aliases (e.g., EUVD-2022-7731)
 function vpzip(vendors,products)
     if length(vendors) == 1 && length(products) != 1
         vendors = fill(vendors[1], length(products))
     elseif length(vendors) < length(products)
         vendors = vcat(vendors, fill(Dict(), length(products) - length(vendors)))
-    elseif length(vendors) > length(products)
-        throw(ArgumentError("got more vendors than products"))
+    elseif length(vendors) != 1 && length(products) == 1
+        products = fill(products[1], length(vendors))
+    else
+        products = vcat(products, fill(Dict(), length(vendors) - length(products)))
     end
     zip(vendors,products)
 end
-vendor_product_versions(vuln) = [(get(get(v, :vendor, Dict()), :name, ""), get(get(p, :product, Dict), :name, ""), get(p, :product_version, "")) for (v,p) in vpzip(vuln.enisaIdVendor, vuln.enisaIdProduct)]
+function vendor_product_versions(vuln)
+    [(get(get(v, :vendor, Dict()), :name, ""), get(get(p, :product, Dict), :name, ""), get(p, :product_version, "")) for (v,p) in vpzip(vuln.enisaIdVendor, vuln.enisaIdProduct)]
+end
 
 function build_headers()
     headers = [

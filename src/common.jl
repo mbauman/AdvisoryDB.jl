@@ -166,7 +166,7 @@ function extract_summary(description)
 
     flat_description = replace(description, r"\s+"=>" ")
     summary_end = findfirst(". ", flat_description)
-    if summary_end !== nothing
+    if summary_end !== nothing && summary_end[1] < 100
         flat_description[1:prevind(flat_description, summary_end[1])]
     else
         flat_description[1:min(thisind(flat_description, 100), end)] * "..."
@@ -390,7 +390,14 @@ function affected_julia_packages(description, vendorproductversions)
     # return pkgs
     vulns = PackageVulnerability[]
     for (pkg, source_mapping) in pkgs
-        sort!.(values(source_mapping), by=x->something(tryparse(AdvisoryDB.VersionRange, x), x))
+        # Use a better sorting if we can:
+        for (_, vs) in source_mapping
+            if all(!isnothing, tryparse.(VersionRange, keys(vs)))
+                sort!(vs, by=x->something(tryparse(AdvisoryDB.VersionRange, x), x))
+            else
+                sort!(vs)
+            end
+        end
         push!(vulns, PackageVulnerability(pkg,
             merge_ranges(sort(collect(Iterators.flatten(v for (proj,map) in source_mapping for (_,v) in map)))),
             advisory_type,
@@ -417,100 +424,6 @@ end
 function all_jlls()
     pkgs = all_pkgs()
     filter(endswith("_jll")∘first, pkgs)
-end
-
-function get_packages(osv)
-    pkgs = Tuple{String,String}[]
-    id = osv.id
-    println("Looking for Julia packages in $id")
-    if haskey(osv, :affected) && !isempty(osv.affected)
-        for vuln in osv.affected
-            if haskey(vuln, :package) && haskey(vuln.package, :name) && haskey(vuln.package, :ecosystem)
-                lowercase(string(vuln.package.ecosystem)) == "julia" || continue
-                pkgname = chopsuffix(strip(vuln.package.name), ".jl")
-                println(" - looking for $pkgname in the General registry")
-                uuids = get_uuids_in_general(pkgname)
-                if length(uuids) != 1
-                    println(" ⨯ found $(length(uuids)) UUIDs for $pkgname")
-                    create_issue(ENV["GITHUB_REPOSITORY"],
-                        title="Failed to find a registered $(pkgname) for $is",
-                        body="""
-                            The advisory $id names **$pkgname** as an affected product from the
-                            Julia ecosystem, but $(isempty(uuids) ? "no" : "more than one") match was found
-                            in the General registry.
-
-                            The complete OSV advisory is:
-
-                            ```json
-                            $(sprint((io,x)->JSON3.pretty(io, x, JSON3.AlignmentContext(indent=2)), osv))
-                            ```
-                            """
-                    )
-                else
-                    println(" - found $pkgname => $(only(uuids))")
-                    push!(pkgs, (pkgname, only(uuids)))
-                end
-            end
-        end
-    end
-    return pkgs
-end
-
-function import_osv_files(path)
-    packages_dir = "packages/General"
-    n = 0
-    for filename in readdir(path)
-        endswith(filename, ".json") || continue
-
-        osv_data = JSON3.read(joinpath(path, filename))
-
-        for (package, uuid) in get_packages(osv_data)
-            package_dir = joinpath(packages_dir, package)
-            mkpath(package_dir)
-
-            filename = "$(osv_data.id).json"
-            filepath = joinpath(package_dir, filename)
-
-            println("Writing advisory: $filepath")
-            open(filepath, "w") do f
-                JSON3.pretty(f, osv_data, JSON3.AlignmentContext(indent=2))
-            end
-            n += 1
-        end
-    end
-
-    println("Completed writing $n advisories to disk")
-end
-
-"""
-    corresponding_jlsec_id(package, id, aliases=String[])
-
-Given a Julia package and an upstream advisory id and an (optional) list of aliases,
-return the corresponding JLSEC advisory id if it exists and `nothing` otherwise.
-"""
-function corresponding_jlsec_id(package, id, aliases=String[])
-    # The obvious cases are those where the upstream advisory has a JLSEC alias
-    startswith(id, "DONOTUSEJLSEC-") && return id
-    alias_idx = findfirst(startswith("DONOTUSEJLSEC-"), aliases)
-    !isnothing(alias_idx) && return aliases[alias_idx]
-
-    # Or the JLSEC might have been created from the upstream advisory (or one of its aliases)
-    # So search all published package JLSECs for their alias information
-    path = joinpath(@__DIR__, "..", "packages", "General", package)
-    isdir(path) || return nothing
-    jlsec_aliases = Dict{String, String}()
-    for f in readdir(path)
-        jlsec, ext = splitext(f)
-        ext == ".json" || (@warn "unexpected extension $ext in $path/$f"; continue)
-        for alias in get(JSON3.read(joinpath(path, f)), :aliases, String[])
-            jlsec_aliases[alias] = jlsec
-        end
-    end
-    # And then search for the first match
-    for alias in vcat(id, chopprefix(id, r".*(?=GHSA-\w{4}-\w{4}-\w{4}$)"), sort(aliases))
-        haskey(jlsec_aliases, alias) && return jlsec_aliases[alias]
-    end
-    return nothing
 end
 
 function create!(pkg, osv)
@@ -547,16 +460,16 @@ function update!(jlsec_path::AbstractString, osv)
     return updated
 end
 
-function fetch_advisory(advisory_id, package_verisioninfo=nothing)
+function fetch_advisory(advisory_id)
     if startswith(advisory_id, "CVE-")
         vuln = NVD.fetch_cve(advisory_id)
-        return NVD.convert_to_osv(vuln, package_verisioninfo)
+        return NVD.advisory(vuln)
     elseif startswith(advisory_id, "EUVD-")
         vuln = EUVD.fetch_enisa(advisory_id)
-        return EUVD.convert_to_osv(vuln, package_verisioninfo)
+        return EUVD.advisory(vuln)
     elseif endswith(advisory_id, r"GHSA-\w{4}-\w{4}-\w{4}")
         vuln = GitHub.fetch_ghsa(advisory_id)
-        return GitHub.convert_to_osv(vuln, package_verisioninfo)
+        return GitHub.advisory(vuln)
     else
         throw(ArgumentError("unknown advisory: $advisory_id"))
     end
@@ -568,15 +481,5 @@ function fetch_product_matches(vendor, product)
     @info "got $(length(nvds)) advisories from NVD"
     euvds = EUVD.fetch_product_matches(vendor, product)
     @info "got $(length(euvds)) advisories from EUVD"
-    missing_ids = setdiff(filter(startswith("CVE"), EUVD.vuln_id.(euvds)), (x->x.cve.id).(nvds))
-    @info "adding another $(min(length(missing_ids),200)) advisories from NVD"
-    for missing_id in missing_ids[1:min(end, 200)] # 20 minutes
-        sleep(6)
-        try
-            push!(nvds, NVD.fetch_cve(missing_id))
-        catch ex
-            @info ex
-        end
-    end
     return nvds, euvds
 end

@@ -2,6 +2,14 @@ using DataStructures: OrderedDict
 using Dates: Dates, DateTime
 using Markdown: Markdown
 
+"""
+    PackageVulnerability(; pkgs, ranges, source_type=nothing, source_mapping=nothing)
+
+Represent an item in OSV's `affected` array, but using ranges of `VersionRange` instead of named events.
+
+The `source_type` and `source_mapping` are a bit of metadata to "show the work" of doing version conversion,
+particularly of importance when the type is `"upstream"` and the version mappings are nontrivial.
+"""
 @kwdef struct PackageVulnerability
     pkg::String
     ranges::Vector{VersionRange{VersionNumber}}
@@ -11,21 +19,38 @@ end
 function Base.convert(::Type{PackageVulnerability}, d::AbstractDict)
     PackageVulnerability(; Dict(Symbol(k)=>(Symbol(k) == :ranges ? VersionRange{VersionNumber}.(v) : v) for (k,v) in d)...)
 end
+is_vulnerable(v::PackageVulnerability) = !isempty(v.ranges)
+has_lower_bound(v::PackageVulnerability) = all(has_lower_bound, v.ranges)
+has_upper_bound(v::PackageVulnerability) = all(has_upper_bound, v.ranges)
 
+"""
+    Reference(; url, type="WEB")
+
+Represent a URL in OSV's reference field. Assumes `"WEB"` if the type is not in OSV schema.
+"""
 @kwdef struct Reference
     type::String = "WEB"
     url::String
     function Reference(type, url)
         TYPE = uppercase(convert(String, type))
-        TYPE in ("ADVISORY", "ARTICLE", "DETECTION", "DISCUSSION", "REPORT",
-                 "FIX", "INTRODUCED", "PACKAGE", "EVIDENCE", "WEB") ||
-            throw(ArgumentError("unknown reference type $(repr(type))"))
+        if TYPE ∉ ("ADVISORY", "ARTICLE", "DETECTION", "DISCUSSION", "REPORT",
+                   "FIX", "INTRODUCED", "PACKAGE", "EVIDENCE", "WEB")
+            @warn "unknown reference type $(repr(type))"
+            TYPE = "WEB"
+        end
         return new(TYPE, convert(String, url))
     end
 end
 Base.convert(::Type{Reference}, s::AbstractString) = Reference(; url = s)
 Base.convert(::Type{Reference}, d::AbstractDict) = Reference(; Dict(Symbol(k)=>v for (k,v) in d)...)
 
+"""
+    Credit(; name, contact=String[], type=nothing)
+    Credit(shorthand)
+
+Represent a :credit field item. Supports reading and writing a shorthand `\$name <\$email>` string syntax.
+The `type` must be a value in OSV schema or will be omitted.
+"""
 @kwdef struct Credit
     name::String
     contact::Vector{String} = String[]
@@ -42,11 +67,11 @@ Base.convert(::Type{Reference}, d::AbstractDict) = Reference(; Dict(Symbol(k)=>v
         new(convert(String, name), convert(Vector{String}, contact), type)
     end
 end
-function Credit(s::AbstractString)
+function Credit(shorthand::AbstractString)
     # Support typical "Name <name@example.com>" shorthand
-    m = match(r"^\s*(.+?)\s<([^>]+@[^>]+)>\s*$", s)
+    m = match(r"^\s*(.+?)\s<([^>]+@[^>]+)>\s*$", shorthand)
     if m === nothing
-        return Credit(s, String[], nothing)
+        return Credit(shorthand, String[], nothing)
     else
         return Credit(m.captures[1], [string("mailto:", m.captures[2])], nothing)
     end
@@ -56,6 +81,12 @@ Base.convert(::Type{Credit}, d::AbstractDict) = Credit(; Dict(Symbol(k)=>v for (
 Base.:(==)(a::Credit, b::Credit) = isequal(a.name, b.name) && isequal(a.contact, b.contact) && isequal(a.type, b.type)
 Base.hash(a::Credit, h::UInt) = hash(a.name, hash(a.contact, hash(a.type, hash(0x6a890f8c2b38fe87, h))))
 
+"""
+    Severity(; type, score)
+    Severity(score)
+
+Represent a CVSS severity. If no type is given, CVSS_V2/3/4 are auto-detected.
+"""
 @kwdef struct Severity
     type::String
     score::String
@@ -67,7 +98,6 @@ function Severity(score)
 end
 Base.convert(::Type{Severity}, s::AbstractString) = Severity(s)
 Base.convert(::Type{Severity}, d::AbstractDict) = Severity(; Dict(Symbol(k)=>v for (k,v) in d)...)
-
 function Base.tryparse(::Type{Severity}, score)
     if startswith(score, r"^AV:[LAN]\/AC:[HML]\/Au:[MSN]\/C:[NPC]\/I:[NPC]\/A:[NPC]")
         type = "CVSS_V2"
@@ -80,6 +110,13 @@ function Base.tryparse(::Type{Severity}, score)
     return Severity(type, String(score))
 end
 
+"""
+    Advisory(; osv_kwargs...)
+
+Represent an advisory using OSV schema's definitions for nearly all its fields. There are two special cases:
+* `id` may be omitted if not yet assigned
+* `affected` is a vector of the differently-structured `PackageVulnerability`
+"""
 @kwdef mutable struct Advisory
     ## OSV fields
     schema_version::String = "1.7.3"
@@ -100,17 +137,31 @@ end
     ## JULSEC-specific fields
     database_specific::Dict{String,Any} = Dict{String,Any}() # TODO: define these fields?
 end
+"""
+    is_vulnerable(x)
+
+Return `true` if the `Advisory` or `PackageVulnerability` has a non-empty set of versions
+"""
+is_vulnerable(a::Advisory) = any(is_vulnerable, a.affected)
+vulnerable_packages(a::Advisory) = [entry.pkg for entry in a.affected if is_vulnerable(entry)]
 
 # TOML creation. The one funny thing we do here is that the JULSEC parser supports a few
 # shorthand idioms. But only do this if _all_ values in a collection can be represented
 # with such shorthands.
+"""
+    to_toml_frontmatter(x)
+
+Recursively convert an Advisory and all its fields (except `summary` and `details`) to serializable values for `TOML.print`
+"""
 to_toml_frontmatter(v::Union{VersionNumber, VersionString, VersionRange}) = string(v)
 to_toml_frontmatter(x::Union{AbstractString, Integer, AbstractFloat, Bool, Dates.DateTime, Dates.Time, Dates.Date}) = x
 to_toml_frontmatter(d::AbstractDict) = OrderedDict(k=>to_toml_frontmatter_collection(v, values(d)) for (k,v) in d)
 to_toml_frontmatter(A::AbstractArray) = [to_toml_frontmatter_collection(x, A) for x in A]
 to_toml_frontmatter_collection(x, _) = to_toml_frontmatter(x)
 function to_toml_frontmatter(a::Advisory)
-    return OrderedDict{String,Any}(string(f) => to_toml_frontmatter(getproperty(a, f)) for f in fieldnames(Advisory) if is_populated(getproperty(a, f)) && f ∉ (:summary, :details))
+    return OrderedDict{String,Any}(
+        string(f) => to_toml_frontmatter(f == :affected ? filter(is_vulnerable, getproperty(a, f)) : getproperty(a, f))
+        for f in fieldnames(Advisory) if is_populated(getproperty(a, f)) && f ∉ (:summary, :details))
 end
 to_toml_frontmatter(s::Severity) = to_toml_frontmatter_collection(s, [s])
 function to_toml_frontmatter_collection(s::Severity, xs)
@@ -160,7 +211,8 @@ end
 Base.show(io::IO, mime::MIME"text/plain", vuln::Advisory) = show(io, mime, Markdown.parse(string(vuln)))
 Base.show(io::IO, vuln::Advisory) = print(io, vuln)
 
-#######
+####### Read a Markdown/TOML advisory
+parsefile(filename) = something(open(io->tryparse(Advisory, io), filename))
 function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
     m = Markdown.parse(s).content
     (length(m) >= 1 && m[1] isa Markdown.Code && m[1].language == "toml") || return nothing
@@ -180,7 +232,12 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
     end
 end
 
+"""
+    to_osv_dict(x)
 
+Recursively convert an Advisory and all its fields (except `summary` and `details`) to serializable values for `JSON3.write`
+such that it will create a valid OSV JSON
+"""
 to_osv_dict(v::Union{VersionNumber, VersionString, VersionRange, Dates.Time, Dates.Date}) = string(v)
 to_osv_dict(x::Dates.DateTime) = chopsuffix(string(x), "Z") * "Z" # All times should be UTC; print them as such
 to_osv_dict(x::Union{AbstractString, Integer, AbstractFloat, Bool}) = x
