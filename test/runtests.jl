@@ -88,11 +88,3 @@ end
     @test vpv[1] == ("Julia", "ActiveInference", ">= 4.1.0, < 4.1.15")
     @test vpv[2] == ("Julia", "ActiveInference", "< 4.2.6")
 end
-
-using AdvisoryDB: to_toml_frontmatter, Advisory
-@testset "special serialization of the withdrawn flag" begin
-    @test "withdrawn" in keys(to_toml_frontmatter(Advisory(; withdrawn=Dates.now())))
-    @test "withdrawn" in keys(to_toml_frontmatter(Advisory(; withdrawn=true)))
-    @test abs(Dates.now() - to_toml_frontmatter(Advisory(; withdrawn=true))["withdrawn"]) < Dates.Second(10)
-    @test "withdrawn" ∉ keys(to_toml_frontmatter(Advisory(; withdrawn=false)))
-end

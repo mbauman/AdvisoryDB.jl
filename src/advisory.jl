@@ -113,17 +113,18 @@ end
 """
     Advisory(; osv_kwargs...)
 
-Represent an advisory using OSV schema's definitions for nearly all its fields. There are two special cases:
-* `id` may be omitted if not yet assigned
+Represent an advisory using OSV schema's definitions for nearly all its fields.
+There is just one place where we differ:
 * `affected` is a vector of the differently-structured `PackageVulnerability`
 """
 @kwdef mutable struct Advisory
     ## OSV fields
     schema_version::String = "1.7.3"
-    id::Union{String,Nothing} = nothing # This is required, but may not exist before publish
+    # The identifier and dates may be re-written by GitHub Actions upon publication and modification
+    id::String = string(PREFIX, "-0000-", string(rand(UInt64), base=36))
     modified::DateTime = Dates.now(Dates.UTC)
     published::Union{DateTime, Nothing} = nothing
-    withdrawn::Union{DateTime, Bool} = false # When true, this must dynamically be populated
+    withdrawn::Union{DateTime, Nothing} = nothing
     aliases::Vector{String} = String[]
     upstream::Vector{String} = String[]
     related::Vector{String} = String[]
@@ -159,15 +160,13 @@ to_toml_frontmatter(d::AbstractDict) = OrderedDict(k=>to_toml_frontmatter_collec
 to_toml_frontmatter(A::AbstractArray) = [to_toml_frontmatter_collection(x, A) for x in A]
 to_toml_frontmatter_collection(x, _) = to_toml_frontmatter(x)
 function to_toml_frontmatter(a::Advisory)
+    # Convert all fields to TOML with a few special cases:
     return OrderedDict{String,Any}(
         string(f) => to_toml_frontmatter(
-            f == :affected ? filter(is_vulnerable, getproperty(a, f)) :
-            f == :withdrawn && a.withdrawn isa Bool ? ifelse(a.withdrawn, Dates.now(), nothing) :
+            f == :affected ? filter(is_vulnerable, getproperty(a, f)) : # Skip (empty) non-vulnerabilities
             getproperty(a, f))
         for f in fieldnames(Advisory) if
-            is_populated(getproperty(a, f)) &&
-            (f ∉ (:summary, :details, :withdrawn) ||
-                (f == :withdrawn && (a.withdrawn isa Dates.DateTime || a.withdrawn))))
+            is_populated(getproperty(a, f)) && (f ∉ (:summary, :details))) # Summary and details are not frontmatter
 end
 to_toml_frontmatter(s::Severity) = to_toml_frontmatter_collection(s, [s])
 function to_toml_frontmatter_collection(s::Severity, xs)
