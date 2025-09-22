@@ -30,27 +30,28 @@ function main()
             updated = true
             newpath = joinpath(root, string(advisory.id, ".md"))
             @info "moving $file to $(advisory.id).md"
-            run(`git mv $path $newpath`)
+            success(`git mv $path $newpath`) || run(`mv $path $newpath`)
             path = newpath
             modified = published = Dates.now(Dates.UTC)
-            withdrawn = isnothing(advisory.withdrawn) ? nothing : published
         else
             git_modified = readchomp(`git log -1 --format="%ad" --date=iso-strict -- $path`)
             modified = isempty(git_modified) ? Dates.now(Dates.UTC) : DateTime(ZonedDateTime(git_modified), Dates.UTC)
             git_published = readchomp(`git log --format="%ad" --date=iso-strict --diff-filter=A -- $path`)
             published = isempty(git_published) ? modified : DateTime(ZonedDateTime(git_published), Dates.UTC)
-            withdrawn = isnothing(advisory.withdrawn) ? nothing : published
         end
-        if abs(advisory.modified - modified) < Dates.Minute(10)
+        if something(advisory.withdrawn, DateTime(0)) > advisory.modified
+            # If the withdrawn date is _after_ the previously stored modified time, then it's a new modification
+            # The effective time of the widthdraw will be upon publication to this repo — the new modified time
+            advisory.withdrawn = modified
             advisory.modified = modified
             updated = true
         end
-        if abs(advisory.published - published) < Dates.Minute(10)
-            advisory.published = published
+        if abs(advisory.modified - modified) > Dates.Minute(10)
+            advisory.modified = modified
             updated = true
         end
-        if !isnothing(withdrawn) && abs(something(advisory.withdrawn, withdrawn) - withdrawn) < Dates.Minute(10)
-            advisory.withdrawn = withdrawn
+        if abs(something(advisory.published, DateTime(0)) - published) > Dates.Minute(10)
+            advisory.published = published
             updated = true
         end
 
@@ -64,10 +65,10 @@ function main()
         end
     end
 
+    @info "updated $n_updated advisories"
+    io = haskey(ENV, "GITHUB_OUTPUT") ? open(ENV["GITHUB_OUTPUT"], "w") : stdout
+    println(io, "changes=", n_updated > 0)
     if n_updated > 0
-        @info "updated $n_updated advisories"
-        run(`git add $published_advisories_path`)
-        msg = "[automated] assign IDs and timestamp $n_updated advisories"
-        run(`git commit -m $msg`)
+        println(io, "title=[automated] assign id/timestamp $n_updated advisories")
     end
 end
