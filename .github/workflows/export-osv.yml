@@ -1,0 +1,86 @@
+name: Update IDs, timestamps, and export OSV
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-and-export:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Julia
+      uses: julia-actions/setup-julia@v1
+
+    - name: Install Julia dependencies
+      run: |
+        julia --project=. -e 'using Pkg; Pkg.instantiate()'
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 'stable'
+
+    - name: Install osv-linter
+      run: |
+        git clone https://github.com/JuliaComputing/osv-schema.git -b juliahub/julia
+        cd ./osv-schema/tools/osv-linter
+        go build -o ../../../osv-linter ./cmd/osv
+        cd ../../..
+        rm -rf osv-schema
+
+    - name: Assign ids and timestamps
+      id: assign
+      run: |
+        julia --project=. scripts/assign_ids_and_dates.jl
+
+    - name: Push updated advisories to main
+      if: ${{ steps.assign.outputs.changes && github.event_name == 'push' && github.ref_name == 'main' }}
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add advisories
+        git commit -m '${{ steps.assign.outputs.title }}'
+        git push origin main
+
+    - name: Export OSV
+      id: export
+      run: |
+        julia --project=. scripts/export_osv.jl
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Validate JSON
+      run: |
+        output=$(./osv-linter record lint osv 2>&1 || true)
+        if [ -n "$output" ]; then
+          echo "$output"
+          exit 1
+        fi
+
+    - name: Publish OSV data
+      if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+      env:
+        GITHUB_BRANCH: ${{ github.ref_name }}
+        GITHUB_SHA: ${{ github.sha }}
+      run: |
+        DATA_DIR=$PWD/osv
+        BRANCH=generated/osv
+        REF=refs/remotes/origin/$BRANCH
+        export GIT_WORK_TREE=$DATA_DIR
+        git read-tree "$REF"
+        git add --all --intent-to-add
+        git diff --quiet && exit
+        git add --all
+        TREE=$(git write-tree)
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        COMMIT=$(git commit-tree "$TREE" -p "$REF" -m "[automated] export ($GITHUB_BRANCH)@($GITHUB_SHA)")
+        git push origin $COMMIT:$BRANCH

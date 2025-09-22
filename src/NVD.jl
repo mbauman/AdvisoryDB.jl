@@ -6,7 +6,7 @@ using Dates
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists
+using ..AdvisoryDB: AdvisoryDB, exists, Severity, Advisory, Reference, Credit, extract_summary
 
 const NVD_API_BASE = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 const NVD_CPE_API_BASE = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
@@ -242,13 +242,13 @@ function vendor_product_versions(vuln)
     return unique!(vpvs)
 end
 
-related_julia_packages(vuln) = AdvisoryDB.related_julia_packages(english_description(vuln), vendor_product_versions(vuln))
+affected_julia_packages(vuln) = AdvisoryDB.affected_julia_packages(english_description(vuln), vendor_product_versions(vuln))
 
 function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
 
     for vuln in vulnerabilities
-        if !isempty(related_julia_packages(vuln))
+        if !isempty(affected_julia_packages(vuln))
             push!(julia_vulnerabilities, vuln)
         end
     end
@@ -267,165 +267,45 @@ function english_description(vuln)
     return ""
 end
 
-function version_string(node)
-    # Output a GHSA-like version string for a given configuration node
+function advisory(vuln)
+    affected = affected_julia_packages(vuln)
+    upstream_type = Dict("alias"=>:aliases,"upstream"=>:upstream)[get(unique(map(x->x.source_type, affected)), 1, "alias")]
 
-end
-
-function convert_to_osv(vuln, package_versioninfo = nothing)
-    osv = Dict{String, Any}()
-
-    # Required OSV fields
-    osv["schema_version"] = "1.7.2"
-    osv["id"] = "DONOTUSEJLSEC-0000"
-    osv["published"] = AdvisoryDB.now()
-    osv["modified"] = AdvisoryDB.now()
-
-    # NVD does not include withdrawn information
-
-    # The vuln id _either_ becomes an alias **or** an upstream advisory.
-    # NVD does not provide its own structured alias/upstream info.
-    # TODO: I think some vulns may be slightly better described as "upstream", but it's not obvious to me
-    osv["aliases"] = [vuln.cve.id]
-
-    # No related tags (beyond references)
-
-    # Summary and details from descriptions, using English only
-    description = english_description(vuln)
-    if !isempty(description)
-        flat_description = replace(description, r"\s+"=>" ")
-        # Use first sentence as summary, full text as details
-        if length(flat_description) > 100
-            summary_end = findfirst(". ", flat_description)
-            if summary_end !== nothing
-                osv["summary"] = flat_description[1:summary_end[1]]
-                osv["details"] = description
-            else
-                osv["summary"] = flat_description[1:min(100, length(description))] * "..."
-                osv["details"] = description
-            end
-        else
-            osv["summary"] = flat_description
-            osv["details"] = description
+    # Severities are a little complicated
+    severities = Severity[]
+    for (version, metrics) in pairs(get(vuln.cve, :metrics, Dict()))
+        v = match(r"^cvssMetricV([234])", string(version))
+        isnothing(v) && continue
+        for metric in metrics
+            exists(metric, :cvssData, :vectorString) || continue
+            push!(severities, Severity(
+                type = "CVSS_V"*v[1],
+                score = string(metric.cvssData.vectorString)
+            ))
+            break # We'll just find the first such metric; there may be more
         end
     end
 
-    # CVSS severity information
-    if exists(vuln.cve, :metrics)
-        severity_info = []
-
-        # Check for CVSS metrics
-        for (version, metrics) in pairs(vuln.cve.metrics)
-            v = match(r"^cvssMetricV([234])", string(version))
-            if !isnothing(v)
-                for metric in metrics
-                    if exists(metric, :cvssData)
-                        push!(severity_info, Dict(
-                            "type" => "CVSS_V"*v[1],
-                            "score" => string(metric.cvssData.vectorString)
-                        ))
-                        break
-                    end
-                end
-            end
-        end
-
-        if !isempty(severity_info)
-            osv["severity"] = severity_info
-        end
-    end
-
-    # Affected _Julia_ packages, either explicitly passed
-    package_versioninfos = isnothing(package_versioninfo) ? related_julia_packages(vuln) : [package_versioninfo]
-    affected = []
-    for (package, versioninfo) in package_versioninfos
-        affected_entry = Dict{String, Any}()
-        affected_entry["package"] = Dict(
-            "ecosystem" => "Julia",
-            "name" => package
+    return Advisory(;
+        withdrawn = (lowercase(get(vuln.cve, :vulnStatus, "")) == "rejected") ? Dates.now(Dates.UTC) : nothing,
+        upstream_type => String[vuln.cve.id],
+        # related -- nothing structured
+        summary = extract_summary(english_description(vuln)),
+        details = english_description(vuln),
+        severity = severities,
+        affected = affected,
+        references = [Reference(url=ref.url) for ref in get(vuln.cve, :references, []) if haskey(ref, :url)],
+        # credits -- not structured
+        database_specific = Dict{String,Any}("source" => Dict(
+            "id" => vuln.cve.id,
+            "modified" => vuln.cve.lastModified * "Z",
+            "published" => vuln.cve.published * "Z",
+            "imported" => AdvisoryDB.now(),
+            "url" => string(NVD_API_BASE, "?cveId=", vuln.cve.id),
+            "html_url" => string("https://nvd.nist.gov/vuln/detail/", vuln.cve.id)
+            )
         )
-        range_events = AdvisoryDB.osv_events(AdvisoryDB.VersionRange{VersionNumber}.(versioninfo))
-        affected_entry["ranges"] = [Dict("type"=>"SEMVER", "events"=>range_events)]
-        push!(affected, affected_entry)
-    end
-    if !isempty(affected)
-        osv["affected"] = affected
-    end
-
-    # References
-    references = []
-    if haskey(vuln.cve, :references)
-        for ref in vuln.cve.references
-            if haskey(ref, :url)
-                push!(references, Dict(
-                    "type" => "WEB",
-                    "url" => ref.url
-                ))
-            end
-        end
-    end
-    if !isempty(references)
-        osv["references"] = references
-    end
-
-    # No structured credits
-    return osv
-end
-
-function get_first_package_name_nvd(vuln)
-    # Extract package name from CPE data or fallback to CVE ID
-    if haskey(vuln.cve, :configurations)
-        for config in vuln.cve.configurations
-            if haskey(config, :nodes)
-                for node in config.nodes
-                    if haskey(node, :cpeMatch)
-                        for cpe_match in node.cpeMatch
-                            if haskey(cpe_match, :criteria)
-                                criteria = cpe_match.criteria
-                                if occursin("julia", lowercase(criteria))
-                                    cpe_parts = split(criteria, ":")
-                                    if length(cpe_parts) >= 6
-                                        return cpe_parts[5]  # product name
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    # Fallback to using CVE ID as package name
-    return replace(vuln.cve.id, "CVE-" => "cve_")
-end
-
-function write_nvd_advisory_files(vulnerabilities)
-    packages_dir = "packages"
-
-    if !isdir(packages_dir)
-        mkdir(packages_dir)
-    end
-
-    for vuln in vulnerabilities
-        osv_data = convert_to_osv(vuln)
-        package_name = get_first_package_name_nvd(vuln)
-
-        package_dir = joinpath(packages_dir, package_name)
-        if !isdir(package_dir)
-            mkdir(package_dir)
-        end
-
-        filename = "$(vuln.cve.id).json"
-        filepath = joinpath(package_dir, filename)
-
-        println("Writing NVD advisory: $filepath")
-        open(filepath, "w") do f
-            JSON3.pretty(f, osv_data)
-        end
-    end
-
-    println("Completed writing $(length(vulnerabilities)) NVD advisories to disk")
+    )
 end
 
 end
