@@ -7,7 +7,7 @@ using Markdown: Markdown
 
 Represent an item in OSV's `affected` array, but using ranges of `VersionRange` instead of named events.
 
-The `source_type` and `source_mapping` are a bit of metadata to "show the work" of doing version conversion,
+The `source_type` and `source_mapping` are a bit of *unserialized* metadata to "show the work" of doing version conversion,
 particularly of importance when the type is `"upstream"` and the version mappings are nontrivial.
 """
 @kwdef struct PackageVulnerability
@@ -121,7 +121,7 @@ end
 
 Represent an advisory using OSV schema's definitions for nearly all its fields.
 There is just one place where we differ:
-* `affected` is a vector of the differently-structured `PackageVulnerability`
+* `affected` is a vector of the differently-structured [`PackageVulnerability`](@ref)
 """
 @kwdef mutable struct Advisory
     ## OSV fields
@@ -239,7 +239,8 @@ function to_toml_frontmatter_collection(r::Reference, xs)
     end
 end
 function to_toml_frontmatter(v::PackageVulnerability)
-    return OrderedDict(string(f) => to_toml_frontmatter(getproperty(v, f)) for f in fieldnames(PackageVulnerability))
+    return OrderedDict("pkg" => to_toml_frontmatter(v.pkg),
+                    "ranges" => to_toml_frontmatter(v.ranges))
 end
 
 function Base.print(io::IO, vuln::Advisory)
