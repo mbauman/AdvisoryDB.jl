@@ -7,6 +7,7 @@ function main()
     published_advisories_path = joinpath(@__DIR__, "..", "advisories", "published")
 
     # First look through all advisories for the latest identifier
+    # TODO: We could use a lock/mutex of the form of a sentinel upstream branch here
     year = Dates.year(Dates.now(Dates.UTC))
     last_id = 0
     for (root, _, files) in walkdir(all_advisories_path), file in files
@@ -39,7 +40,7 @@ function main()
             git_published = readchomp(`git log --format="%ad" --date=iso-strict --diff-filter=A -- $path`)
             published = isempty(git_published) ? modified : DateTime(ZonedDateTime(git_published), Dates.UTC)
         end
-        if something(advisory.withdrawn, DateTime(0)) > advisory.modified
+        if something(advisory.withdrawn, typemin(DateTime)) > advisory.modified
             # If the withdrawn date is _after_ the previously stored modified time, then it's a new modification
             # The effective time of the widthdraw will be upon publication to this repo — the new modified time
             advisory.withdrawn = modified
@@ -71,4 +72,8 @@ function main()
     if n_updated > 0
         println(io, "title=[automated] assign id/timestamp $n_updated advisories")
     end
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
 end

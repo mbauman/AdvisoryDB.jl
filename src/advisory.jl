@@ -290,8 +290,9 @@ to_osv_dict(v::Union{VersionNumber, VersionString, VersionRange, Dates.Time, Dat
 to_osv_dict(x::Dates.DateTime) = chopsuffix(string(x), "Z") * "Z" # All times should be UTC; print them as such
 to_osv_dict(x::Union{AbstractString, Integer, AbstractFloat, Bool}) = x
 to_osv_dict(d::AbstractDict) = OrderedDict(string(k)=>to_osv_dict(v) for (k,v) in d)
+to_osv_dict(A::AbstractArray) = [to_osv_dict(v) for v in A]
 function to_osv_dict(a::Union{Advisory, Severity, Reference, Credit})
-    return OrderedDict(string(f) => to_osv_dict(getproperty(a, f)) for f in fieldnames(Advisory) if is_populated(getproperty(a, f)))
+    return OrderedDict(string(f) => to_osv_dict(getproperty(a, f)) for f in fieldnames(typeof(a)) if is_populated(getproperty(a, f)))
 end
 # Package vulnerabilities are the one thing we store quite differently:
 function to_osv_dict(vuln::PackageVulnerability)
