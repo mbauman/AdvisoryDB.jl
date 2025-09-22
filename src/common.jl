@@ -429,38 +429,35 @@ function all_jlls()
     filter(endswith("_jll")∘first, pkgs)
 end
 
-function create!(pkg, osv)
-    pkg_path = joinpath(@__DIR__, "..", "packages", "General", pkg)
-    mkpath(pkg_path)
-    open(joinpath(pkg_path, string("DONOTUSEJLSEC-0000-", string(rand(UInt64), base=36, pad=13), ".json")), "w") do f
-        JSON3.pretty(f, osv, JSON3.AlignmentContext(indent=2))
+"""
+    corresponding_jlsec_path(id, aliases=String[])
+
+Given an upstream advisory id and an (optional) list of its own aliases,
+return the path to the corresponding JLSEC advisory if it exists and `nothing` otherwise.
+"""
+function corresponding_jlsec_path(id, aliases=String[])
+    isdir(path) || return nothing
+    ids = Set(Iterators.flatten((id, aliases)))
+    for (root, _, files) in walkdir(path)
+        for file in joinpath.(root, files)
+            is_jlsec_advisory_path(file) || continue
+            candidate = parsefile(file)
+            for alias in Iterators.flatten((candidate.id, candidate.aliases, candidate.upstream))
+                alias in ids && return file
+            end
+        end
     end
+    return nothing
 end
 
-stringify_keys(x) = x
-stringify_keys(x::AbstractArray) = stringify_keys.(x)
-stringify_keys(x::AbstractDict) = Dict(string(k)=>stringify_keys(v) for (k,v) in x)
+"""
+    is_jlsec_advisory_path(path)
 
-function update!(jlsec_path::AbstractString, osv)
-    # JSON3 gives us Symbol keys, but the osv has strings (TODO, this is messy)
-    original_jlsec = JSON3.read(jlsec_path)
-    jlsec = stringify_keys(original_jlsec)
-    updated = false
-    for key in union(keys(jlsec), keys(osv))
-        key in ("id", "modified", "published") && continue
-        if haskey(osv, key) && (get(jlsec, key, "sentinel: wNVPEsdcSJ4N") != osv[key])
-            @info "updating $(basename(jlsec_path)) because $key differs"
-            jlsec[key] = osv[key]
-            updated = true
-        end
-    end
-    if updated
-        jlsec["modified"] = now()
-        open(jlsec_path, "w") do f
-            JSON3.pretty(f, jlsec, JSON3.AlignmentContext(indent=2))
-        end
-    end
-    return updated
+Given a path, do a simple check to see if it looks like a JLSEC advisory
+"""
+function is_jlsec_advisory(path)
+    file, ext = splitext(basename(path))
+    return startswith(file, PREFIX) && ext == ".md"
 end
 
 function fetch_advisory(advisory_id)

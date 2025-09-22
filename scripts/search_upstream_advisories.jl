@@ -55,8 +55,8 @@ function main()
             if missing_nvds <= 100 || AdvisoryDB.is_vulnerable(EUVD.advisory(vuln))
                 sleep(6)
                 try
-                    additional_nvds += 1
                     push!(nvds, NVD.fetch_cve(vuln_id))
+                    additional_nvds += 1
                 catch ex
                     @info "failed to fetch NVD $vuln_id" ex
                 end

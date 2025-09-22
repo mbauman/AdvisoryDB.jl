@@ -19,6 +19,12 @@ end
 function Base.convert(::Type{PackageVulnerability}, d::AbstractDict)
     PackageVulnerability(; Dict(Symbol(k)=>(Symbol(k) == :ranges ? VersionRange{VersionNumber}.(v) : v) for (k,v) in d)...)
 end
+function Base.:(==)(a::PackageVulnerability, b::PackageVulnerability)
+    return a.pkg == b.pkg && a.ranges == b.ranges && a.source_type == b.source_type && a.source_mapping == b.source_mapping
+end
+function Base.hash(a::PackageVulnerability, h::UInt)
+    return hash(a.pkg, hash(a.ranges, hash(a.source_type, hash(a.source_mapping, hash(0x30652ead7d10dc57, h)))))
+end
 is_vulnerable(v::PackageVulnerability) = !isempty(v.ranges)
 has_lower_bound(v::PackageVulnerability) = all(has_lower_bound, v.ranges)
 has_upper_bound(v::PackageVulnerability) = all(has_upper_bound, v.ranges)
@@ -138,6 +144,13 @@ There is just one place where we differ:
     ## JULSEC-specific fields
     database_specific::Dict{String,Any} = Dict{String,Any}() # TODO: define these fields?
 end
+# Advisory identity is purely determined by the serialization format
+function Base.:(==)(a::Advisory, b::Advisory)
+    return to_toml_frontmatter(a) == to_toml_frontmatter(b) && a.summary == b.summary && a.details == b.details
+end
+function Base.hash(a::Advisory, h::UInt)
+    return hash(to_toml_frontmatter(a), hash(a.summary, hash(a.details, hash(0x913cfa4716e3f874, h))))
+end
 """
     is_vulnerable(x)
 
@@ -145,6 +158,33 @@ Return `true` if the `Advisory` or `PackageVulnerability` has a non-empty set of
 """
 is_vulnerable(a::Advisory) = any(is_vulnerable, a.affected)
 vulnerable_packages(a::Advisory) = [entry.pkg for entry in a.affected if is_vulnerable(entry)]
+
+"""
+    update(original::Advisory, updates::Advisory)
+
+Given an `original` advisory and some `updates`, return a new advisory with the same ID
+and dates
+"""
+function update(original::Advisory, updates::Advisory)
+    return Advisory(;
+        # use whatever the default `schema_version` is
+        id = original.id,
+        modified = original.modified, # This may or may not get overwritten later
+        published = original.published,
+        withdrawn = something(original.withdrawn, new.withdrawn, Some(nothing)),
+        ## All other fields are directly taken from the new advisory
+        aliases = new.aliases,
+        upstream = new.upstream,
+        related = new.related,
+        summary = new.summary,
+        details = new.details,
+        severity = new.severity,
+        affected = new.affected,
+        references = new.references,
+        credits = new.credits,
+        database_specific = new.database_specific,
+    )
+end
 
 # TOML creation. The one funny thing we do here is that the JULSEC parser supports a few
 # shorthand idioms. But only do this if _all_ values in a collection can be represented
@@ -260,6 +300,6 @@ function to_osv_dict(vuln::PackageVulnerability)
         ),
         "ranges" => [OrderedDict("type"=>"SEMVER", "events"=>osv_events(vuln.ranges))],
         # TODO: "versions" => registered_versions_within_the_ranges(vuln.pkg, vuln.ranges)
-        # TODO: "database_specific" => Dict(vuln.source_type, vuln.source_mapping, etc...)
+        # TODO: "database_specific" => Dict(vuln.source_type, vuln.source_mapping, etc...) ?
     )
 end
