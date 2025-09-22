@@ -440,7 +440,7 @@ function corresponding_jlsec_path(id, aliases=String[])
     ids = Set(Iterators.flatten((id, aliases)))
     for (root, _, files) in walkdir(path)
         for file in joinpath.(root, files)
-            is_jlsec_advisory_path(file) || continue
+            is_jlsec_advisory_path_path(file) || continue
             candidate = parsefile(file)
             for alias in Iterators.flatten((candidate.id, candidate.aliases, candidate.upstream))
                 alias in ids && return file
@@ -451,11 +451,11 @@ function corresponding_jlsec_path(id, aliases=String[])
 end
 
 """
-    is_jlsec_advisory_path(path)
+    is_jlsec_advisory_path_path(path)
 
 Given a path, do a simple check to see if it looks like a JLSEC advisory
 """
-function is_jlsec_advisory(path)
+function is_jlsec_advisory_path(path)
     file, ext = splitext(basename(path))
     return startswith(file, PREFIX) && ext == ".md"
 end

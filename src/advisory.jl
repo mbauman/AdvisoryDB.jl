@@ -186,6 +186,8 @@ function update(original::Advisory, updates::Advisory)
     )
 end
 
+#### IO and serialization ####
+
 # TOML creation. The one funny thing we do here is that the JULSEC parser supports a few
 # shorthand idioms. But only do this if _all_ values in a collection can be represented
 # with such shorthands.
