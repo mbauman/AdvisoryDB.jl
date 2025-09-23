@@ -251,8 +251,8 @@ function Base.print(io::IO, vuln::Advisory)
     print(io, frontmatter)
     println(io, repeat("`", nticks))
     println(io)
-    is_populated(vuln.summary) && println(io, "# ", vuln.summary, "\n")
-    is_populated(vuln.details) && println(io, vuln.details)
+    is_populated(vuln.summary) && println(io, Markdown.parse(string("# ", vuln.summary, "\n")))
+    is_populated(vuln.details) && println(io, Markdown.parse(vuln.details))
     return nothing
 end
 
