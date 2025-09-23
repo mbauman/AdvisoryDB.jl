@@ -1,5 +1,8 @@
 # A Julia Security Advisory Database
 
+> [!CAUTION]
+> The advisories here are **in testing**, **are not valid**, and **will be deleted**. Do not import any advisories with the `DONOTUSEJLSEC-` prefix.
+
 > [!WARNING]
 > Work in progress. Likely incorrect and definitely incomplete data.
 
