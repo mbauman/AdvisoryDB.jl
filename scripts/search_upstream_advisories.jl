@@ -163,7 +163,7 @@ function main()
             println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Unbounded mappings are:")
             for (source, version_map) in entry.source_mapping
                 for (v, r) in version_map
-                    AdvisoryDB.has_upper_bound(r) && continue
+                    all(AdvisoryDB.has_upper_bound, r) && continue
                     println(io, "        * `", source, "` version `", v, "` mapped to `[", join(string.(r), ", "), "]`")
                 end
             end
