@@ -35,9 +35,9 @@ function main()
             path = newpath
             modified = published = Dates.now(Dates.UTC)
         else
-            git_modified = readchomp(`git log -1 --format="%ad" --date=iso-strict -- $path`)
+            git_modified = readchomp(`git log -1 --format="%cd" --date=iso-strict -- $path`)
             modified = isempty(git_modified) ? Dates.now(Dates.UTC) : DateTime(ZonedDateTime(git_modified), Dates.UTC)
-            git_published = readchomp(`git log --format="%ad" --date=iso-strict --diff-filter=A -- $path`)
+            git_published = readchomp(`git log -1 --format="%cd" --date=iso-strict --diff-filter=A -- $path`)
             published = isempty(git_published) ? modified : DateTime(ZonedDateTime(git_published), Dates.UTC)
         end
         if something(advisory.withdrawn, typemin(DateTime)) > advisory.modified
