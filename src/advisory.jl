@@ -198,7 +198,8 @@ Recursively convert an Advisory and all its fields (except `summary` and `detail
 """
 to_toml_frontmatter(v::Union{VersionNumber, VersionString, VersionRange}) = string(v)
 to_toml_frontmatter(x::Union{AbstractString, Integer, AbstractFloat, Bool, Dates.DateTime, Dates.Time, Dates.Date}) = x
-to_toml_frontmatter(d::AbstractDict) = OrderedDict(k=>to_toml_frontmatter_collection(v, values(d)) for (k,v) in d)
+to_toml_frontmatter(d::OrderedDict) = OrderedDict(k=>to_toml_frontmatter_collection(v, values(d)) for (k,v) in d)
+to_toml_frontmatter(d::AbstractDict) = sort(OrderedDict(k=>to_toml_frontmatter_collection(v, values(d)) for (k,v) in d))
 to_toml_frontmatter(A::AbstractArray) = [to_toml_frontmatter_collection(x, A) for x in A]
 to_toml_frontmatter_collection(x, _) = to_toml_frontmatter(x)
 function to_toml_frontmatter(a::Advisory)
@@ -267,7 +268,7 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
     frontmatter = TOML.tryparse(m[1].code)
     frontmatter === nothing && return nothing
     summary = if length(m) >= 2 && m[2] isa Markdown.Header
-        chopprefix(Markdown.plain(m[2]), r"^#+s+")
+        chopprefix(Markdown.plain(m[2]), r"^#+\s+")
     end
     details = if length(m) >= 2+!isnothing(summary)
         Markdown.plain(m[2+!isnothing(summary):end])
@@ -304,6 +305,5 @@ function to_osv_dict(vuln::PackageVulnerability)
         ),
         "ranges" => [OrderedDict("type"=>"SEMVER", "events"=>osv_events(vuln.ranges))],
         # TODO: "versions" => registered_versions_within_the_ranges(vuln.pkg, vuln.ranges)
-        # TODO: "database_specific" => Dict(vuln.source_type, vuln.source_mapping, etc...) ?
     )
 end
