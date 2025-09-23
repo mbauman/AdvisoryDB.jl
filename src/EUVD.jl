@@ -148,7 +148,7 @@ end
 vuln_id(vuln) = get(filter(startswith("CVE-"),  split(get(vuln, :aliases, ""))), 1,
                 get(filter(startswith("GHSA-"), split(get(vuln, :aliases, ""))), 1, vuln.id))
 
-parse_euvd_datetime(str) = string(DateTime(str, dateformat"u d, y, H:M:S p")) * "Z" # TODO: confirm timezone is UTC
+parse_euvd_datetime(str) = DateTime(str, dateformat"u d, y, H:M:S p")
 function advisory(vuln)
     affected = affected_julia_packages(vuln)
     upstream_type = Dict("alias"=>:aliases,"upstream"=>:upstream)[get(unique(map(x->x.source_type, affected)), 1, "alias")]
@@ -171,7 +171,7 @@ function advisory(vuln)
             "id" => vuln.id,
             "modified" => if exists(vuln, :dateUpdated) parse_euvd_datetime(vuln.dateUpdated) end,
             "published" => if exists(vuln, :datePublished) parse_euvd_datetime(vuln.datePublished) end,
-            "imported" => AdvisoryDB.now(),
+            "imported" => Dates.now(Dates.UTC),
             "url" => string(API_BASE, "/enisaid?id=", vuln.id),
             "html_url" => string("https://euvd.enisa.europa.eu/vulnerability/", vuln.id)
             )

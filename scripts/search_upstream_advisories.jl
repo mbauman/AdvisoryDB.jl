@@ -92,7 +92,7 @@ function main()
     n_modified = 0
     for (id, advisory) in advisories
         @info "JLSEC for $id"
-        dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(Dates.year(Dates.now()))))
+        dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(Dates.year(Dates.now(Dates.UTC)))))
         file = joinpath(dir, advisory.id * ".md")
         n_modified += isfile(file)
         open(file, "w") do io

@@ -18,8 +18,6 @@ is_populated(A::AbstractArray) = !isempty(A)
 is_populated(d::AbstractDict) = !isempty(d)
 is_populated(::Any) = true
 
-now() = replace(Dates.format(Dates.now(TimeZones.utc_tz), TimeZones.ISOZonedDateTimeFormat), "+00:00"=>"Z") # RFC3339
-
 struct VersionRange{V<:Union{VersionNumber, VersionString}}
     lb::V
     ub::V

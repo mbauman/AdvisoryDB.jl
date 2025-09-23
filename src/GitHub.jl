@@ -107,7 +107,7 @@ function fetch_all_pages(base_url::String, headers::Vector{Pair{String, String}}
 end
 
 function fetch_advisories(hours::Int = DEFAULT_HOURS)
-    published_since = now(UTC) - Hour(hours)
+    published_since = Dates.now(UTC) - Dates.Hour(hours)
     published_since_str = Dates.format(published_since, "yyyy-mm-ddTHH:MM:SSZ")
 
     base_url = "$GITHUB_API_BASE/advisories"
@@ -273,7 +273,7 @@ function advisory(vuln)
             "id" => vuln.ghsa_id,
             "modified" => vuln.updated_at,
             "published" => vuln.published_at,
-            "imported" => AdvisoryDB.now(),
+            "imported" => Dates.now(Dates.UTC),
             "url" => vuln.url,
             "html_url" => vuln.html_url
             )
