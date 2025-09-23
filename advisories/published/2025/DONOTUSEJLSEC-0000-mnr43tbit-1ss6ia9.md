@@ -18,7 +18,7 @@ url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-32002"
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-32002"
 ```
 
-# Git is a revision control system
+# Git submodules could write malicious code to the repository's hooks
 
 Git is a revision control system. Prior to versions 2.45.1, 2.44.1, 2.43.4, 2.42.2, 2.41.1, 2.40.2, and 2.39.4, repositories with submodules can be crafted in a way that exploits a bug in Git whereby it can be fooled into writing files not into the submodule's worktree but into a `.git/` directory. This allows writing a hook that will be executed while the clone operation is still running, giving the user no opportunity to inspect the code that is being executed. The problem has been patched in versions 2.45.1, 2.44.1, 2.43.4, 2.42.2, 2.41.1, 2.40.2, and 2.39.4. If symbolic link support is disabled in Git (e.g. via `git config --global core.symlinks false`), the described attack won't work. As always, it is best to avoid cloning repositories from untrusted sources.
 

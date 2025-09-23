@@ -18,7 +18,7 @@ url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-40330"
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-40330"
 ```
 
-# git*connect*git in connect.c in Git before 2.30.1 allows a repository path to contain a newline char...
+# `git_connect_git` in connect.c in Git before 2.30.1 allows a repository path to contain a newline character
 
-git*connect*git in connect.c in Git before 2.30.1 allows a repository path to contain a newline character, which may result in unexpected cross-protocol requests, as demonstrated by the git://localhost:1234/%0d%0a%0d%0aGET%20/%20HTTP/1.1 substring.
+`git_connect_git` in connect.c in Git before 2.30.1 allows a repository path to contain a newline character, which may result in unexpected cross-protocol requests, as demonstrated by the `git://localhost:1234/%0d%0a%0d%0aGET%20/%20HTTP/1.1` substring.
 
