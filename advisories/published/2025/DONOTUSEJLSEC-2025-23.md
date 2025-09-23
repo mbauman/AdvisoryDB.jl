@@ -1,7 +1,8 @@
 ```toml
 schema_version = "1.7.3"
-id = "DONOTUSEJLSEC-0000-mnr43tbmd-rdsliw"
-modified = 2025-09-23T02:52:12.949Z
+id = "DONOTUSEJLSEC-2025-23"
+modified = 2025-09-23T14:07:03.680Z
+published = 2025-09-23T14:07:03.680Z
 upstream = ["CVE-2025-48384"]
 references = ["https://github.com/git/git/security/advisories/GHSA-vwqx-4fm8-6qc9"]
 
@@ -10,12 +11,12 @@ pkg = "Git_jll"
 ranges = ["< 2.51.1+0"]
 
 [database_specific.source]
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2025-48384"
 id = "CVE-2025-48384"
+imported = "2025-09-23T02:52:12.949Z"
 modified = "2025-08-26T14:45:27.957Z"
 published = "2025-07-08T19:15:42.800Z"
-imported = "2025-09-23T02:52:12.949Z"
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-48384"
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2025-48384"
 ```
 
 # Git is a fast, scalable, distributed revision control system with an unusually rich command set that...

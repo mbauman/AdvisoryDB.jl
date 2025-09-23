@@ -1,7 +1,8 @@
 ```toml
 schema_version = "1.7.3"
-id = "DONOTUSEJLSEC-0000-mnr43tblm-wkyvo3"
-modified = 2025-09-23T02:52:12.922Z
+id = "DONOTUSEJLSEC-2025-12"
+modified = 2025-09-23T14:07:03.651Z
+published = 2025-09-23T14:07:03.651Z
 upstream = ["CVE-2022-24765"]
 references = ["http://seclists.org/fulldisclosure/2022/May/31", "http://www.openwall.com/lists/oss-security/2022/04/12/7", "https://git-scm.com/book/en/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash", "https://git-scm.com/docs/git#Documentation/git.txt-codeGITCEILINGDIRECTORIEScode", "https://github.com/git-for-windows/git/security/advisories/GHSA-vw2c-22j4-2fh2", "https://lists.debian.org/debian-lts-announce/2022/12/msg00025.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5PTN5NYEHYN2OQSHSAMCNICZNK2U4QH6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BENQYTDGUL6TF3UALY6GSIEXIHUIYNWM/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DDI325LOO2XBDDKLINOAQJEG6MHAURZE/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DIKWISWUDFT2FAITYIA6372BVLH3OOOC/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HVOLER2PIGMHPQMDGG4RDE2KZB74QLA2/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/SLP42KIZ6HACTVZMZLJLFJQ4W2XYT27M/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/TRZG5CDUQ27OWTPC5MQOR4UASNXHWEZS/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UDZRZAL7QULOB6V7MKT66MOMWJLBJPX4/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/YROCMBWYFKRSS64PO6FUNM6L7LKBUKVW/", "https://security.gentoo.org/glsa/202312-15", "https://support.apple.com/kb/HT213261", "http://seclists.org/fulldisclosure/2022/May/31", "http://www.openwall.com/lists/oss-security/2022/04/12/7", "https://git-scm.com/book/en/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash", "https://git-scm.com/docs/git#Documentation/git.txt-codeGITCEILINGDIRECTORIEScode", "https://github.com/git-for-windows/git/security/advisories/GHSA-vw2c-22j4-2fh2", "https://lists.debian.org/debian-lts-announce/2022/12/msg00025.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5PTN5NYEHYN2OQSHSAMCNICZNK2U4QH6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BENQYTDGUL6TF3UALY6GSIEXIHUIYNWM/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DDI325LOO2XBDDKLINOAQJEG6MHAURZE/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DIKWISWUDFT2FAITYIA6372BVLH3OOOC/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HVOLER2PIGMHPQMDGG4RDE2KZB74QLA2/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/SLP42KIZ6HACTVZMZLJLFJQ4W2XYT27M/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/TRZG5CDUQ27OWTPC5MQOR4UASNXHWEZS/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UDZRZAL7QULOB6V7MKT66MOMWJLBJPX4/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/YROCMBWYFKRSS64PO6FUNM6L7LKBUKVW/", "https://security.gentoo.org/glsa/202312-15", "https://support.apple.com/kb/HT213261"]
 
@@ -10,12 +11,12 @@ pkg = "Git_jll"
 ranges = ["< 2.36.1+0"]
 
 [database_specific.source]
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-24765"
 id = "CVE-2022-24765"
+imported = "2025-09-23T02:52:12.922Z"
 modified = "2024-11-21T06:51:02.873Z"
 published = "2022-04-12T18:15:09.390Z"
-imported = "2025-09-23T02:52:12.922Z"
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-24765"
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-24765"
 ```
 
 # Git for Windows is a fork of Git containing Windows-specific patches

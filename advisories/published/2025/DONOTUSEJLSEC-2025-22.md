@@ -1,7 +1,8 @@
 ```toml
 schema_version = "1.7.3"
-id = "DONOTUSEJLSEC-0000-mnr43tbmb-1ue3lrn"
-modified = 2025-09-23T02:52:12.947Z
+id = "DONOTUSEJLSEC-2025-22"
+modified = 2025-09-23T14:07:03.678Z
+published = 2025-09-23T14:07:03.678Z
 upstream = ["CVE-2023-29007"]
 references = ["https://github.com/git/git/blob/9ce9dea4e1c2419cca126d29fa7730baa078a11b/Documentation/RelNotes/2.30.9.txt", "https://github.com/git/git/commit/528290f8c61222433a8cf02fb7cfffa8438432b4", "https://github.com/git/git/security/advisories/GHSA-v48j-4xgg-4844", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PI7FZ4NNR5S5J5K6AMVQBH2JFP6NE4L7/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/RKOXOAZ42HLXHXTW6JZI4L5DAIYDTYCU/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/YFZWGQKB6MM5MNF2DLFTD7KS2KWPICKL/", "https://security.gentoo.org/glsa/202312-15", "https://github.com/git/git/blob/9ce9dea4e1c2419cca126d29fa7730baa078a11b/Documentation/RelNotes/2.30.9.txt", "https://github.com/git/git/commit/528290f8c61222433a8cf02fb7cfffa8438432b4", "https://github.com/git/git/security/advisories/GHSA-v48j-4xgg-4844", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PI7FZ4NNR5S5J5K6AMVQBH2JFP6NE4L7/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/RKOXOAZ42HLXHXTW6JZI4L5DAIYDTYCU/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/YFZWGQKB6MM5MNF2DLFTD7KS2KWPICKL/", "https://security.gentoo.org/glsa/202312-15"]
 
@@ -10,12 +11,12 @@ pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
 [database_specific.source]
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-29007"
 id = "CVE-2023-29007"
+imported = "2025-09-23T02:52:12.947Z"
 modified = "2024-11-21T07:56:22.897Z"
 published = "2023-04-25T21:15:10.403Z"
-imported = "2025-09-23T02:52:12.947Z"
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-29007"
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-29007"
 ```
 
 # Git is a revision control system
