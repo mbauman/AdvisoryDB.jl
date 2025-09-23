@@ -1,4 +1,4 @@
-name: Run AdvisoryDB unit tests
+name: Run unit tests
 on:
   push:
     branches:

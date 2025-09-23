@@ -6,7 +6,7 @@ using Dates
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists, Severity, Advisory, Reference, Credit, extract_summary
+using ..SecurityAdvisories: SecurityAdvisories, exists, Severity, Advisory, Reference, Credit, extract_summary
 
 const NVD_API_BASE = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 const NVD_CPE_API_BASE = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
@@ -242,7 +242,7 @@ function vendor_product_versions(vuln)
     return unique!(vpvs)
 end
 
-affected_julia_packages(vuln) = AdvisoryDB.affected_julia_packages(english_description(vuln), vendor_product_versions(vuln))
+affected_julia_packages(vuln) = SecurityAdvisories.affected_julia_packages(english_description(vuln), vendor_product_versions(vuln))
 
 function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []

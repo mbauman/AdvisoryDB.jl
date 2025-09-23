@@ -1,4 +1,4 @@
-using AdvisoryDB
+using SecurityAdvisories
 using Dates: Dates, DateTime
 using TimeZones: TimeZones, ZonedDateTime
 
@@ -11,8 +11,8 @@ function main()
     year = Dates.year(Dates.now(Dates.UTC))
     last_id = 0
     for (root, _, files) in walkdir(all_advisories_path), file in files
-        AdvisoryDB.is_jlsec_advisory_path(joinpath(root, file)) || continue
-        prefix = string(AdvisoryDB.PREFIX, "-", year, "-")
+        SecurityAdvisories.is_jlsec_advisory_path(joinpath(root, file)) || continue
+        prefix = string(SecurityAdvisories.PREFIX, "-", year, "-")
         startswith(file, prefix) || continue
         last_id = max(last_id, something(tryparse(Int, chopprefix(chopsuffix(file, ".md"), prefix)), 0))
     end
@@ -22,12 +22,12 @@ function main()
     n_updated = 0
     for (root, _, files) in walkdir(published_advisories_path), file in files
         path = joinpath(root, file)
-        AdvisoryDB.is_jlsec_advisory_path(path) || continue
-        advisory = AdvisoryDB.parsefile(path)
+        SecurityAdvisories.is_jlsec_advisory_path(path) || continue
+        advisory = SecurityAdvisories.parsefile(path)
         updated = false
-        if startswith(advisory.id, string(AdvisoryDB.PREFIX, "-0000-"))
+        if startswith(advisory.id, string(SecurityAdvisories.PREFIX, "-0000-"))
             last_id += 1
-            advisory.id = string(AdvisoryDB.PREFIX, "-", year, "-", last_id)
+            advisory.id = string(SecurityAdvisories.PREFIX, "-", year, "-", last_id)
             updated = true
             newpath = joinpath(root, string(advisory.id, ".md"))
             @info "moving $file to $(advisory.id).md"

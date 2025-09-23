@@ -1,4 +1,4 @@
-name = "AdvisoryDB"
+name = "SecurityAdvisories"
 uuid = "c2087171-788c-45e6-884c-aa841a74e7f5"
 authors = ["Matt Bauman <mbauman@juliahub.com>"]
 version = "0.1.0"

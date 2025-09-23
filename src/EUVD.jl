@@ -6,7 +6,7 @@ using Dates: Dates, DateTime, @dateformat_str
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists, Reference, Severity, Advisory, extract_summary
+using ..SecurityAdvisories: SecurityAdvisories, exists, Reference, Severity, Advisory, extract_summary
 
 # https://euvd.enisa.europa.eu/apidoc
 const API_BASE = "https://euvdservices.enisa.europa.eu/api"
@@ -131,7 +131,7 @@ function fetch_vulnerabilities()
     return fetch_all_pages(string(API_BASE, "/search"), headers, params)
 end
 
-affected_julia_packages(vuln) = AdvisoryDB.affected_julia_packages(vuln.description, vendor_product_versions(vuln))
+affected_julia_packages(vuln) = SecurityAdvisories.affected_julia_packages(vuln.description, vendor_product_versions(vuln))
 
 function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []

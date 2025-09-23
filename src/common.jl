@@ -394,7 +394,7 @@ function affected_julia_packages(description, vendorproductversions)
         # Use a better sorting if we can:
         for (_, vs) in source_mapping
             if all(!isnothing, tryparse.(VersionRange, keys(vs)))
-                sort!(vs, by=x->something(tryparse(AdvisoryDB.VersionRange, x), x))
+                sort!(vs, by=x->something(tryparse(SecurityAdvisories.VersionRange, x), x))
             else
                 sort!(vs)
             end

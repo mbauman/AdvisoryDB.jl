@@ -5,7 +5,7 @@ using JSON3
 using Dates
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..AdvisoryDB: AdvisoryDB, exists, VersionRange, VersionString, Credit, Reference, Severity, Advisory
+using ..SecurityAdvisories: SecurityAdvisories, exists, VersionRange, VersionString, Credit, Reference, Severity, Advisory
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
@@ -225,7 +225,7 @@ function vendor_product_versions(advisory)
     return vpv
 end
 
-affected_julia_packages(advisory) = AdvisoryDB.affected_julia_packages(get(advisory, :description, ""), vendor_product_versions(advisory))
+affected_julia_packages(advisory) = SecurityAdvisories.affected_julia_packages(get(advisory, :description, ""), vendor_product_versions(advisory))
 
 function advisory(vuln)
     affected = affected_julia_packages(vuln)

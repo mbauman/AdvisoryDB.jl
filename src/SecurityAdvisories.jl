@@ -1,4 +1,4 @@
-module AdvisoryDB
+module SecurityAdvisories
 
 include("VersionStrings.jl")
 using .VersionStrings: VersionString

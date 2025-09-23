@@ -43,10 +43,10 @@ There are hundreds of thousands of GitHub advisories and CVEs. The GitHub action
 
 There are four categories of advisory that we need to handle:
 
-* **Advisories first published here**. Package maintainers can open pull requests directly here to publish an advisory.  The OSV validation GitHub action will ensure the specification is being followed, and AdvisoryDB.jl maintainers can work with the authors within the pull request to ensure high-quality advisories. TODO: A GitHub action to auto-assign a Julia-specific identifier still needs to be written.
-* **Advisories published on a registered package's GitHub repository**. The GHSA GitHub action can manually pull in GHSAs that are **not** in the global GitHub Advisories Database by specifying a given GitHub org/repo. The GitHub action opens a pull request with the converted OSV directly written to the `packages/General/$package` directory. Given that they are authored by someone in the Julia community AdvisoryDB.jl maintainers can help ensure the original GHSA has the metadata correct and is of high-quality. TODO: We should have a scheduled action periodically walk its way through all registered GitHub packages and check for new advisories, and we need the above Julia-security identifier creation.
+* **Advisories first published here**. Package maintainers can open pull requests directly here to publish an advisory.  The OSV validation GitHub action will ensure the specification is being followed, and SecurityAdvisories.jl maintainers can work with the authors within the pull request to ensure high-quality advisories. TODO: A GitHub action to auto-assign a Julia-specific identifier still needs to be written.
+* **Advisories published on a registered package's GitHub repository**. The GHSA GitHub action can manually pull in GHSAs that are **not** in the global GitHub Advisories Database by specifying a given GitHub org/repo. The GitHub action opens a pull request with the converted OSV directly written to the `packages/General/$package` directory. Given that they are authored by someone in the Julia community SecurityAdvisories.jl maintainers can help ensure the original GHSA has the metadata correct and is of high-quality. TODO: We should have a scheduled action periodically walk its way through all registered GitHub packages and check for new advisories, and we need the above Julia-security identifier creation.
 * **Independently-issued advisories**:
-    * **discussing a Julia package**. Any of the advisory databases listed above might publish an advisory that mentions a Julia package. Thanks to the convention of discussing packages as `Package.jl`, this can be fairly accurately targeted, even within freetext descriptions. But these are not definitive; the AdvisoryDB maintainers need to be able to issue determinations on relevancy and confirm the applicable version ranges.
+    * **discussing a Julia package**. Any of the advisory databases listed above might publish an advisory that mentions a Julia package. Thanks to the convention of discussing packages as `Package.jl`, this can be fairly accurately targeted, even within freetext descriptions. But these are not definitive; the SecurityAdvisories maintainers need to be able to issue determinations on relevancy and confirm the applicable version ranges.
     * **pertaining to an upstream package that a Julia package bundles**. There are two challenges here; we first must know what all the Julia packages bundle (and precisely which upstream versions a given Julia package version included), and then even when we know that, we need to be able to conclusively identify _those_ upstream packages in the upstream databases.
 
     In these cases, the applicability, relevance, and exact version ranges of the corresponding Julia package is not as definitive. Therefore, these advisories are published in a two step process. The `upstream_advisories.toml` file contains a table of advisories by their identifier. Each advisory entry has a table of Julia packages. These packages may have values of either a string — describing why that advisory should not apply — or an array of version ranges to which it does apply.
@@ -70,7 +70,7 @@ So the GitHub actions here:
 We also need an up-to-date listing of upstream component metadata.
 
 * Another action parses Yggdrasil's build scripts to find the JLL sources.
-* And, finally, another action creates the listing of upstream components. 
+* And, finally, another action creates the listing of upstream components.
 
 ## References
 
