@@ -5,26 +5,85 @@
 
 ## Overview
 
-The goal of this repository is two-fold:
-* Be a store of security advisories for packages in the Julia ecosystem, publicizing them in [valid OSV schema](https://ossf.github.io/osv-schema/).
-    * To publish a security advisory here, GitHub-based packages should author and publish a GitHub Security Advisory on their repository. All security advisories on registered GitHub packages can be automatically imported by a GitHub action on this repository (currently manually triggered, but to be regularly run over all registered packages in the future). All other packages can open a pull request to this repository directly, adding the appropriately formatted OSV json.
-* Provide tooling to find, identify, and semi-automatically tag independently-issued advisories in the [NIST National Vulnerability Database](https://nvd.nist.gov), the [ENISA European Vulnerability Database](https://euvd.enisa.europa.eu), and the [GitHub Advisory Database](https://github.com/advisories).
+There are four key goals of this repository:
+* Be a database of security advisories that pertain to packages in the Julia ecosystem.
+* Provide the structure for authoring, reviewing, and maintaining these security advisories.
+* Export the security advisories in standard format for downstream consumers.
+* Provide tooling to search, identify, and import applicable security advisories (*both* upstream and aliasing) from multiple independent advisory databases.
 
-### The data store
+## The database
 
-Packages that are registered in the General registry and have vulnerabilities for released version(s) have those vulnerabilities stored in OSV-formatted JSON files named by their source id in the `packages/General/$package_name/` directory.
+Security advisories against packages in the [Julia General registry](https://github.com/JuliaRegistries/General) are published in the `advisories/published` directory of this repository, grouped by year, with filenames corresponding to their uniquely assigned identifier. All published advisories have an identifier of `JLSEC-YYYY-nnn`, and are stored as Markdown files with a TOML "front-matter" section with structured metadata.
 
-In the future, we will need to register and assign our own `CVE`-like prefex as we are not just tracking upstream vulnerabilities, but we are also an _originating_ issuer (even for GitHub Security Advisories right now, see below). Python uses `PYSEC`, rust uses `RUSTSEC`, etc.
+With a few important exceptions, these fields correspond _exactly_ (including the `schema_version`!) to their definitions in the [Open Source Vulnerability (OSV) format](https://ossf.github.io/osv-schema). The exceptions are:
+* The `summary` is the first Markdown section after the TOML frontmatter (if it's a header).
+* The `details` are the remainder of the file.
+* The `affected` packages are stored much more succinctly as just an array of tables with each package's name (`pkg`) and vulnerable `ranges`. The ranges themselves are vectors of strings, using [GitHub's vulnerable version range (VVR) syntax](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/best-practices-for-writing-repository-security-advisories#affected-versions).
+* Timestamps are stored directly as TOML datetimes, not as strings.
+* Credits support an optional shorthand `"author <author@example.com>"` string format for the common cases where no credit type is assigned and there is only one email-based contact method.
+* References support an optional shorthand string format to just contain the URL itself for the default `"WEB"` reference type.
+* Severities similarly support an optional shorthand string format that contains just CVSS vector itself.
 
-### The tooling
+<details><summary>In practice, a valid JLSEC advisory looks like this:</summary>
 
-The code in this repository aims to help create and manage those OSV-formatted JSON files, using several upstream data sources. The upstream data here is... challenging.  There are several key data sources:
+````md
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-2025-1"
+modified = 2025-09-23T02:23:16.095Z
+published = 2025-09-23T02:23:16.095Z
+aliases = ["GHSA-4g68-4pxg-mw93", "CVE-2025-52479"]
 
-#### Data Sources
+[[affected]]
+pkg = "HTTP"
+ranges = ["<= 1.10.16"]
+[[affected]]
+pkg = "URIs"
+ranges = ["< 1.6.0"]
+
+[database_specific.source]
+html_url = "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-4g68-4pxg-mw93"
+id = "GHSA-4g68-4pxg-mw93"
+imported = 2025-09-23T02:06:09.198Z
+modified = 2025-06-24T23:01:25Z
+published = 2025-06-24T23:01:25Z
+url = "https://api.github.com/repos/JuliaWeb/HTTP.jl/security-advisories/GHSA-4g68-4pxg-mw93"
+```
+
+# CR/LF injection in URIs.jl (also affects HTTP.jl)
+
+### Description
+
+The URIs.jl and HTTP.jl packages allowed the construction of URIs containing CR/LF characters. If user input was not otherwise escaped or protected, this can lead to a CRLF injection attack.
+````
+
+</details>
+
+## Authoring, reviewing, and maintaining JLSEC advisories
+
+New JLSEC advisories are published through a typical pull request process on this repository. Create a new advisory Markdown file  in the appropriate `advisories/published/$year` directory. A an advisory filename that begin with `JLSEC-0000` will automatically be re-named to the next available identifier immediately (and automatically) after merging, and its `id` will correspondingly be updated. All timestamps will similarly be updated after merging to reflect the time at which the advisory was available. CI will ensure the TOML is valid and can be exported to a valid OSV.
+
+Once published, an advisory **shall not** be deleted. If it is determined to have been published in error, instead its `withdrawn` date should be set.
+
+A particular advisory identifier may be reserved by creating an empty file in `advisories/reserved/` with the reserved ID.
+
+All fields (other than the `id` and `published` timestamp) may be edited through subsequent pull requests; the updated time will be appropriately set after merging.
+
+JLSEC advisories that correspond to advisories in other databases should take care to appropriately set their `alias`, `upstream`, and `related` fields.
+
+## Security advisory export
+
+All advisories in the `advisories/published` folder are automatically exported to JSON files grouped by year in [valid OSV schema](https://ossf.github.io/osv-schema/) on the [`generated/osv` branch](https://github.com/mbauman/SecurityAdvisories.jl/tree/generated/osv). Pull request CI does a dry-run of this conversion and validation before merging.
+
+## The tooling
+
+The code in this repository aims to help create and manage these advisories, using several upstream data sources. The upstream data here is... challenging.  There are several key data sources:
+
+### Data Sources
 
 * MITRE's CVEs: while these IDs are the unique and canonical identifiers for any major vulnerability, the reports themselves are largely unstructured text and may be of varying quality and may be disputed. They may or may not have structured information about the software **vendor** and **product**, and even versioning information may be missing or lacking. A good example is [CVE-2021-4048](https://www.cve.org/CVERecord?id=CVE-2021-4048).
-* NIST's NVD: The National Vulnerability Database takes CVEs and _enriches_ them with additional metadata — most importantly the CPE (Common Platform Enumeration) identifier. The above [CVE-2021-4048 in NVD](https://nvd.nist.gov/vuln/detail/CVE-2021-4048) adds structured identifiers for OpenBLAS (`cpe:2.3:a:openblas_project:openblas:…`) and Julia itself (`cpe:2.3:a:julialang:julia:…`) with very specific version information attached.
-* ENISA's EUVD: Tracks nearly all CVEs with their own independent identifier (and maybe also advisories from other ecosystems). They _also_ enrich advisories (I think mostly cribbing from CISA's vulnrichment), but do not use CPEs. Instead, they have unstructured vendor, product, and version fields. That version field is _sometimes_ obviously parse-able (e.g., `1.2.0 < 1.2.3`), but often is freetext (`Fixed in libfoo 1.2.3 (Affected 1.2.0,1.2.1,1.2.2)` or `1.0.2 through 1.0.2h` or `All 1.0.2` or ...). Their vendor and product are often populated more rapidly than NVD's CPE.
+* NIST's NVD: The National Vulnerability Database takes CVEs and _enriches_ them with additional metadata — most importantly the CPE (Common Platform Enumeration) identifier. The above [CVE-2021-4048 in NVD](https://nvd.nist.gov/vuln/detail/CVE-2021-4048) adds structured identifiers for OpenBLAS (`cpe:2.3:a:openblas_project:openblas:…`) and Julia itself (`cpe:2.3:a:julialang:julia:…`) with very specific version information attached. This enrichment step often lags behind the initial CVE publication by many months.
+* ENISA's EUVD: Tracks nearly all CVEs with their own independent identifier (and maybe also advisories from other ecosystems). They _also_ enrich advisories (I think mostly cribbing from CISA's vulnrichment), but do not use CPEs. Instead, they have unstructured vendor, product, and version fields. That version field is _sometimes_ obviously parse-able (e.g., `1.2.0 < 1.2.3`), but often is freetext (`Fixed in libfoo 1.2.3 (Affected 1.2.0,1.2.1,1.2.2)` or `1.0.2 through 1.0.2h` or `All 1.0.2` or ...). Their vendor and product are often populated more rapidly than NVD's CPE. Their summary and details are often qualitatively worse than NVD's.
 * GitHub's GHSA: GitHub Security Advisories have their own identifiers and may or may not have a CVE alias. Some GHSAs are "orginated" by GitHub, but most are imported from NVD. Note that there are three flavors of GHSAs:
     * There are the advisories available in their advisory database at `github.com/advisories`. *These are not all the GHSAs!*
         * Some GHSAs in this database are GitHub reviewed, tagged with a specific package, package metadata, and an ecosystem. Julia is not (yet!) a reviewed ecosystem. Cf. https://github.com/github/advisory-database/issues/1689.
@@ -36,45 +95,39 @@ The code in this repository aims to help create and manage those OSV-formatted J
     * Prior to JLLs, BinaryProvider was briefly used. They used `deps/build.jl` scripts in the higher-level Cairo.jl package to gather artifacts from the `_jll` repositories. Early in BinaryProvider's evolution, they did not list the JLLs in the Project/Manifest, but later they did. See, e.g., [Cairo@0.7.0](https://github.com/JuliaGraphics/Cairo.jl/tree/v0.7.0) and [Cairo@0.8.0](https://github.com/JuliaGraphics/Cairo.jl/tree/v0.8.0).
     * Prior to BinaryProvider, BinDeps was largely used. Here, the `deps/build.jl` went out to all the various package managers (WinRPM, Homebrew, apt-get, yum) to get the built binaries — or it did a wholesale from-source build. See [Cairo@0.6.0](https://github.com/JuliaGraphics/Cairo.jl/tree/v0.6.0), which provided _not just Cairo_, but all its dependencies, too.
     * It is also possible that `deps/build.jl` was (ab)used in other ways, too.
+    * It is also possible that `Artifacts.toml` downloads arbitrary executables.
 
-### Automation strategy
+## Automation strategy
 
 There are hundreds of thousands of GitHub advisories and CVEs. The GitHub actions on this repository aim to find new vulnerabilities that have been registered, affect Julia packages, and automatically open pull requests suggesting thier inclusion in this database. The biggest challenge is in accurately identifying the relevant package(s) and version(s).
 
 There are four categories of advisory that we need to handle:
 
-* **Advisories first published here**. Package maintainers can open pull requests directly here to publish an advisory.  The OSV validation GitHub action will ensure the specification is being followed, and SecurityAdvisories.jl maintainers can work with the authors within the pull request to ensure high-quality advisories. TODO: A GitHub action to auto-assign a Julia-specific identifier still needs to be written.
-* **Advisories published on a registered package's GitHub repository**. The GHSA GitHub action can manually pull in GHSAs that are **not** in the global GitHub Advisories Database by specifying a given GitHub org/repo. The GitHub action opens a pull request with the converted OSV directly written to the `packages/General/$package` directory. Given that they are authored by someone in the Julia community SecurityAdvisories.jl maintainers can help ensure the original GHSA has the metadata correct and is of high-quality. TODO: We should have a scheduled action periodically walk its way through all registered GitHub packages and check for new advisories, and we need the above Julia-security identifier creation.
+* **Advisories first published here**. Advisories can be published here directly via pull request. Subsequent advisories may be created in other databases; these should then later be added as `alias`es.
+* **Advisories published on a registered package's GitHub repository**. A GitHub-based package maintainer can create a new GHSA security advisory directly against the canonical (registered) package repository. The versions listed within this GHSA directly corresponds to the registered and vulnerable, and the JLSEC here **must** have this GHSA listed as one of its `alias`es.
 * **Independently-issued advisories**:
-    * **discussing a Julia package**. Any of the advisory databases listed above might publish an advisory that mentions a Julia package. Thanks to the convention of discussing packages as `Package.jl`, this can be fairly accurately targeted, even within freetext descriptions. But these are not definitive; the SecurityAdvisories maintainers need to be able to issue determinations on relevancy and confirm the applicable version ranges.
-    * **pertaining to an upstream package that a Julia package bundles**. There are two challenges here; we first must know what all the Julia packages bundle (and precisely which upstream versions a given Julia package version included), and then even when we know that, we need to be able to conclusively identify _those_ upstream packages in the upstream databases.
+    * **discussing or affecting a Julia package**. Any of the advisory databases listed above might publish an advisory with a Julia package mentioned or explicitly listed as `affected`. Thanks to the convention of discussing packages as `Package.jl`, this can be fairly accurately targeted, even within freetext descriptions. The versions here (if there are any) correspond directly against the registered versions of the Package, and the independently-issued advisory **must** be listed as an `alias`.
+    * **pertaining to an upstream package that a Julia package bundles**. There are two challenges here; we first must know what upstream projects the Julia packages bundle (and precisely which upstream versions a given Julia package version included), and then even when we know that, we need to be able to conclusively identify _those_ upstream projects in these other advisory databases. The versions listed in this independently-issued advisory are _arbitrary_ and dependent upon the upstream project itself, making range comparisons _fraught_. Because the newly issued JLSEC corresponding to this advisory contains _novel version information_ these advisories **must** be listed as `upstream`.
 
-    In these cases, the applicability, relevance, and exact version ranges of the corresponding Julia package is not as definitive. Therefore, these advisories are published in a two step process. The `upstream_advisories.toml` file contains a table of advisories by their identifier. Each advisory entry has a table of Julia packages. These packages may have values of either a string — describing why that advisory should not apply — or an array of version ranges to which it does apply.
-
-In addition to the periodic check, both NVD and GitHub support fetching all advisories for a specific CPE or repository, respectively. They also support fetching a single CVE or repository at a time.
+In addition to the periodic check, NVD, EUVD, and GitHub all support fetching all advisories for a specific CPE or repository, respectively. They also support fetching a single CVE or repository at a time.
 
 ### The automations
 
 So the GitHub actions here:
 
-* Validate the OSV schema of all jsons in the `packages/` directory (which includes ensuring that mentioned versions exist in the General registry).
-* Publish a new (or update an existing) JLSEC advisory by importing an upstream advisory and converting it to a first-party-authored OSV, using the `upstream_components.toml` table to define which advisories are applicable to Julia packages and at which versions. Entries can be manually added to this file, or another action can:
-* Search through a "haystack" of upstream advisories, finding potentially-relevant ones and suggest new entries to `upstream_components.toml`. Multiple flavors of haystacks can be searched:
-    * Manually, by single CVE, EUVD, or GHSA (or URL to a GHSA not in thr GitHub Advisories DB) identifier
-    * Manually, by a CPE-like `vendor:product` pair (searching both `a` part CPEs in the NVD and vendor/product pairs in the EUVD).
-    * TODO: Manually, over a date range of published (EUVD) or recently updated (NVD only) advisories. The EUVD API is severly limited here.
-    * TODO: Manually, by seaching a specific Github Repo for advisories
-    * TODO: Automatically, looking for recent updates
-    * TODO: Automatically, walking through all GitHub registered packages
-
-We also need an up-to-date listing of upstream component metadata.
-
-* Another action parses Yggdrasil's build scripts to find the JLL sources.
-* And, finally, another action creates the listing of upstream components.
+* Run some basic unit tests of the Julia `src` functionality
+* Automatically update ids, timestamps, export to OSV, and validate that OSV. This is run upon merges to main, and also dry-run on pull requests.
+* Search upstream advisory databases for potentially relevant advisories, opening pull requests to import them. Finding relevant advisories to JLL packages is done based upon its components (store in the `package_components.toml` file)
+* Automatically update the `package_components.toml` file by looking through the JLL's sources (in `jll_metadata.toml`) and finding download URLs and repositories that match an upstream project (manually populated in `upstream_project_info.toml`)
+* Automatically evaluates Yggdrasil's build scripts to update the `jll_metadata.toml` file.
 
 ## References
 
 * [OSV Schema](https://ossf.github.io/osv-schema/)
+* [OSV.dev discussions](https://github.com/google/osv.dev/discussions) and issues, in particular:
+    * [Best practice for retrospective advisory identifier assignment & dating #3977](https://github.com/google/osv.dev/discussions/3977)
+    * [OSV.dev downstream users have a clearly defined user journey to make corrections to OSV records served by OSV.dev with minimal overhead by all parties #2191](https://github.com/google/osv.dev/issues/2191)
+* [haskell/security-advisories](https://github.com/haskell/security-advisories)
 * [pypa/advisory-db](https://github.com/pypa/advisory-database)
 * [rustsec/advisory-db](https://github.com/rustsec/advisory-db)
 * [golang/vulndb](https://github.com/golang/vulndb)
