@@ -182,8 +182,8 @@ end
 
 function fetch_nvd_vulnerabilities(hours::Int = DEFAULT_HOURS)
     # Calculate time range
-    end_time = now(UTC)
-    start_time = end_time - Hour(hours)
+    end_time = Dates.now(UTC)
+    start_time = end_time - Dates.Hour(hours)
 
     # Format dates for NVD API (ISO 8601)
     start_date = Dates.format(start_time, "yyyy-mm-ddTHH:MM:SS.sss")*"Z"
@@ -298,9 +298,9 @@ function advisory(vuln)
         # credits -- not structured
         database_specific = Dict{String,Any}("source" => Dict(
             "id" => vuln.cve.id,
-            "modified" => vuln.cve.lastModified * "Z",
-            "published" => vuln.cve.published * "Z",
-            "imported" => AdvisoryDB.now(),
+            "modified" => Dates.DateTime(vuln.cve.lastModified),
+            "published" => Dates.DateTime(vuln.cve.published),
+            "imported" => Dates.now(Dates.UTC),
             "url" => string(NVD_API_BASE, "?cveId=", vuln.cve.id),
             "html_url" => string("https://nvd.nist.gov/vuln/detail/", vuln.cve.id)
             )
