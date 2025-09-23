@@ -69,9 +69,7 @@ function main()
     @info "updated $n_updated advisories"
     io = haskey(ENV, "GITHUB_OUTPUT") ? open(ENV["GITHUB_OUTPUT"], "w") : stdout
     println(io, "changes=", n_updated > 0)
-    if n_updated > 0
-        println(io, "title=[automated] assign id/timestamp $n_updated advisories")
-    end
+    println(io, "title=[automated] assign id/timestamp $n_updated advisories")
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
