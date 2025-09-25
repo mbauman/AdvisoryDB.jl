@@ -10,12 +10,12 @@ references = ["http://packetstormsecurity.com/files/163978/Git-LFS-Clone-Command
 pkg = "Git_jll"
 ranges = ["< 2.31.0+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-21300"
 id = "CVE-2021-21300"
-imported = "2025-09-23T02:52:12.921Z"
-modified = "2024-11-21T05:47:58.407Z"
-published = "2021-03-09T20:15:13.260Z"
+imported = 2025-09-23T02:52:12.921Z
+modified = 2024-11-21T05:47:58.407Z
+published = 2021-03-09T20:15:13.260Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-21300"
 ```
 

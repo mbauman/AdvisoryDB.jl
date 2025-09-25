@@ -10,12 +10,12 @@ references = ["https://github.com/git/git/commit/508386c6c5857b4faa2c3e491f422c9
 pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-23521"
 id = "CVE-2022-23521"
-imported = "2025-09-23T02:52:12.931Z"
-modified = "2024-11-21T06:48:44.380Z"
-published = "2023-01-17T23:15:15.580Z"
+imported = 2025-09-23T02:52:12.931Z
+modified = 2024-11-21T06:48:44.380Z
+published = 2023-01-17T23:15:15.580Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-23521"
 ```
 

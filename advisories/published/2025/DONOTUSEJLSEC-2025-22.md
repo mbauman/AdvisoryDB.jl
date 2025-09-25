@@ -10,12 +10,12 @@ references = ["https://github.com/git/git/blob/9ce9dea4e1c2419cca126d29fa7730baa
 pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-29007"
 id = "CVE-2023-29007"
-imported = "2025-09-23T02:52:12.947Z"
-modified = "2024-11-21T07:56:22.897Z"
-published = "2023-04-25T21:15:10.403Z"
+imported = 2025-09-23T02:52:12.947Z
+modified = 2024-11-21T07:56:22.897Z
+published = 2023-04-25T21:15:10.403Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-29007"
 ```
 

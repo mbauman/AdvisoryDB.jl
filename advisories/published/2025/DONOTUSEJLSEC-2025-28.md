@@ -10,7 +10,7 @@ references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-412672.pdf", 
 pkg = "OpenSSL_jll"
 ranges = ["< 1.1.1+2"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1552"
 id = "CVE-2019-1552"
 imported = 2025-09-23T21:56:30.605Z

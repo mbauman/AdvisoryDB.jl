@@ -10,21 +10,22 @@ references = ["https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a
 pkg = "OpenSSL_jll"
 ranges = [">= 3.0.8+0, < 3.0.14+0"]
 
-[database_specific.affected_source]
-html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-44212"
-id = "EUVD-2024-44212"
-imported = 2025-09-23T21:56:31.540Z
-modified = 2024-10-14T14:56:01.000Z
-published = 2024-05-16T15:21:20.000Z
-url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2024-44212"
-
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-4603"
 id = "CVE-2024-4603"
 imported = 2025-09-23T21:56:31.539Z
 modified = 2024-11-21T09:43:11.753Z
 published = 2024-05-16T16:15:10.643Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-4603"
+
+[[jlsec_sources]]
+html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-44212"
+id = "EUVD-2024-44212"
+imported = 2025-09-23T21:56:31.540Z
+modified = 2024-10-14T14:56:01.000Z
+published = 2024-05-16T15:21:20.000Z
+url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2024-44212"
+fields = ["affected"]
 ```
 
 # Issue summary: Checking excessively long DSA keys or parameters may be very

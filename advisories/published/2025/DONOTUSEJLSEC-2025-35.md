@@ -10,7 +10,7 @@ references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf", 
 pkg = "Openresty_jll"
 ranges = ["< 1.19.9+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-23839"
 id = "CVE-2021-23839"
 imported = 2025-09-23T21:56:31.019Z

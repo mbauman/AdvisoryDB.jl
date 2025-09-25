@@ -10,7 +10,7 @@ references = ["http://lists.opensuse.org/opensuse-security-announce/2019-09/msg0
 pkg = "OpenSSL_jll"
 ranges = ["< 1.1.1+2"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1547"
 id = "CVE-2019-1547"
 imported = 2025-09-23T21:56:30.607Z

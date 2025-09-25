@@ -10,7 +10,7 @@ references = ["https://lists.debian.org/debian-lts-announce/2020/09/msg00016.htm
 pkg = "Openresty_jll"
 ranges = ["< 1.19.9+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2020-1968"
 id = "CVE-2020-1968"
 imported = 2025-09-23T21:56:31.018Z

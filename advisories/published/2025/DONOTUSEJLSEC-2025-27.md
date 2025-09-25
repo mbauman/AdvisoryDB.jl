@@ -9,12 +9,12 @@ aliases = ["GHSA-w8jv-rg3h-fc68", "CVE-2025-52480"]
 pkg = "Registrator"
 ranges = ["<= 1.9.4"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://github.com/JuliaRegistries/Registrator.jl/security/advisories/GHSA-w8jv-rg3h-fc68"
 id = "GHSA-w8jv-rg3h-fc68"
 imported = 2025-09-23T21:55:52.259Z
-modified = "2025-06-24T23:01:40Z"
-published = "2025-06-24T23:01:40Z"
+modified = 2025-06-24T23:01:40Z
+published = 2025-06-24T23:01:40Z
 url = "https://api.github.com/repos/JuliaRegistries/Registrator.jl/security-advisories/GHSA-w8jv-rg3h-fc68"
 ```
 

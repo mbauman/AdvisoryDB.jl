@@ -13,7 +13,7 @@ ranges = ["< 1.1.1+2"]
 pkg = "Openresty_jll"
 ranges = ["< 1.19.9+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1551"
 id = "CVE-2019-1551"
 imported = 2025-09-23T21:56:30.609Z
