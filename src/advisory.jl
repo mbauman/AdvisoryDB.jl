@@ -127,6 +127,7 @@ end
 end
 Base.:(==)(a::AdvisorySource, b::AdvisorySource) = to_toml_frontmatter(a) == to_toml_frontmatter(b)
 Base.hash(a::AdvisorySource, h::UInt) = hash(to_toml_frontmatter(a), hash(0xa3a999db00b21f4d, h))
+Base.convert(::Type{AdvisorySource}, d::AbstractDict) = AdvisorySource(; Dict(Symbol(k)=>v for (k,v) in d)...)
 
 """
     Advisory(; osv_kwargs...)
@@ -288,11 +289,11 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
         Markdown.plain(m[2+!isnothing(summary):end])
     end
 
-    return try
+    # return try
         Advisory(; Dict(Symbol(k)=>v for (k,v) in frontmatter)..., summary, details)
-    catch _
-        nothing
-    end
+    # catch _
+    #     nothing
+    # end
 end
 
 """
