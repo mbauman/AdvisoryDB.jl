@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-34"
-modified = 2025-09-25T16:53:33.000Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.257Z
 upstream = ["CVE-2020-1968"]
 references = ["https://lists.debian.org/debian-lts-announce/2020/09/msg00016.html", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20200911-0004/", "https://usn.ubuntu.com/4504-1/", "https://www.openssl.org/news/secadv/20200909.txt", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujan2021.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://lists.debian.org/debian-lts-announce/2020/09/msg00016.html", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20200911-0004/", "https://usn.ubuntu.com/4504-1/", "https://www.openssl.org/news/secadv/20200909.txt", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujan2021.html", "https://www.oracle.com/security-alerts/cpuoct2021.html"]
