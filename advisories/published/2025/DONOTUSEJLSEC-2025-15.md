@@ -10,12 +10,12 @@ references = ["http://seclists.org/fulldisclosure/2022/Nov/1", "https://github.c
 pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-39260"
 id = "CVE-2022-39260"
-imported = "2025-09-23T02:52:12.928Z"
-modified = "2024-11-21T07:17:54.090Z"
-published = "2022-10-19T12:15:10.160Z"
+imported = 2025-09-23T02:52:12.928Z
+modified = 2024-11-21T07:17:54.090Z
+published = 2022-10-19T12:15:10.160Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-39260"
 ```
 

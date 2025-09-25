@@ -13,21 +13,22 @@ ranges = ["< 3.0.14+0"]
 pkg = "Openresty_jll"
 ranges = [">= 1.19.9+0, < 1.27.1+0"]
 
-[database_specific.affected_source]
-html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-44338"
-id = "EUVD-2024-44338"
-imported = 2025-09-23T21:56:31.488Z
-modified = 2024-11-13T14:49:05.000Z
-published = 2024-11-13T10:20:50.000Z
-url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2024-44338"
-
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-4741"
 id = "CVE-2024-4741"
 imported = 2025-09-23T21:56:31.486Z
 modified = 2024-11-13T17:01:16.850Z
 published = 2024-11-13T11:15:04.480Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-4741"
+
+[[jlsec_sources]]
+html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-44338"
+id = "EUVD-2024-44338"
+imported = 2025-09-23T21:56:31.488Z
+modified = 2024-11-13T14:49:05.000Z
+published = 2024-11-13T10:20:50.000Z
+url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2024-44338"
+fields = ["affected"]
 ```
 
 # Issue summary: Calling the OpenSSL API function SSL*free*buffers may cause memory to be accessed tha...

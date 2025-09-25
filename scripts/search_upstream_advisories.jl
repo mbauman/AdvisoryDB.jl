@@ -77,7 +77,10 @@ function main()
                 euvd_adv = EUVD.advisory(euvd)
                 if !isempty(euvd_adv.affected) && all(SecurityAdvisories.has_upper_bound, euvd_adv.affected)
                     adv.affected = euvd_adv.affected
-                    adv.database_specific["affected_source"] = euvd_adv.database_specific["source"]
+                    affected_src = euvd_adv.jlsec_sources[1]
+                    push!(affected_src.fields, "affected")
+                    push!(adv.jlsec_sources, affected_src)
+                    # TODO: ensure that the EUVD id is also listed as an alias or upstream. Gotta know which one, though
                 end
             end
             if SecurityAdvisories.is_vulnerable(adv)
@@ -122,7 +125,9 @@ function main()
     !isempty(failed_advisories) && println(io, "### $(length(failed_advisories)) advisories failed to parse the source version range\n\nThese advisories seem to apply to a Julia package but had trouble identifying exactly how and at which versions.")
     for (id, adv) in sort(failed_advisories)
         pkgs = SecurityAdvisories.vulnerable_packages(adv)
-        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
+        html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
+        println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
             println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Failures include:")
             for (source, version_map) in entry.source_mapping
@@ -140,7 +145,9 @@ function main()
     !isempty(star_advisories) && println(io, "### $(length(star_advisories)) advisories apply to all registered versions of a package\n\nThese advisories had no obvious failures but computed a range without bounds.")
     for (id, adv) in sort(star_advisories)
         pkgs = SecurityAdvisories.vulnerable_packages(adv)
-        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
+        html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
+        println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
             println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Unbounded mappings are:")
             for (source, version_map) in entry.source_mapping
@@ -158,7 +165,9 @@ function main()
     !isempty(unbounded_advisories) && println(io, "### $(length(unbounded_advisories)) advisories apply to the latest version of a package and do not have a patch")
     for (id, adv) in sort(unbounded_advisories)
         pkgs = SecurityAdvisories.vulnerable_packages(adv)
-        println(io, "* $id for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
+        affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
+        html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
+        println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
             println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Unbounded mappings are:")
             for (source, version_map) in entry.source_mapping
@@ -175,7 +184,8 @@ function main()
     !isempty(advisories) && println(io, "### $(length(advisories)) advisories found concrete vulnerable ranges\n\n")
     for (id, adv) in sort(advisories)
         pkgs = SecurityAdvisories.vulnerable_packages(adv)
-        html_url = get(adv.database_specific, "affected_source", adv.database_specific["source"])["html_url"]
+        affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
+        html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
         println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
             println(io, "    * **$(entry.pkg)** at `[$(join('"'.*string.(entry.ranges).*'"', ", "))]`, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`")

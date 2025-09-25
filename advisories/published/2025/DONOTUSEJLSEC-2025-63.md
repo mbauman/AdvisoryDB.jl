@@ -10,7 +10,7 @@ references = ["https://github.com/openssl/openssl/commit/05f360d9e849a1b277db628
 pkg = "OpenSSL_jll"
 ranges = [">= 3.0.8+0, < 3.0.15+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-6119"
 id = "CVE-2024-6119"
 imported = 2025-09-23T21:56:31.121Z

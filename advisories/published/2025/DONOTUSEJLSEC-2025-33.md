@@ -10,7 +10,7 @@ references = ["http://lists.opensuse.org/opensuse-security-announce/2020-07/msg0
 pkg = "OpenSSL_jll"
 ranges = [">= 1.1.1+2, < 1.1.10+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2020-1967"
 id = "CVE-2020-1967"
 imported = 2025-09-23T21:56:31.017Z

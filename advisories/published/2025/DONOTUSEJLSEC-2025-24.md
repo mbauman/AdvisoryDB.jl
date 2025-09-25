@@ -10,12 +10,12 @@ references = ["https://github.com/libgit2/libgit2/releases/tag/v1.6.5", "https:/
 pkg = "LibGit2_jll"
 ranges = ["< 1.7.2+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-24577"
 id = "CVE-2024-24577"
-imported = "2025-09-23T02:52:13.175Z"
-modified = "2024-11-21T08:59:27.603Z"
-published = "2024-02-06T22:16:15.270Z"
+imported = 2025-09-23T02:52:13.175Z
+modified = 2024-11-21T08:59:27.603Z
+published = 2024-02-06T22:16:15.270Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-24577"
 ```
 

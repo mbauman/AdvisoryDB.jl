@@ -10,12 +10,12 @@ references = ["http://lists.opensuse.org/opensuse-security-announce/2020-04/msg0
 pkg = "Git_jll"
 ranges = ["< 2.26.1+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2020-5260"
 id = "CVE-2020-5260"
-imported = "2025-09-23T02:52:12.915Z"
-modified = "2024-11-21T05:33:47.230Z"
-published = "2020-04-14T23:15:12.607Z"
+imported = 2025-09-23T02:52:12.915Z
+modified = 2024-11-21T05:33:47.230Z
+published = 2020-04-14T23:15:12.607Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2020-5260"
 ```
 

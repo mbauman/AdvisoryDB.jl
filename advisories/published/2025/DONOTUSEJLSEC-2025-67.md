@@ -10,21 +10,22 @@ references = ["https://github.com/openssl/openssl/commit/0b0f7abfb37350794a4b896
 pkg = "OpenSSL_jll"
 ranges = [">= 3.0.8+0, < 3.0.13+0"]
 
-[database_specific.affected_source]
-html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2023-58483"
-id = "EUVD-2023-58483"
-imported = 2025-09-23T21:56:31.515Z
-modified = 2024-11-01T14:28:51.000Z
-published = 2024-04-25T06:27:26.000Z
-url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2023-58483"
-
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-6237"
 id = "CVE-2023-6237"
 imported = 2025-09-23T21:56:31.490Z
 modified = 2024-11-21T08:43:25.997Z
 published = 2024-04-25T07:15:45.270Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-6237"
+
+[[jlsec_sources]]
+html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2023-58483"
+id = "EUVD-2023-58483"
+imported = 2025-09-23T21:56:31.515Z
+modified = 2024-11-01T14:28:51.000Z
+published = 2024-04-25T06:27:26.000Z
+url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2023-58483"
+fields = ["affected"]
 ```
 
 # Issue summary: Checking excessively long invalid RSA public keys may take

@@ -10,7 +10,7 @@ references = ["http://www.openwall.com/lists/oss-security/2021/08/26/2", "https:
 pkg = "OpenSSL_jll"
 ranges = ["< 1.1.13+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-3711"
 id = "CVE-2021-3711"
 imported = 2025-09-23T21:56:31.024Z

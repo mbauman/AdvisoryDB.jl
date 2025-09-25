@@ -10,12 +10,12 @@ references = ["http://lists.opensuse.org/opensuse-security-announce/2020-01/msg0
 pkg = "Git_jll"
 ranges = ["< 2.26.1+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1348"
 id = "CVE-2019-1348"
-imported = "2025-09-23T02:52:12.909Z"
-modified = "2024-11-21T04:36:31.990Z"
-published = "2020-01-24T22:15:19.190Z"
+imported = 2025-09-23T02:52:12.909Z
+modified = 2024-11-21T04:36:31.990Z
+published = 2020-01-24T22:15:19.190Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2019-1348"
 ```
 

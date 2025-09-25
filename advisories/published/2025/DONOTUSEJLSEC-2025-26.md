@@ -10,12 +10,12 @@ references = ["http://www.openwall.com/lists/oss-security/2023/11/06/5", "https:
 pkg = "LibGit2_jll"
 ranges = ["< 1.6.1+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-22742"
 id = "CVE-2023-22742"
-imported = "2025-09-23T02:52:13.176Z"
-modified = "2024-11-21T07:45:20.250Z"
-published = "2023-01-20T23:15:10.307Z"
+imported = 2025-09-23T02:52:13.176Z
+modified = 2024-11-21T07:45:20.250Z
+published = 2023-01-20T23:15:10.307Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-22742"
 ```
 

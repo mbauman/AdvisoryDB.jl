@@ -16,7 +16,7 @@ ranges = ["< 0.3.20+0"]
 pkg = "OpenBLASHighCoreCount_jll"
 ranges = ["*"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-4048"
 id = "CVE-2021-4048"
 imported = 2025-09-24T14:36:01.885Z

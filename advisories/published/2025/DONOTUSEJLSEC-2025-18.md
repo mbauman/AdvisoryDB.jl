@@ -10,12 +10,12 @@ references = ["https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes#_ex
 pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-41903"
 id = "CVE-2022-41903"
-imported = "2025-09-23T02:52:12.933Z"
-modified = "2024-11-21T07:24:01.993Z"
-published = "2023-01-17T23:15:15.690Z"
+imported = 2025-09-23T02:52:12.933Z
+modified = 2024-11-21T07:24:01.993Z
+published = 2023-01-17T23:15:15.690Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-41903"
 ```
 

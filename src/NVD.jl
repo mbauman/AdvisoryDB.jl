@@ -6,7 +6,7 @@ using Dates
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..SecurityAdvisories: SecurityAdvisories, exists, Severity, Advisory, Reference, Credit, extract_summary
+using ..SecurityAdvisories: SecurityAdvisories, exists, Severity, Advisory, Reference, Credit, AdvisorySource, extract_summary
 
 const NVD_API_BASE = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 const NVD_CPE_API_BASE = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
@@ -296,16 +296,15 @@ function advisory(vuln)
         affected = affected,
         references = [Reference(url=ref.url) for ref in get(vuln.cve, :references, []) if haskey(ref, :url)],
         # credits -- not structured
-        database_specific = Dict{String,Any}("source" => Dict(
-            "id" => vuln.cve.id,
-            "modified" => Dates.DateTime(vuln.cve.lastModified),
-            "published" => Dates.DateTime(vuln.cve.published),
-            "imported" => Dates.now(Dates.UTC),
-            "url" => string(NVD_API_BASE, "?cveId=", vuln.cve.id),
-            "html_url" => string("https://nvd.nist.gov/vuln/detail/", vuln.cve.id)
-            )
+        jlsec_sources = [AdvisorySource(;
+            id = vuln.cve.id,
+            modified = Dates.DateTime(vuln.cve.lastModified),
+            published = Dates.DateTime(vuln.cve.published),
+            imported = Dates.now(Dates.UTC),
+            url = string(NVD_API_BASE, "?cveId=", vuln.cve.id),
+            html_url = string("https://nvd.nist.gov/vuln/detail/", vuln.cve.id)
+            )]
         )
-    )
 end
 
 end

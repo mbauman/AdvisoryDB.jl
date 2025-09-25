@@ -10,12 +10,12 @@ references = ["https://github.com/git/git/security/advisories/GHSA-vwqx-4fm8-6qc
 pkg = "Git_jll"
 ranges = ["< 2.51.1+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2025-48384"
 id = "CVE-2025-48384"
-imported = "2025-09-23T02:52:12.949Z"
-modified = "2025-08-26T14:45:27.957Z"
-published = "2025-07-08T19:15:42.800Z"
+imported = 2025-09-23T02:52:12.949Z
+modified = 2025-08-26T14:45:27.957Z
+published = 2025-07-08T19:15:42.800Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-48384"
 ```
 

@@ -10,12 +10,12 @@ references = ["http://seclists.org/fulldisclosure/2022/Nov/1", "http://www.openw
 pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-39253"
 id = "CVE-2022-39253"
-imported = "2025-09-23T02:52:12.926Z"
-modified = "2024-11-21T07:17:53.040Z"
-published = "2022-10-19T11:15:11.227Z"
+imported = 2025-09-23T02:52:12.926Z
+modified = 2024-11-21T07:17:53.040Z
+published = 2022-10-19T11:15:11.227Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-39253"
 ```
 
