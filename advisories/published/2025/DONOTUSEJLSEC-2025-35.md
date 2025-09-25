@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-35"
-modified = 2025-09-23T22:07:20.259Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T22:07:20.259Z
 upstream = ["CVE-2021-23839"]
 references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=30919ab80a478f2d81f2e9acdcca3fa4740cd547", "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44846", "https://security.netapp.com/advisory/ntap-20210219-0009/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.openssl.org/news/secadv/20210216.txt", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=30919ab80a478f2d81f2e9acdcca3fa4740cd547", "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44846", "https://security.netapp.com/advisory/ntap-20210219-0009/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.openssl.org/news/secadv/20210216.txt", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html"]
@@ -11,12 +11,12 @@ pkg = "Openresty_jll"
 ranges = ["< 1.19.9+0"]
 
 [[jlsec_sources]]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-23839"
 id = "CVE-2021-23839"
 imported = 2025-09-23T21:56:31.019Z
 modified = 2024-11-21T05:51:55.003Z
 published = 2021-02-16T17:15:13.190Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-23839"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-23839"
 ```
 
 # OpenSSL 1.0.2 supports SSLv2

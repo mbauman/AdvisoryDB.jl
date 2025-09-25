@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-65"
-modified = 2025-09-23T22:07:20.582Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T22:07:20.582Z
 aliases = ["CVE-2024-5535"]
 references = ["https://github.com/openssl/openssl/commit/4ada436a1946cbb24db5ab4ca082b69c1bc10f37", "https://github.com/openssl/openssl/commit/99fb785a5f85315b95288921a321a935ea29a51e", "https://github.com/openssl/openssl/commit/cf6f91f6121f4db167405db2f0de410a456f260c", "https://github.com/openssl/openssl/commit/e86ac436f0bd54d4517745483e2315650fae7b2c", "https://github.openssl.org/openssl/extended-releases/commit/9947251413065a05189a63c9b7a6c1d4e224c21c", "https://github.openssl.org/openssl/extended-releases/commit/b78ec0824da857223486660177d3b1f255c65d87", "https://www.openssl.org/news/secadv/20240627.txt", "http://www.openwall.com/lists/oss-security/2024/06/27/1", "http://www.openwall.com/lists/oss-security/2024/06/28/4", "http://www.openwall.com/lists/oss-security/2024/08/15/1", "https://github.com/openssl/openssl/commit/4ada436a1946cbb24db5ab4ca082b69c1bc10f37", "https://github.com/openssl/openssl/commit/99fb785a5f85315b95288921a321a935ea29a51e", "https://github.com/openssl/openssl/commit/cf6f91f6121f4db167405db2f0de410a456f260c", "https://github.com/openssl/openssl/commit/e86ac436f0bd54d4517745483e2315650fae7b2c", "https://github.openssl.org/openssl/extended-releases/commit/9947251413065a05189a63c9b7a6c1d4e224c21c", "https://github.openssl.org/openssl/extended-releases/commit/b78ec0824da857223486660177d3b1f255c65d87", "https://security.netapp.com/advisory/ntap-20240712-0005/", "https://www.openssl.org/news/secadv/20240627.txt"]
@@ -14,20 +14,19 @@ pkg = "Openresty_jll"
 ranges = ["< 1.27.1+0"]
 
 [[jlsec_sources]]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-5535"
 id = "CVE-2024-5535"
 imported = 2025-09-23T21:56:31.484Z
 modified = 2025-09-01T09:15:34.120Z
 published = 2024-06-27T11:15:24.447Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-5535"
-
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-5535"
 [[jlsec_sources]]
-html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-46737"
 id = "EUVD-2024-46737"
 imported = 2025-09-23T21:56:31.486Z
 modified = 2025-02-13T17:54:20.000Z
 published = 2024-06-27T10:30:53.000Z
 url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2024-46737"
+html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-46737"
 fields = ["affected"]
 ```
 

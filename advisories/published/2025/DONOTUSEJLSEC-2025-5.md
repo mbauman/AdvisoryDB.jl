@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-5"
-modified = 2025-09-23T14:07:03.370Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T14:07:03.370Z
 upstream = ["CVE-2019-1348"]
 references = ["http://lists.opensuse.org/opensuse-security-announce/2020-01/msg00056.html", "http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00003.html", "https://access.redhat.com/errata/RHSA-2020:0228", "https://lore.kernel.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/T/#u", "https://public-inbox.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/", "https://security.gentoo.org/glsa/202003-30", "https://security.gentoo.org/glsa/202003-42", "https://support.apple.com/kb/HT210729", "http://lists.opensuse.org/opensuse-security-announce/2020-01/msg00056.html", "http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00003.html", "https://access.redhat.com/errata/RHSA-2020:0228", "https://lore.kernel.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/T/#u", "https://public-inbox.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/", "https://security.gentoo.org/glsa/202003-30", "https://security.gentoo.org/glsa/202003-42", "https://support.apple.com/kb/HT210729"]
@@ -11,12 +11,12 @@ pkg = "Git_jll"
 ranges = ["< 2.26.1+0"]
 
 [[jlsec_sources]]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1348"
 id = "CVE-2019-1348"
 imported = 2025-09-23T02:52:12.909Z
 modified = 2024-11-21T04:36:31.990Z
 published = 2020-01-24T22:15:19.190Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2019-1348"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1348"
 ```
 
 # Git fast-import could allow overwriting arbitrary paths

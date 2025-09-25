@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-64"
-modified = 2025-09-23T22:07:20.579Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T22:07:20.579Z
 aliases = ["CVE-2025-4575"]
 references = ["https://github.com/openssl/openssl/commit/e96d22446e633d117e6c9904cb15b4693e956eaa", "https://openssl-library.org/news/secadv/20250522.txt", "http://www.openwall.com/lists/oss-security/2025/05/22/1"]
@@ -11,20 +11,19 @@ pkg = "OpenSSL_jll"
 ranges = [">= 3.5.0+0, < 3.5.1+0"]
 
 [[jlsec_sources]]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2025-4575"
 id = "CVE-2025-4575"
 imported = 2025-09-23T21:56:31.344Z
 modified = 2025-05-23T15:55:02.040Z
 published = 2025-05-22T14:16:07.630Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-4575"
-
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2025-4575"
 [[jlsec_sources]]
-html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-16129"
 id = "EUVD-2025-16129"
 imported = 2025-09-23T21:56:31.345Z
 modified = 2025-05-22T18:31:15.000Z
 published = 2025-05-22T15:34:50.000Z
 url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2025-16129"
+html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-16129"
 fields = ["affected"]
 ```
 

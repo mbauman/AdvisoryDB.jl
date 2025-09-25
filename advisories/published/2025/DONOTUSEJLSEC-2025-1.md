@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-1"
-modified = 2025-09-23T02:23:16.095Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T02:23:16.095Z
 aliases = ["GHSA-4g68-4pxg-mw93", "CVE-2025-52479"]
 
@@ -13,12 +13,12 @@ pkg = "URIs"
 ranges = ["< 1.6.0"]
 
 [[jlsec_sources]]
-html_url = "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-4g68-4pxg-mw93"
 id = "GHSA-4g68-4pxg-mw93"
 imported = 2025-09-23T02:06:09.198Z
-modified = 2025-06-24T23:01:25Z
-published = 2025-06-24T23:01:25Z
+modified = 2025-06-24T23:01:25.000Z
+published = 2025-06-24T23:01:25.000Z
 url = "https://api.github.com/repos/JuliaWeb/HTTP.jl/security-advisories/GHSA-4g68-4pxg-mw93"
+html_url = "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-4g68-4pxg-mw93"
 ```
 
 # CR/LF injection in URIs.jl (also affects HTTP.jl)

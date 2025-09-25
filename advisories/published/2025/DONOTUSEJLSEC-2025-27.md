@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-27"
-modified = 2025-09-23T21:55:52.444Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T22:02:34.047Z
 aliases = ["GHSA-w8jv-rg3h-fc68", "CVE-2025-52480"]
 
@@ -10,12 +10,12 @@ pkg = "Registrator"
 ranges = ["<= 1.9.4"]
 
 [[jlsec_sources]]
-html_url = "https://github.com/JuliaRegistries/Registrator.jl/security/advisories/GHSA-w8jv-rg3h-fc68"
 id = "GHSA-w8jv-rg3h-fc68"
 imported = 2025-09-23T21:55:52.259Z
-modified = 2025-06-24T23:01:40Z
-published = 2025-06-24T23:01:40Z
+modified = 2025-06-24T23:01:40.000Z
+published = 2025-06-24T23:01:40.000Z
 url = "https://api.github.com/repos/JuliaRegistries/Registrator.jl/security-advisories/GHSA-w8jv-rg3h-fc68"
+html_url = "https://github.com/JuliaRegistries/Registrator.jl/security/advisories/GHSA-w8jv-rg3h-fc68"
 ```
 
 # Argument injection in `gettreesha()` function in Registrator.jl

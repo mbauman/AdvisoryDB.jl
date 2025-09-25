@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-28"
-modified = 2025-09-23T22:07:17.456Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T22:07:17.456Z
 upstream = ["CVE-2019-1552"]
 references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-412672.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=54aa9d51b09d67e90db443f682cface795f5af9e", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=b15a19c148384e73338aa7c5b12652138e35ed28", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=d333ebaf9c77332754a9d5e111e2f53e1de54fdd", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e32bc855a81a2d48d215c506bdeb4f598045f7e9", "https://kc.mcafee.com/corporate/index?page=content&id=SB10365", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/", "https://security.netapp.com/advisory/ntap-20190823-0006/", "https://support.f5.com/csp/article/K94041354", "https://support.f5.com/csp/article/K94041354?utm_source=f5support&amp%3Butm_medium=RSS", "https://www.kb.cert.org/vuls/id/429301", "https://www.openssl.org/news/secadv/20190730.txt", "https://www.oracle.com/security-alerts/cpuapr2020.html", "https://www.oracle.com/security-alerts/cpujan2020.html", "https://www.oracle.com/security-alerts/cpujul2020.html", "https://www.oracle.com/security-alerts/cpuoct2020.html", "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html", "https://www.tenable.com/security/tns-2019-08", "https://www.tenable.com/security/tns-2019-09", "https://cert-portal.siemens.com/productcert/pdf/ssa-412672.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=54aa9d51b09d67e90db443f682cface795f5af9e", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=b15a19c148384e73338aa7c5b12652138e35ed28", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=d333ebaf9c77332754a9d5e111e2f53e1de54fdd", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e32bc855a81a2d48d215c506bdeb4f598045f7e9", "https://kc.mcafee.com/corporate/index?page=content&id=SB10365", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/EWC42UXL5GHTU5G77VKBF6JYUUNGSHOM/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y3IVFGSERAZLNJCK35TEM2R4726XIH3Z/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ZBEV5QGDRFUZDMNECFXUSN5FMYOZDE4V/", "https://security.netapp.com/advisory/ntap-20190823-0006/", "https://support.f5.com/csp/article/K94041354", "https://support.f5.com/csp/article/K94041354?utm_source=f5support&amp%3Butm_medium=RSS", "https://www.kb.cert.org/vuls/id/429301", "https://www.openssl.org/news/secadv/20190730.txt", "https://www.oracle.com/security-alerts/cpuapr2020.html", "https://www.oracle.com/security-alerts/cpujan2020.html", "https://www.oracle.com/security-alerts/cpujul2020.html", "https://www.oracle.com/security-alerts/cpuoct2020.html", "https://www.oracle.com/technetwork/security-advisory/cpuoct2019-5072832.html", "https://www.tenable.com/security/tns-2019-08", "https://www.tenable.com/security/tns-2019-09"]
@@ -11,12 +11,12 @@ pkg = "OpenSSL_jll"
 ranges = ["< 1.1.1+2"]
 
 [[jlsec_sources]]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1552"
 id = "CVE-2019-1552"
 imported = 2025-09-23T21:56:30.605Z
 modified = 2024-11-21T04:36:48.717Z
 published = 2019-07-30T17:15:12.780Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2019-1552"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-1552"
 ```
 
 # OpenSSL has internal defaults for a directory tree where it can find a configuration file as well as...

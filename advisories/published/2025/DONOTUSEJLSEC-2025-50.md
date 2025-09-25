@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-50"
-modified = 2025-09-23T22:07:20.298Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T22:07:20.298Z
 upstream = ["CVE-2023-0286"]
 references = ["https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.6.2-relnotes.txt", "https://ftp.openbsd.org/pub/OpenBSD/patches/7.2/common/018_x509.patch.sig", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2c6c9d439b484e1ba9830d8454a34fa4f80fdfe9", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2f7530077e0ef79d98718138716bc51ca0cad658", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fd2af07dc083a350c959147097003a14a5e8ac4d", "https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt", "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.6.2-relnotes.txt", "https://ftp.openbsd.org/pub/OpenBSD/patches/7.2/common/018_x509.patch.sig", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2c6c9d439b484e1ba9830d8454a34fa4f80fdfe9", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2f7530077e0ef79d98718138716bc51ca0cad658", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=fd2af07dc083a350c959147097003a14a5e8ac4d", "https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt"]
@@ -14,12 +14,12 @@ pkg = "Openresty_jll"
 ranges = ["< 1.27.1+0"]
 
 [[jlsec_sources]]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-0286"
 id = "CVE-2023-0286"
 imported = 2025-09-23T21:56:31.092Z
 modified = 2025-03-20T21:15:16.550Z
 published = 2023-02-08T20:15:24.267Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-0286"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-0286"
 ```
 
 # There is a type confusion vulnerability relating to X.400 address processing inside an X.509 General...

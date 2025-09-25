@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-24"
-modified = 2025-09-23T14:07:03.683Z
+modified = 2025-09-25T16:53:33.000Z
 published = 2025-09-23T14:07:03.683Z
 upstream = ["CVE-2024-24577"]
 references = ["https://github.com/libgit2/libgit2/releases/tag/v1.6.5", "https://github.com/libgit2/libgit2/releases/tag/v1.7.2", "https://github.com/libgit2/libgit2/security/advisories/GHSA-j2v7-4f6v-gpg8", "https://lists.debian.org/debian-lts-announce/2024/02/msg00012.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/4M3P7WIEPXNRLBINQRJFXUSTNKBCHYC7/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/7CNDW3PF6NHO7OXNM5GN6WSSGAMA7MZE/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S635BGHHZUMRPI7QOXOJ45QHDD5FFZ3S/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/Z6MXOX7I43OWNN7R6M54XLG6U5RXY244/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZGNHOEE2RBLH7KCJUPUNYG4CDTW4HTBT/", "https://github.com/libgit2/libgit2/releases/tag/v1.6.5", "https://github.com/libgit2/libgit2/releases/tag/v1.7.2", "https://github.com/libgit2/libgit2/security/advisories/GHSA-j2v7-4f6v-gpg8", "https://lists.debian.org/debian-lts-announce/2024/02/msg00012.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/4M3P7WIEPXNRLBINQRJFXUSTNKBCHYC7/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/7CNDW3PF6NHO7OXNM5GN6WSSGAMA7MZE/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S635BGHHZUMRPI7QOXOJ45QHDD5FFZ3S/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/Z6MXOX7I43OWNN7R6M54XLG6U5RXY244/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZGNHOEE2RBLH7KCJUPUNYG4CDTW4HTBT/"]
@@ -11,12 +11,12 @@ pkg = "LibGit2_jll"
 ranges = ["< 1.7.2+0"]
 
 [[jlsec_sources]]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-24577"
 id = "CVE-2024-24577"
 imported = 2025-09-23T02:52:13.175Z
 modified = 2024-11-21T08:59:27.603Z
 published = 2024-02-06T22:16:15.270Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-24577"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-24577"
 ```
 
 # libgit2 is a portable C implementation of the Git core methods provided as a linkable library with a...
