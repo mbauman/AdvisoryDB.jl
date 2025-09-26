@@ -28,7 +28,14 @@ end
 is_vulnerable(v::PackageVulnerability) = !isempty(v.ranges)
 has_lower_bound(v::PackageVulnerability) = all(has_lower_bound, v.ranges)
 has_upper_bound(v::PackageVulnerability) = all(has_upper_bound, v.ranges)
-
+purl(v::PackageVulnerability) = purl(v.pkg)
+function purl(pkg::String)
+    uuid = get_uuids_in_general_stdlib(pkg)
+    if isempty(uuid)
+        error("Found no UUID for $pkg")
+    end
+    return "pkg:julia/$pkg?uuid=$(first(uuid))"
+end
 """
     Reference(; url, type="WEB")
 
@@ -324,7 +331,7 @@ function to_osv_dict(vuln::PackageVulnerability)
         "package" => OrderedDict(
             "ecosystem" => "Julia",
             "name" => vuln.pkg,
-            # TODO: "purl" => purl(vuln.pkg)
+            "purl" => purl(vuln)
         ),
         "ranges" => [OrderedDict("type"=>"SEMVER", "events"=>osv_events(vuln.ranges))],
         # TODO: "versions" => registered_versions_within_the_ranges(vuln.pkg, vuln.ranges)

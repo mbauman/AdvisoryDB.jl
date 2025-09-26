@@ -1,4 +1,4 @@
-using SecurityAdvisories, Test
+using SecurityAdvisories, Test, TOML
 
 using SecurityAdvisories.VersionStrings: VersionString as V
 @testset "VersionString comparisons" begin
@@ -87,4 +87,20 @@ end
     @test length(vpv) == 2
     @test vpv[1] == ("Julia", "ActiveInference", ">= 4.1.0, < 4.1.15")
     @test vpv[2] == ("Julia", "ActiveInference", "< 4.2.6")
+end
+
+@testset "purl" begin
+    packages = ["HTTP", "TimeZones", "TOML"] # Use some of the general and stdlib packages we depend on
+    project_toml = TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
+    for pkg in packages
+        expected = project_toml["deps"][pkg]
+        result = SecurityAdvisories.purl(pkg)
+        @test contains(result, "?")
+        ecosystem, parameter = split(result, "?")
+        # Mandatory
+        @test startswith(ecosystem, "pkg:julia/$pkg")
+        @test contains(parameter, "uuid=$(expected)")
+        # Optional
+    end
+    @test_throws "no UUID" SecurityAdvisories.purl("ThisPackageDoesHopefullyNotExist")
 end
