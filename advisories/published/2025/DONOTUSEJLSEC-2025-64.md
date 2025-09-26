@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-64"
-modified = 2025-09-25T17:06:05.000Z
+modified = 2025-09-25T18:01:22.000Z
 published = 2025-09-23T22:07:20.579Z
 aliases = ["CVE-2025-4575"]
 references = ["https://github.com/openssl/openssl/commit/e96d22446e633d117e6c9904cb15b4693e956eaa", "https://openssl-library.org/news/secadv/20250522.txt", "http://www.openwall.com/lists/oss-security/2025/05/22/1"]

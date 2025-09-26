@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-15"
-modified = 2025-09-25T17:06:05.000Z
+modified = 2025-09-25T18:01:22.000Z
 published = 2025-09-23T14:07:03.659Z
 upstream = ["CVE-2022-39260"]
 references = ["http://seclists.org/fulldisclosure/2022/Nov/1", "https://github.com/git/git/security/advisories/GHSA-rjr6-wcq6-83p6", "https://lists.debian.org/debian-lts-announce/2022/12/msg00025.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/C7B6JPKX5CGGLAHXJVQMIZNNEEB72FHD/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/OHNO2FB55CPX47BAXMBWUBGWHO6N6ZZH/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UKFHE4KVD7EKS5J3KTDFVBEKU3CLXGVV/", "https://security.gentoo.org/glsa/202312-15", "https://support.apple.com/kb/HT213496", "http://seclists.org/fulldisclosure/2022/Nov/1", "https://github.com/git/git/security/advisories/GHSA-rjr6-wcq6-83p6", "https://lists.debian.org/debian-lts-announce/2022/12/msg00025.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/C7B6JPKX5CGGLAHXJVQMIZNNEEB72FHD/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/OHNO2FB55CPX47BAXMBWUBGWHO6N6ZZH/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UKFHE4KVD7EKS5J3KTDFVBEKU3CLXGVV/", "https://security.gentoo.org/glsa/202312-15", "https://support.apple.com/kb/HT213496"]

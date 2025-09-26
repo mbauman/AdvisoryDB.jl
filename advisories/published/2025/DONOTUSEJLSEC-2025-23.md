@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-23"
-modified = 2025-09-25T17:06:05.000Z
+modified = 2025-09-25T18:01:22.000Z
 published = 2025-09-23T14:07:03.680Z
 upstream = ["CVE-2025-48384"]
 references = ["https://github.com/git/git/security/advisories/GHSA-vwqx-4fm8-6qc9"]
