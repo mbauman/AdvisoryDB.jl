@@ -45,20 +45,21 @@ jobs:
       id: assign
       run: |
         julia --project=. scripts/assign_ids_and_dates.jl
-        git diff -w -U0 advisories
-
-    - name: Push updated advisories to main
-      if: ${{ steps.assign.outputs.changes && github.event_name == 'push' && github.ref_name == 'main' }}
-      run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add advisories
-        if git diff --cached --quiet; then
+        if git diff  -w -U0 --cached; then
           echo "No changes to commit."
+          echo "diff_changes=false" >> $GITHUB_OUTPUT
         else
+          echo "diff_changes=true" >> $GITHUB_OUTPUT
           git commit -m '${{ steps.assign.outputs.title }}'
-          git push origin main
         fi
+
+    - name: Push updated advisories (to main)
+      if: ${{ steps.assign.outputs.diff_changes && github.event_name == 'push' && github.ref_name == 'main' }}
+      run: |
+        git push origin main
 
     - name: Export OSV
       id: export
@@ -98,7 +99,7 @@ jobs:
           echo "COMMIT=$COMMIT" >> $GITHUB_OUTPUT
         fi
 
-    - name: Publish OSV branch (on main)
+    - name: Push OSV branch (on main)
       if: ${{ steps.prepare_osv.outputs.changs == 'true' && github.event_name == 'push' && github.ref_name == 'main' }}
       env:
         GITHUB_BRANCH: ${{ github.ref_name }}
