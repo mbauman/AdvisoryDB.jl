@@ -6,7 +6,7 @@ using Dates: Dates, DateTime, @dateformat_str
 using TOML: TOML
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..SecurityAdvisories: SecurityAdvisories, exists, Reference, Severity, Advisory, extract_summary
+using ..SecurityAdvisories: SecurityAdvisories, exists, Reference, Severity, Advisory, AdvisorySource, extract_summary
 
 # https://euvd.enisa.europa.eu/apidoc
 const API_BASE = "https://euvdservices.enisa.europa.eu/api"
@@ -167,16 +167,15 @@ function advisory(vuln)
         affected = affected,
         references = [Reference(url=ref) for ref in split(get(vuln, :references, ""), "\n"; keepempty=false)],
         # credits -- not structured
-        database_specific = Dict{String,Any}("source" => Dict(
-            "id" => vuln.id,
-            "modified" => if exists(vuln, :dateUpdated) parse_euvd_datetime(vuln.dateUpdated) end,
-            "published" => if exists(vuln, :datePublished) parse_euvd_datetime(vuln.datePublished) end,
-            "imported" => Dates.now(Dates.UTC),
-            "url" => string(API_BASE, "/enisaid?id=", vuln.id),
-            "html_url" => string("https://euvd.enisa.europa.eu/vulnerability/", vuln.id)
-            )
+        jlsec_sources = [AdvisorySource(;
+            id = vuln.id,
+            modified = if exists(vuln, :dateUpdated) parse_euvd_datetime(vuln.dateUpdated) end,
+            published = if exists(vuln, :datePublished) parse_euvd_datetime(vuln.datePublished) end,
+            imported = Dates.now(Dates.UTC),
+            url = string(API_BASE, "/enisaid?id=", vuln.id),
+            html_url = string("https://euvd.enisa.europa.eu/vulnerability/", vuln.id)
+            )]
         )
-    )
 end
 
 end

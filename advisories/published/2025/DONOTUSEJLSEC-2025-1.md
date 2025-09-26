@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-1"
-modified = 2025-09-23T02:23:16.095Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T02:23:16.095Z
 aliases = ["GHSA-4g68-4pxg-mw93", "CVE-2025-52479"]
 
@@ -12,13 +12,13 @@ ranges = ["<= 1.10.16"]
 pkg = "URIs"
 ranges = ["< 1.6.0"]
 
-[database_specific.source]
-html_url = "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-4g68-4pxg-mw93"
+[[jlsec_sources]]
 id = "GHSA-4g68-4pxg-mw93"
-imported = "2025-09-23T02:06:09.198Z"
-modified = "2025-06-24T23:01:25Z"
-published = "2025-06-24T23:01:25Z"
+imported = 2025-09-23T02:06:09.198Z
+modified = 2025-06-24T23:01:25.000Z
+published = 2025-06-24T23:01:25.000Z
 url = "https://api.github.com/repos/JuliaWeb/HTTP.jl/security-advisories/GHSA-4g68-4pxg-mw93"
+html_url = "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-4g68-4pxg-mw93"
 ```
 
 # CR/LF injection in URIs.jl (also affects HTTP.jl)
@@ -59,11 +59,11 @@ Users of HTTP.jl should upgrade immediately to HTTP.jl v1.10.17. All prior versi
 
 Users of URIs.jl should upgrade immediately to URIs.jl v1.6.0. All prior versions are vulnerable.
 
-The check for valid URIs is now in the URI.jl package, and the latest version of HTTP.jl incorporates that fix. 
+The check for valid URIs is now in the URI.jl package, and the latest version of HTTP.jl incorporates that fix.
 
 ### Workarounds
 
-Manually validate any URIs before passing them on to functions in this package. 
+Manually validate any URIs before passing them on to functions in this package.
 
 ### References
 

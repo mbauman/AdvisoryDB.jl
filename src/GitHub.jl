@@ -5,7 +5,7 @@ using JSON3
 using Dates
 using DataStructures: OrderedDict as Dict # watch out
 
-using ..SecurityAdvisories: SecurityAdvisories, exists, VersionRange, VersionString, Credit, Reference, Severity, Advisory
+using ..SecurityAdvisories: SecurityAdvisories, exists, VersionRange, VersionString, Credit, Reference, Severity, Advisory, AdvisorySource
 
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
@@ -269,16 +269,15 @@ function advisory(vuln)
         affected = affected,
         references = [Reference(url=ref) for ref in something(get(vuln, :references, nothing), [])],
         credits = credits,
-        database_specific = Dict{String,Any}("source" => Dict(
-            "id" => vuln.ghsa_id,
-            "modified" => vuln.updated_at,
-            "published" => vuln.published_at,
-            "imported" => Dates.now(Dates.UTC),
-            "url" => vuln.url,
-            "html_url" => vuln.html_url
-            )
+        jlsec_sources = [AdvisorySource(;
+            id = vuln.ghsa_id,
+            modified = Dates.DateTime(chopsuffix(vuln.updated_at, "Z")),
+            published = Dates.DateTime(chopsuffix(vuln.published_at, "Z")),
+            imported = Dates.now(Dates.UTC),
+            url = vuln.url,
+            html_url = vuln.html_url
+            )]
         )
-    )
 end
 
 

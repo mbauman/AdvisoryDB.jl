@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-57"
-modified = 2025-09-23T22:07:20.401Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.401Z
 upstream = ["CVE-2023-3817"]
 references = ["https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6a1eb62c29db6cb5eec707f9338aee00f44e26f5", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=869ad69aadd985c7b8ca6f4e5dd0eb274c9f3644", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9002fd07327a91f35ba6c1307e71fa6fd4409b7f", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=91ddeba0f2269b017dc06c46c993a788974b1aa5", "https://www.openssl.org/news/secadv/20230731.txt", "http://seclists.org/fulldisclosure/2023/Jul/43", "http://www.openwall.com/lists/oss-security/2023/07/31/1", "http://www.openwall.com/lists/oss-security/2023/09/22/11", "http://www.openwall.com/lists/oss-security/2023/09/22/9", "http://www.openwall.com/lists/oss-security/2023/11/06/2", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6a1eb62c29db6cb5eec707f9338aee00f44e26f5", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=869ad69aadd985c7b8ca6f4e5dd0eb274c9f3644", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9002fd07327a91f35ba6c1307e71fa6fd4409b7f", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=91ddeba0f2269b017dc06c46c993a788974b1aa5", "https://lists.debian.org/debian-lts-announce/2023/08/msg00019.html", "https://security.gentoo.org/glsa/202402-08", "https://security.netapp.com/advisory/ntap-20230818-0014/", "https://security.netapp.com/advisory/ntap-20231027-0008/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.openssl.org/news/secadv/20230731.txt"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.22+0", ">= 3.0.8+0, < 3.0.10+0"]
 pkg = "Openresty_jll"
 ranges = ["< 1.27.1+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-3817"
+[[jlsec_sources]]
 id = "CVE-2023-3817"
 imported = 2025-09-23T21:56:31.115Z
 modified = 2025-05-05T16:15:47.343Z
 published = 2023-07-31T16:15:10.497Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-3817"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-3817"
 ```
 
 # Issue summary: Checking excessively long DH keys or parameters may be very slow.

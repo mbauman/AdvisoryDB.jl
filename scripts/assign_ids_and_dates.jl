@@ -7,7 +7,6 @@ function main()
     published_advisories_path = joinpath(@__DIR__, "..", "advisories", "published")
 
     # First look through all advisories for the latest identifier
-    # TODO: We could use a lock/mutex of the form of a sentinel upstream branch here
     year = Dates.year(Dates.now(Dates.UTC))
     last_id = 0
     for (root, _, files) in walkdir(all_advisories_path), file in files

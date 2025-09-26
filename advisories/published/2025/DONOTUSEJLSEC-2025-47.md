@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-47"
-modified = 2025-09-23T22:07:20.290Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.290Z
 upstream = ["CVE-2022-4304"]
 references = ["https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt", "https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.20+0"]
 pkg = "Openresty_jll"
 ranges = ["< 1.27.1+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-4304"
+[[jlsec_sources]]
 id = "CVE-2022-4304"
 imported = 2025-09-23T21:56:31.088Z
 modified = 2025-03-20T21:15:14.890Z
 published = 2023-02-08T20:15:23.887Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-4304"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-4304"
 ```
 
 # A timing based side channel exists in the OpenSSL RSA Decryption implementation which could be suffi...

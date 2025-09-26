@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-48"
-modified = 2025-09-23T22:07:20.293Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.293Z
 upstream = ["CVE-2022-4450"]
 references = ["https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=63bcf189be73a9cc1264059bed6f57974be74a83", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=bbcf509bd046b34cca19c766bbddc31683d0858b", "https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=63bcf189be73a9cc1264059bed6f57974be74a83", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=bbcf509bd046b34cca19c766bbddc31683d0858b", "https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.20+0"]
 pkg = "Openresty_jll"
 ranges = [">= 1.19.9+0, < 1.27.1+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-4450"
+[[jlsec_sources]]
 id = "CVE-2022-4450"
 imported = 2025-09-23T21:56:31.089Z
 modified = 2025-05-05T16:15:22.940Z
 published = 2023-02-08T20:15:23.973Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-4450"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-4450"
 ```
 
 # The function PEM*read*bio_ex() reads a PEM file from a BIO and parses and decodes the "name" (e.g
