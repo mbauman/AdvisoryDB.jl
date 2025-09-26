@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-55"
-modified = 2025-09-23T22:07:20.395Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.395Z
 upstream = ["CVE-2023-2650"]
 references = ["http://www.openwall.com/lists/oss-security/2023/05/30/1", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=423a2bc737a908ad0c77bda470b2b59dc879936b", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=853c5e56ee0b8650c73140816bb8b91d6163422c", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9e209944b35cf82368071f160a744b6178f9b098", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=db779b0e10b047f2585615e0b8f2acdf21f8544a", "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html", "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2023-0009", "https://security.gentoo.org/glsa/202402-08", "https://security.netapp.com/advisory/ntap-20230703-0001/", "https://security.netapp.com/advisory/ntap-20231027-0009/", "https://www.debian.org/security/2023/dsa-5417", "https://www.openssl.org/news/secadv/20230530.txt", "http://www.openwall.com/lists/oss-security/2023/05/30/1", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=423a2bc737a908ad0c77bda470b2b59dc879936b", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=853c5e56ee0b8650c73140816bb8b91d6163422c", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9e209944b35cf82368071f160a744b6178f9b098", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=db779b0e10b047f2585615e0b8f2acdf21f8544a", "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html", "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2023-0009", "https://security.gentoo.org/glsa/202402-08", "https://security.netapp.com/advisory/ntap-20230703-0001/", "https://security.netapp.com/advisory/ntap-20231027-0009/", "https://www.debian.org/security/2023/dsa-5417", "https://www.openssl.org/news/secadv/20230530.txt"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.21+0", ">= 3.0.8+0, < 3.0.9+0"]
 pkg = "Openresty_jll"
 ranges = ["< 1.27.1+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-2650"
+[[jlsec_sources]]
 id = "CVE-2023-2650"
 imported = 2025-09-23T21:56:31.098Z
 modified = 2025-03-19T16:15:21.890Z
 published = 2023-05-30T14:15:09.683Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-2650"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-2650"
 ```
 
 # Issue summary: Processing some specially crafted ASN.1 object identifiers or data containing them ma...

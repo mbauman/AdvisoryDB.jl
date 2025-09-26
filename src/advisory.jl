@@ -123,6 +123,19 @@ function Base.tryparse(::Type{Severity}, score)
     return Severity(type, String(score))
 end
 
+@kwdef struct AdvisorySource
+    id::String
+    imported::DateTime
+    modified::DateTime
+    published::DateTime
+    url::String
+    html_url::String
+    fields::Vector{String} = String[] # An optional subset of fields that were updated by this source (excepting alias/upstream)
+end
+Base.:(==)(a::AdvisorySource, b::AdvisorySource) = to_toml_frontmatter(a) == to_toml_frontmatter(b)
+Base.hash(a::AdvisorySource, h::UInt) = hash(to_toml_frontmatter(a), hash(0xa3a999db00b21f4d, h))
+Base.convert(::Type{AdvisorySource}, d::AbstractDict) = AdvisorySource(; Dict(Symbol(k)=>v for (k,v) in d)...)
+
 """
     Advisory(; osv_kwargs...)
 
@@ -148,9 +161,11 @@ There is just one place where we differ:
     affected::Vector{PackageVulnerability} = PackageVulnerability[]
     references::Vector{Reference} = Reference[]
     credits::Vector{Credit} = Credit[]
-    ## JULSEC-specific fields
-    database_specific::Dict{String,Any} = Dict{String,Any}() # TODO: define these fields?
+    ## JLSEC database_specific fields:
+    jlsec_sources::Vector{AdvisorySource} = AdvisorySource[]
 end
+osv_fieldnames(::Type{Advisory}) = filter(!startswith("jlsec_")∘string, fieldnames(Advisory))
+database_specific_fieldnames(::Type{Advisory}) = filter(startswith("jlsec_")∘string, fieldnames(Advisory))
 # Advisory identity is purely determined by the serialization format
 function Base.:(==)(a::Advisory, b::Advisory)
     return to_toml_frontmatter(a) == to_toml_frontmatter(b) && a.summary == b.summary && a.details == b.details
@@ -189,7 +204,7 @@ function update(original::Advisory, updates::Advisory)
         affected = new.affected,
         references = new.references,
         credits = new.credits,
-        database_specific = new.database_specific,
+        sources = new.sources,
     )
 end
 
@@ -205,9 +220,9 @@ Recursively convert an Advisory and all its fields (except `summary` and `detail
 """
 to_toml_frontmatter(v::Union{VersionNumber, VersionString, VersionRange}) = string(v)
 to_toml_frontmatter(x::Union{AbstractString, Integer, AbstractFloat, Bool, Dates.DateTime, Dates.Time, Dates.Date}) = x
-to_toml_frontmatter(d::OrderedDict) = OrderedDict(k=>to_toml_frontmatter_collection(v, values(d)) for (k,v) in d)
-to_toml_frontmatter(d::AbstractDict) = sort(OrderedDict(k=>to_toml_frontmatter_collection(v, values(d)) for (k,v) in d))
+to_toml_frontmatter(d::AbstractDict) = OrderedDict(k=>to_toml_frontmatter_collection(v, values(d)) for (k,v) in d)
 to_toml_frontmatter(A::AbstractArray) = [to_toml_frontmatter_collection(x, A) for x in A]
+to_toml_frontmatter(s::AdvisorySource) = OrderedDict(string(f) => to_toml_frontmatter(getproperty(s, f)) for f in fieldnames(AdvisorySource) if is_populated(getfield(s, f)))
 to_toml_frontmatter_collection(x, _) = to_toml_frontmatter(x)
 function to_toml_frontmatter(a::Advisory)
     # Convert all fields to TOML with a few special cases:
@@ -281,11 +296,11 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
         Markdown.plain(m[2+!isnothing(summary):end])
     end
 
-    return try
+    # return try
         Advisory(; Dict(Symbol(k)=>v for (k,v) in frontmatter)..., summary, details)
-    catch _
-        nothing
-    end
+    # catch _
+    #     nothing
+    # end
 end
 
 """
@@ -299,8 +314,16 @@ to_osv_dict(x::Dates.DateTime) = chopsuffix(string(x), "Z") * "Z" # All times sh
 to_osv_dict(x::Union{AbstractString, Integer, AbstractFloat, Bool}) = x
 to_osv_dict(d::AbstractDict) = OrderedDict(string(k)=>to_osv_dict(v) for (k,v) in d)
 to_osv_dict(A::AbstractArray) = [to_osv_dict(v) for v in A]
-function to_osv_dict(a::Union{Advisory, Severity, Reference, Credit})
+function to_osv_dict(a::Union{Severity, Reference, Credit, AdvisorySource})
     return OrderedDict(string(f) => to_osv_dict(getproperty(a, f)) for f in fieldnames(typeof(a)) if is_populated(getproperty(a, f)))
+end
+function to_osv_dict(a::Advisory)
+    # The only special thing we need to do here is collect the database_specific fields
+    d = OrderedDict(string(f) => to_osv_dict(getproperty(a, f)) for f in osv_fieldnames(Advisory) if is_populated(getproperty(a, f)))
+    if any(is_populated, (getproperty(a, f) for f in database_specific_fieldnames(Advisory)))
+        d["database_specific"] = OrderedDict(chopprefix(string(f), "jlsec_") => to_osv_dict(getproperty(a, f)) for f in database_specific_fieldnames(Advisory))
+    end
+    return d
 end
 # Package vulnerabilities are the one thing we store quite differently:
 function to_osv_dict(vuln::PackageVulnerability)

@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-16"
-modified = 2025-09-23T14:07:03.662Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T14:07:03.662Z
 upstream = ["CVE-2022-41953"]
 references = ["https://github.com/git-for-windows/git/commit/7360767e8dfc1895a932324079f7d45d7791d39f", "https://github.com/git-for-windows/git/pull/4219", "https://github.com/git-for-windows/git/security/advisories/GHSA-v4px-mx59-w99c", "https://www.tcl.tk/man/tcl8.6/TclCmd/exec.html#M23", "https://github.com/git-for-windows/git/commit/7360767e8dfc1895a932324079f7d45d7791d39f", "https://github.com/git-for-windows/git/pull/4219", "https://github.com/git-for-windows/git/security/advisories/GHSA-v4px-mx59-w99c", "https://www.tcl.tk/man/tcl8.6/TclCmd/exec.html#M23"]
@@ -10,13 +10,13 @@ references = ["https://github.com/git-for-windows/git/commit/7360767e8dfc1895a93
 pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-41953"
+[[jlsec_sources]]
 id = "CVE-2022-41953"
-imported = "2025-09-23T02:52:12.929Z"
-modified = "2024-11-21T07:24:08.677Z"
-published = "2023-01-17T22:15:10.747Z"
+imported = 2025-09-23T02:52:12.929Z
+modified = 2024-11-21T07:24:08.677Z
+published = 2023-01-17T22:15:10.747Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-41953"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-41953"
 ```
 
 # Git GUI is a convenient graphical tool that comes with Git for Windows

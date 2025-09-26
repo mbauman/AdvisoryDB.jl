@@ -26,6 +26,7 @@ With a few important exceptions, these fields correspond _exactly_ (including th
 * Credits support an optional shorthand `"author <author@example.com>"` string format for the common cases where no credit type is assigned and there is only one email-based contact method.
 * References support an optional shorthand string format to just contain the URL itself for the default `"WEB"` reference type.
 * Severities similarly support an optional shorthand string format that contains just CVSS vector itself.
+* Fields with names starting with `jlsec_` are placed into `database_specific` (the the prefix removed).
 
 <details><summary>In practice, a valid JLSEC advisory looks like this:</summary>
 
@@ -44,7 +45,7 @@ ranges = ["<= 1.10.16"]
 pkg = "URIs"
 ranges = ["< 1.6.0"]
 
-[database_specific.source]
+[[jlsec_sources]]
 html_url = "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-4g68-4pxg-mw93"
 id = "GHSA-4g68-4pxg-mw93"
 imported = 2025-09-23T02:06:09.198Z

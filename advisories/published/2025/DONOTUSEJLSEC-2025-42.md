@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-42"
-modified = 2025-09-23T22:07:20.278Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.278Z
 upstream = ["CVE-2021-4160"]
 references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=3bf7b73ea7123045b8f972badc67ed6878e6c37f", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6fc1aaaf303185aa5e483e06bdfae16daa9193a7", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.debian.org/security/2022/dsa-5103", "https://www.openssl.org/news/secadv/20220128.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=3bf7b73ea7123045b8f972badc67ed6878e6c37f", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6fc1aaaf303185aa5e483e06bdfae16daa9193a7", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.debian.org/security/2022/dsa-5103", "https://www.openssl.org/news/secadv/20220128.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.13+0"]
 pkg = "Openresty_jll"
 ranges = ["< 1.21.4+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-4160"
+[[jlsec_sources]]
 id = "CVE-2021-4160"
 imported = 2025-09-23T21:56:31.078Z
 modified = 2024-11-21T06:37:02.273Z
 published = 2022-01-28T22:15:15.133Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-4160"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-4160"
 ```
 
 # There is a carry propagation bug in the MIPS32 and MIPS64 squaring procedure

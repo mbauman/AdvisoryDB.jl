@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-20"
-modified = 2025-09-23T14:07:03.672Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T14:07:03.672Z
 upstream = ["CVE-2023-23946"]
 references = ["https://github.com/git/git/commit/c867e4fa180bec4750e9b54eb10f459030dbebfd", "https://github.com/git/git/security/advisories/GHSA-r87m-v37r-cwfh", "https://security.gentoo.org/glsa/202312-15", "https://github.com/git/git/commit/c867e4fa180bec4750e9b54eb10f459030dbebfd", "https://github.com/git/git/security/advisories/GHSA-r87m-v37r-cwfh", "https://security.gentoo.org/glsa/202312-15"]
@@ -10,13 +10,13 @@ references = ["https://github.com/git/git/commit/c867e4fa180bec4750e9b54eb10f459
 pkg = "Git_jll"
 ranges = ["< 2.42.0+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-23946"
+[[jlsec_sources]]
 id = "CVE-2023-23946"
-imported = "2025-09-23T02:52:12.942Z"
-modified = "2024-11-21T07:47:09.383Z"
-published = "2023-02-14T20:15:17.457Z"
+imported = 2025-09-23T02:52:12.942Z
+modified = 2024-11-21T07:47:09.383Z
+published = 2023-02-14T20:15:17.457Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-23946"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-23946"
 ```
 
 # Git, a revision control system, is vulnerable to path traversal prior to versions 2.39.2, 2.38.4, 2....

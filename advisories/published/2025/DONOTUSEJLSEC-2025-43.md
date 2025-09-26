@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-43"
-modified = 2025-09-23T22:07:20.281Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.281Z
 upstream = ["CVE-2022-0778"]
 references = ["http://packetstormsecurity.com/files/167344/OpenSSL-1.0.2-1.1.1-3.0-BN_mod_sqrt-Infinite-Loop.html", "http://seclists.org/fulldisclosure/2022/May/33", "http://seclists.org/fulldisclosure/2022/May/35", "http://seclists.org/fulldisclosure/2022/May/38", "https://cert-portal.siemens.com/productcert/pdf/ssa-712929.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=3118eb64934499d93db3230748a452351d1d9a65", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=380085481c64de749a6dd25cdf0bcf4360b30f83", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=a466912611aa6cbdf550cd10601390e587451246", "https://lists.debian.org/debian-lts-announce/2022/03/msg00023.html", "https://lists.debian.org/debian-lts-announce/2022/03/msg00024.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/323SNN6ZX7PRJJWP2BUAFLPUAE42XWLZ/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GDB3GQVJPXJE7X5C5JN6JAA4XUDWD6E6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/W6K3PR542DXWLEFFMFIDMME4CWMHJRMG/", "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0002", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20220321-0002/", "https://security.netapp.com/advisory/ntap-20220429-0005/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://support.apple.com/kb/HT213255", "https://support.apple.com/kb/HT213256", "https://support.apple.com/kb/HT213257", "https://www.debian.org/security/2022/dsa-5103", "https://www.openssl.org/news/secadv/20220315.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.tenable.com/security/tns-2022-06", "https://www.tenable.com/security/tns-2022-07", "https://www.tenable.com/security/tns-2022-08", "https://www.tenable.com/security/tns-2022-09", "http://packetstormsecurity.com/files/167344/OpenSSL-1.0.2-1.1.1-3.0-BN_mod_sqrt-Infinite-Loop.html", "http://seclists.org/fulldisclosure/2022/May/33", "http://seclists.org/fulldisclosure/2022/May/35", "http://seclists.org/fulldisclosure/2022/May/38", "https://cert-portal.siemens.com/productcert/pdf/ssa-712929.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=3118eb64934499d93db3230748a452351d1d9a65", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=380085481c64de749a6dd25cdf0bcf4360b30f83", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=a466912611aa6cbdf550cd10601390e587451246", "https://lists.debian.org/debian-lts-announce/2022/03/msg00023.html", "https://lists.debian.org/debian-lts-announce/2022/03/msg00024.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/323SNN6ZX7PRJJWP2BUAFLPUAE42XWLZ/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/GDB3GQVJPXJE7X5C5JN6JAA4XUDWD6E6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/W6K3PR542DXWLEFFMFIDMME4CWMHJRMG/", "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0002", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20220321-0002/", "https://security.netapp.com/advisory/ntap-20220429-0005/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://support.apple.com/kb/HT213255", "https://support.apple.com/kb/HT213256", "https://support.apple.com/kb/HT213257", "https://www.debian.org/security/2022/dsa-5103", "https://www.openssl.org/news/secadv/20220315.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.tenable.com/security/tns-2022-06", "https://www.tenable.com/security/tns-2022-07", "https://www.tenable.com/security/tns-2022-08", "https://www.tenable.com/security/tns-2022-09"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.14+0"]
 pkg = "Openresty_jll"
 ranges = ["< 1.21.4+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-0778"
+[[jlsec_sources]]
 id = "CVE-2022-0778"
 imported = 2025-09-23T21:56:31.080Z
 modified = 2024-11-21T06:39:22.540Z
 published = 2022-03-15T17:15:08.513Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-0778"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-0778"
 ```
 
 # The BN*mod*sqrt() function, which computes a modular square root, contains a bug that can cause it t...

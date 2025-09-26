@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-49"
-modified = 2025-09-23T22:07:20.295Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.295Z
 upstream = ["CVE-2023-0215"]
 references = ["https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=8818064ce3c3c0f1b740a5aaba2a987e75bfbafd", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9816136fe31d92ace4037d5da5257f763aeeb4eb", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c3829dd8825c654652201e16f8a0a0c46ee3f344", "https://security.gentoo.org/glsa/202402-08", "https://security.netapp.com/advisory/ntap-20230427-0007/", "https://security.netapp.com/advisory/ntap-20230427-0009/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.openssl.org/news/secadv/20230207.txt", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=8818064ce3c3c0f1b740a5aaba2a987e75bfbafd", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=9816136fe31d92ace4037d5da5257f763aeeb4eb", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=c3829dd8825c654652201e16f8a0a0c46ee3f344", "https://security.gentoo.org/glsa/202402-08", "https://security.netapp.com/advisory/ntap-20230427-0007/", "https://security.netapp.com/advisory/ntap-20230427-0009/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.openssl.org/news/secadv/20230207.txt"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.20+0"]
 pkg = "Openresty_jll"
 ranges = ["< 1.27.1+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-0215"
+[[jlsec_sources]]
 id = "CVE-2023-0215"
 imported = 2025-09-23T21:56:31.090Z
 modified = 2025-05-05T16:15:24.900Z
 published = 2023-02-08T20:15:24.107Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-0215"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-0215"
 ```
 
 # The public API function BIO*new*NDEF is a helper function used for streaming ASN.1 data via a BIO

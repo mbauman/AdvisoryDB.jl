@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-39"
-modified = 2025-09-23T22:07:20.270Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.270Z
 upstream = ["CVE-2021-3449"]
 references = ["http://www.openwall.com/lists/oss-security/2021/03/27/1", "http://www.openwall.com/lists/oss-security/2021/03/27/2", "http://www.openwall.com/lists/oss-security/2021/03/28/3", "http://www.openwall.com/lists/oss-security/2021/03/28/4", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-772220.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=fb9fa6b51defd48157eeb207f52181f735d96148", "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44845", "https://kc.mcafee.com/corporate/index?page=content&id=SB10356", "https://lists.debian.org/debian-lts-announce/2021/08/msg00029.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CCBFLLVQVILIVGZMBJL3IXZGKWQISYNP/", "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2021-0013", "https://security.FreeBSD.org/advisories/FreeBSD-SA-21:07.openssl.asc", "https://security.gentoo.org/glsa/202103-03", "https://security.netapp.com/advisory/ntap-20210326-0006/", "https://security.netapp.com/advisory/ntap-20210513-0002/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-openssl-2021-GHY28dJd", "https://www.debian.org/security/2021/dsa-4875", "https://www.openssl.org/news/secadv/20210325.txt", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://www.tenable.com/security/tns-2021-05", "https://www.tenable.com/security/tns-2021-06", "https://www.tenable.com/security/tns-2021-09", "https://www.tenable.com/security/tns-2021-10", "http://www.openwall.com/lists/oss-security/2021/03/27/1", "http://www.openwall.com/lists/oss-security/2021/03/27/2", "http://www.openwall.com/lists/oss-security/2021/03/28/3", "http://www.openwall.com/lists/oss-security/2021/03/28/4", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-772220.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=fb9fa6b51defd48157eeb207f52181f735d96148", "https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44845", "https://kc.mcafee.com/corporate/index?page=content&id=SB10356", "https://lists.debian.org/debian-lts-announce/2021/08/msg00029.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CCBFLLVQVILIVGZMBJL3IXZGKWQISYNP/", "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2021-0013", "https://security.FreeBSD.org/advisories/FreeBSD-SA-21:07.openssl.asc", "https://security.gentoo.org/glsa/202103-03", "https://security.netapp.com/advisory/ntap-20210326-0006/", "https://security.netapp.com/advisory/ntap-20210513-0002/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-openssl-2021-GHY28dJd", "https://www.debian.org/security/2021/dsa-4875", "https://www.openssl.org/news/secadv/20210325.txt", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://www.tenable.com/security/tns-2021-05", "https://www.tenable.com/security/tns-2021-06", "https://www.tenable.com/security/tns-2021-09", "https://www.tenable.com/security/tns-2021-10"]
@@ -10,13 +10,13 @@ references = ["http://www.openwall.com/lists/oss-security/2021/03/27/1", "http:/
 pkg = "OpenSSL_jll"
 ranges = ["< 1.1.10+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-3449"
+[[jlsec_sources]]
 id = "CVE-2021-3449"
 imported = 2025-09-23T21:56:31.023Z
 modified = 2024-11-21T06:21:33.050Z
 published = 2021-03-25T15:15:13.450Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-3449"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-3449"
 ```
 
 # An OpenSSL TLS server may crash if sent a maliciously crafted renegotiation ClientHello message from...

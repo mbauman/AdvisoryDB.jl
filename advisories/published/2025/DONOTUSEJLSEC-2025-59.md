@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-59"
-modified = 2025-09-23T22:07:20.407Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T22:07:20.407Z
 upstream = ["CVE-2023-4807"]
 references = ["https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=4bfac4471f53c4f74c8d81020beb938f92d84ca5", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6754de4a121ec7f261b16723180df6592cbb4508", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=a632d534c73eeb3e3db8c7540d811194ef7c79ff", "https://www.openssl.org/news/secadv/20230908.txt", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=4bfac4471f53c4f74c8d81020beb938f92d84ca5", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6754de4a121ec7f261b16723180df6592cbb4508", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=a632d534c73eeb3e3db8c7540d811194ef7c79ff", "https://security.netapp.com/advisory/ntap-20230921-0001/", "https://www.openssl.org/news/secadv/20230908.txt"]
@@ -13,13 +13,13 @@ ranges = ["< 1.1.23+0", ">= 3.0.8+0, < 3.0.11+0"]
 pkg = "Openresty_jll"
 ranges = [">= 1.19.9+0, < 1.27.1+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-4807"
+[[jlsec_sources]]
 id = "CVE-2023-4807"
 imported = 2025-09-23T21:56:31.116Z
 modified = 2025-04-23T17:16:47.073Z
 published = 2023-09-08T12:15:08.043Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-4807"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-4807"
 ```
 
 # Issue summary: The POLY1305 MAC (message authentication code) implementation contains a bug that mig...

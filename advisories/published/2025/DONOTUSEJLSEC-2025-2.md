@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-2"
-modified = 2025-09-23T14:07:00.538Z
+modified = 2025-09-25T17:06:05.000Z
 published = 2025-09-23T14:07:00.538Z
 upstream = ["CVE-2024-32002"]
 references = ["http://www.openwall.com/lists/oss-security/2024/05/14/2", "https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---recurse-submodulesltpathspecgt", "https://git-scm.com/docs/git-config#Documentation/git-config.txt-coresymlinks", "https://github.com/git/git/commit/97065761333fd62db1912d81b489db938d8c991d", "https://github.com/git/git/security/advisories/GHSA-8h77-4q3w-gfgv", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S4CK4IYTXEOBZTEM5K3T6LWOIZ3S44AR/", "http://www.openwall.com/lists/oss-security/2024/05/14/2", "https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---recurse-submodulesltpathspecgt", "https://git-scm.com/docs/git-config#Documentation/git-config.txt-coresymlinks", "https://github.com/git/git/commit/97065761333fd62db1912d81b489db938d8c991d", "https://github.com/git/git/security/advisories/GHSA-8h77-4q3w-gfgv", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S4CK4IYTXEOBZTEM5K3T6LWOIZ3S44AR/"]
@@ -10,13 +10,13 @@ references = ["http://www.openwall.com/lists/oss-security/2024/05/14/2", "https:
 pkg = "Git_jll"
 ranges = ["< 2.46.2+0"]
 
-[database_specific.source]
-html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-32002"
+[[jlsec_sources]]
 id = "CVE-2024-32002"
-imported = "2025-09-23T02:52:12.821Z"
-modified = "2024-11-21T09:14:19.267Z"
-published = "2024-05-14T19:15:10.810Z"
+imported = 2025-09-23T02:52:12.821Z
+modified = 2024-11-21T09:14:19.267Z
+published = 2024-05-14T19:15:10.810Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-32002"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-32002"
 ```
 
 # Git submodules could write malicious code to the repository's hooks
