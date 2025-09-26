@@ -11,7 +11,7 @@ function main()
         outpath = joinpath(output, string(Dates.year(advisory.published)))
         mkpath(outpath)
         open(joinpath(outpath, advisory.id * ".json"), "w") do io
-            JSON3.write(io, osv)
+            JSON3.pretty(io, osv)
         end
     end
 end
