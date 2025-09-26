@@ -48,7 +48,8 @@ jobs:
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add advisories
-        if git diff  -w -U0 --cached; then
+        diff -w -U0 --cached
+        if git diff -w --cached --quiet; then
           echo "No changes to commit."
           echo "diff_changes=false" >> $GITHUB_OUTPUT
         else
@@ -86,7 +87,8 @@ jobs:
         export GIT_WORK_TREE=$DATA_DIR
         git read-tree "$REF"
         git add --all --intent-to-add
-        if git diff -w -U0; then
+        git diff -w -U0
+        if git diff -w --quiet; then
           echo "No changes to commit."
           echo "changes=false" >> $GITHUB_OUTPUT
         else
