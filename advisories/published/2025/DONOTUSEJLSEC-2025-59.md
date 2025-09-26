@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-59"
-modified = 2000-09-26T18:39:59Z
+modified = 2025-09-26T19:24:29.391Z
 published = 2025-09-23T22:07:20.407Z
 upstream = ["CVE-2023-4807"]
 references = ["https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=4bfac4471f53c4f74c8d81020beb938f92d84ca5", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6754de4a121ec7f261b16723180df6592cbb4508", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=a632d534c73eeb3e3db8c7540d811194ef7c79ff", "https://www.openssl.org/news/secadv/20230908.txt", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=4bfac4471f53c4f74c8d81020beb938f92d84ca5", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=6754de4a121ec7f261b16723180df6592cbb4508", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=a632d534c73eeb3e3db8c7540d811194ef7c79ff", "https://security.netapp.com/advisory/ntap-20230921-0001/", "https://www.openssl.org/news/secadv/20230908.txt"]
