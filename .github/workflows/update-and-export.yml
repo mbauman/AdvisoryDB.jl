@@ -113,7 +113,10 @@ jobs:
           abs_diff=${diff_minutes#-}
 
           if [[ $abs_diff -gt 5 ]]; then
-            echo "❌ $json_file: ${diff_minutes}min difference"
+            echo "❌ $json_file"
+            echo "❌ json: ${json_time} -> ${json_epoch}"
+            echo "❌  git: ${git_time} -> ${git_epoch}"
+            echo "❌ diff: ${diff_minutes} minutes"
             exit 1
           fi
         done
