@@ -35,6 +35,7 @@ function main()
             modified = published = Dates.now(Dates.UTC)
         else
             git_modified = readchomp(`git log -1 --format="%cd" --date=iso-strict -- $path`)
+            @info "got modified date of $git_modified for $file"
             modified = isempty(git_modified) ? Dates.now(Dates.UTC) : DateTime(ZonedDateTime(git_modified), Dates.UTC)
             git_published = readchomp(`git log -1 --format="%cd" --date=iso-strict --diff-filter=A -- $path`)
             published = isempty(git_published) ? modified : DateTime(ZonedDateTime(git_published), Dates.UTC)
@@ -42,15 +43,18 @@ function main()
         if something(advisory.withdrawn, typemin(DateTime)) > advisory.modified
             # If the withdrawn date is _after_ the previously stored modified time, then it's a new modification
             # The effective time of the widthdraw will be upon publication to this repo — the new modified time
+            @info "advisory $file is newly withdrawn"
             advisory.withdrawn = modified
             advisory.modified = modified
             updated = true
         end
         if abs(advisory.modified - modified) > Dates.Minute(10)
+            @info "$file: Computed modified ($modified) is far away from existing $(advisory.modified)"
             advisory.modified = modified
             updated = true
         end
         if abs(something(advisory.published, DateTime(0)) - published) > Dates.Minute(10)
+            @info "$file: Computed published ($published) is far away from existing $(advisory.published)"
             advisory.published = published
             updated = true
         end
