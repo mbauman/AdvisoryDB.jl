@@ -101,6 +101,23 @@ jobs:
           echo "COMMIT=$COMMIT" >> $GITHUB_OUTPUT
         fi
 
+    - name: Confirm OSV timestamps
+      run: |
+        for json_file in $(find osv -name "*.json" -type f); do
+          json_time=$(jq -r '.modified' "$json_file")
+          git_time=$(git log -1 --format="%cd" --date=iso-strict -- "$json_file")
+
+          json_epoch=$(date -d "$json_time" +%s)
+          git_epoch=$(date -d "$git_time" +%s)
+          diff_minutes=$(( (json_epoch - git_epoch) / 60 ))
+          abs_diff=${diff_minutes#-}
+
+          if [[ $abs_diff -gt 5 ]]; then
+            echo "❌ $json_file: ${diff_minutes}min difference"
+            exit 1
+          fi
+        done
+
     - name: Push OSV branch (on main)
       if: ${{ steps.prepare_osv.outputs.changs == 'true' && github.event_name == 'push' && github.ref_name == 'main' }}
       env:
