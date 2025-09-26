@@ -45,7 +45,7 @@ jobs:
       id: assign
       run: |
         julia --project=. scripts/assign_ids_and_dates.jl
-        git diff advisories
+        git diff -w -U0 advisories
 
     - name: Push updated advisories to main
       if: ${{ steps.assign.outputs.changes && github.event_name == 'push' && github.ref_name == 'main' }}
@@ -85,7 +85,7 @@ jobs:
         export GIT_WORK_TREE=$DATA_DIR
         git read-tree "$REF"
         git add --all --intent-to-add
-        if git diff; then
+        if git diff -w -U0; then
           echo "No changes to commit."
           echo "changes=false" >> $GITHUB_OUTPUT
         else
