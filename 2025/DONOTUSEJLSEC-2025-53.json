@@ -1,7 +1,7 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-53",
-    "modified": "2025-09-26T17:16:58.363Z",
+    "modified": "2025-09-26T19:24:29.391Z",
     "published": "2025-09-23T22:07:20.390Z",
     "upstream": [
         "CVE-2023-0466"
