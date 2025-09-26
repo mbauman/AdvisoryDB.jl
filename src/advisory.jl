@@ -29,8 +29,14 @@ is_vulnerable(v::PackageVulnerability) = !isempty(v.ranges)
 has_lower_bound(v::PackageVulnerability) = all(has_lower_bound, v.ranges)
 has_upper_bound(v::PackageVulnerability) = all(has_upper_bound, v.ranges)
 purl(v::PackageVulnerability) = purl(v.pkg)
-purl(pkg::String) = "pkg:julia/$pkg?uuid=$(first(get_uuids_in_general_stdlib(pkg)))"
-
+function purl(pkg::String) 
+    uuid = get_uuids_in_general_stdlib(pkg)
+    if isempty(uuid)
+        @warn "Found no UUID for $pkg"
+        return nothing
+    end
+    return "pkg:julia/$pkg?uuid=$(first(uuid)))"
+end
 """
     Reference(; url, type="WEB")
 
@@ -299,7 +305,7 @@ function to_osv_dict(a::Union{Advisory, Severity, Reference, Credit})
 end
 # Package vulnerabilities are the one thing we store quite differently:
 function to_osv_dict(vuln::PackageVulnerability)
-    return Dict{String, Any}(
+    osv_dict = Dict{String, Any}(
         "package" => OrderedDict(
             "ecosystem" => "Julia",
             "name" => vuln.pkg,
@@ -308,4 +314,8 @@ function to_osv_dict(vuln::PackageVulnerability)
         "ranges" => [OrderedDict("type"=>"SEMVER", "events"=>osv_events(vuln.ranges))],
         # TODO: "versions" => registered_versions_within_the_ranges(vuln.pkg, vuln.ranges)
     )
+    url = purl(vuln)
+    if !isnothing(url)
+        osv_dict["package"]["purl"] = url
+    end
 end
