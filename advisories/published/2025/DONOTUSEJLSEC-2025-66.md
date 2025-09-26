@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-66"
-modified = 2025-09-26T13:32:05.000Z
+modified = 2025-09-26T17:16:58.363Z
 published = 2025-09-23T22:07:20.585Z
 aliases = ["CVE-2024-4741"]
 references = ["https://github.com/openssl/openssl/commit/704f725b96aa373ee45ecfb23f6abfe8be8d9177", "https://github.com/openssl/openssl/commit/b3f0eb0a295f58f16ba43ba99dad70d4ee5c437d", "https://github.com/openssl/openssl/commit/c88c3de51020c37e8706bf7a682a162593053aac", "https://github.com/openssl/openssl/commit/e5093133c35ca82874ad83697af76f4b0f7e3bd8", "https://github.openssl.org/openssl/extended-releases/commit/f7a045f3143fc6da2ee66bf52d8df04829590dd4", "https://www.openssl.org/news/secadv/20240528.txt"]

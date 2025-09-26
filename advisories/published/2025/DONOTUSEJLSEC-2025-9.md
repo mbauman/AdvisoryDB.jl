@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-9"
-modified = 2025-09-26T13:32:05.000Z
+modified = 2025-09-26T17:16:58.363Z
 published = 2025-09-23T14:07:03.624Z
 upstream = ["CVE-2021-40330"]
 references = ["https://github.com/git/git/commit/a02ea577174ab8ed18f847cf1693f213e0b9c473", "https://github.com/git/git/compare/v2.30.0...v2.30.1", "https://lists.debian.org/debian-lts-announce/2022/10/msg00014.html", "https://github.com/git/git/commit/a02ea577174ab8ed18f847cf1693f213e0b9c473", "https://github.com/git/git/compare/v2.30.0...v2.30.1", "https://lists.debian.org/debian-lts-announce/2022/10/msg00014.html"]
