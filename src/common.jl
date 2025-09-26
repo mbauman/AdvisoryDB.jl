@@ -409,15 +409,25 @@ end
 
 # TODO: use the above Pkg machinery for this, too
 const ALL_PKGS = Pair{String,String}[]
-function all_pkgs(toml_url = "https://github.com/JuliaRegistries/General/raw/refs/heads/master/Registry.toml")
+function all_pkgs(toml_urls = ["https://github.com/JuliaRegistries/General/raw/refs/heads/master/Registry.toml",
+     "https://github.com/JuliaLang/julia/raw/refs/heads/master/stdlib/Project.toml"])
     if isempty(ALL_PKGS)
-        # This should really use Pkg APIs, but they are non-trivial and were hanging on GitHub Actions?
-        registry = TOML.parsefile(download(toml_url))
-        append!(ALL_PKGS, sort!([info["name"]=>uuid for (uuid, info) in registry["packages"]]))
+        for toml_url in toml_urls
+            # This should really use Pkg APIs, but they are non-trivial and were hanging on GitHub Actions?
+            registry = TOML.parsefile(download(toml_url))
+            if haskey(registry, "packages")
+                append!(ALL_PKGS, [info["name"]=>uuid for (uuid, info) in registry["packages"]])
+            elseif haskey(registry, "deps")
+                append!(ALL_PKGS, registry["deps"])
+            else
+                @warn "Unexpected Pkg toml found at $toml_url"
+            end
+        end
+        sort!(ALL_PKGS)
     end
     return ALL_PKGS
 end
-function get_uuids_in_general(pkgname)
+function get_uuids_in_general_stdlib(pkgname)
     pkgs = all_pkgs()
     idxs = searchsorted(pkgs, pkgname=>"", by=first)
     return last.(getindex.((pkgs,), idxs))
@@ -426,7 +436,6 @@ function all_jlls()
     pkgs = all_pkgs()
     filter(endswith("_jll")∘first, pkgs)
 end
-
 """
     corresponding_jlsec_path(id, aliases=String[])
 
