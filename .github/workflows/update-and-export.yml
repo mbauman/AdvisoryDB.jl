@@ -54,12 +54,12 @@ jobs:
           echo "diff_changes=false" >> $GITHUB_OUTPUT
         else
           echo "diff_changes=true" >> $GITHUB_OUTPUT
-          git commit -m '${{ steps.assign.outputs.title }}'
         fi
 
     - name: Push updated advisories (to main)
       if: ${{ steps.assign.outputs.diff_changes && github.event_name == 'push' && github.ref_name == 'main' }}
       run: |
+        git commit -m '${{ steps.assign.outputs.title }}'
         git push origin main
 
     - name: Export OSV
