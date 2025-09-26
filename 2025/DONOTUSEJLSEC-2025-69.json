@@ -1,7 +1,7 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-69",
-    "modified": "2025-09-26T19:24:29.391Z",
+    "modified": "2025-09-26T19:46:16.213Z",
     "published": "2025-09-24T15:09:41.228Z",
     "upstream": [
         "CVE-2021-4048"
@@ -25,7 +25,8 @@
             ],
             "package": {
                 "ecosystem": "Julia",
-                "name": "OpenBLAS_jll"
+                "name": "OpenBLAS_jll",
+                "purl": "pkg:julia/OpenBLAS_jll?uuid=4536629a-c528-5b80-bd46-f80d51c5b363"
             }
         },
         {
@@ -44,7 +45,8 @@
             ],
             "package": {
                 "ecosystem": "Julia",
-                "name": "OpenBLAS32_jll"
+                "name": "OpenBLAS32_jll",
+                "purl": "pkg:julia/OpenBLAS32_jll?uuid=656ef2d0-ae68-5445-9ca0-591084a874a2"
             }
         },
         {
@@ -60,7 +62,8 @@
             ],
             "package": {
                 "ecosystem": "Julia",
-                "name": "OpenBLASHighCoreCount_jll"
+                "name": "OpenBLASHighCoreCount_jll",
+                "purl": "pkg:julia/OpenBLASHighCoreCount_jll?uuid=3a2d25a1-7f54-53f7-aded-df035e2fc6f8"
             }
         }
     ],

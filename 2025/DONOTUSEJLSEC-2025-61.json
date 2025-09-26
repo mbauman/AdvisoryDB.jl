@@ -1,7 +1,7 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-61",
-    "modified": "2025-09-26T19:24:29.391Z",
+    "modified": "2025-09-26T19:46:16.213Z",
     "published": "2025-09-23T22:07:20.413Z",
     "upstream": [
         "CVE-2023-6129"
@@ -25,7 +25,8 @@
             ],
             "package": {
                 "ecosystem": "Julia",
-                "name": "OpenSSL_jll"
+                "name": "OpenSSL_jll",
+                "purl": "pkg:julia/OpenSSL_jll?uuid=458c3c95-2e84-50aa-8efc-19380b2a3a95"
             }
         }
     ],
