@@ -102,5 +102,5 @@ end
         @test contains(parameter, "uuid=$(expected)")
         # Optional
     end
-    @test_throws SecurityAdvisories.purl("ThisPackageDoesHopefullyNotExist")
+    @test_throws "no UUID" SecurityAdvisories.purl("ThisPackageDoesHopefullyNotExist")
 end
