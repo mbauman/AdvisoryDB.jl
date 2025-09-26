@@ -19,6 +19,7 @@ function main()
     # Then go through the published advisories and ensure all IDs are assigned
     # and that the dates accurately match the commit dates
     n_updated = 0
+    now = Dates.now(Dates.UTC)
     for (root, _, files) in walkdir(published_advisories_path), file in files
         path = joinpath(root, file)
         SecurityAdvisories.is_jlsec_advisory_path(path) || continue
@@ -32,36 +33,34 @@ function main()
             @info "moving $file to $(advisory.id).md"
             success(`git mv $path $newpath`) || run(`mv $path $newpath`)
             path = newpath
-            modified = published = Dates.now(Dates.UTC)
+            modified = published = now
         else
             git_modified = readchomp(`git log -1 --format="%cd" --date=iso-strict -- $path`)
-            @info "got modified date of $git_modified for $file"
-            modified = isempty(git_modified) ? Dates.now(Dates.UTC) : DateTime(ZonedDateTime(git_modified), Dates.UTC)
+            modified = isempty(git_modified) ? now : DateTime(ZonedDateTime(git_modified), Dates.UTC)
             git_published = readchomp(`git log -1 --format="%cd" --date=iso-strict --diff-filter=A -- $path`)
             published = isempty(git_published) ? modified : DateTime(ZonedDateTime(git_published), Dates.UTC)
         end
         if something(advisory.withdrawn, typemin(DateTime)) > advisory.modified
             # If the withdrawn date is _after_ the previously stored modified time, then it's a new modification
             # The effective time of the widthdraw will be upon publication to this repo — the new modified time
-            @info "advisory $file is newly withdrawn"
-            advisory.withdrawn = modified
-            advisory.modified = modified
+            @info "$file: advisory is newly withdrawn"
+            advisory.withdrawn = now
+            advisory.modified = now
             updated = true
         end
-        if abs(advisory.modified - modified) > Dates.Minute(10)
+        if abs(advisory.modified - modified) > Dates.Minute(5)
             @info "$file: Computed modified ($modified) is far away from existing $(advisory.modified)"
-            advisory.modified = modified
+            advisory.modified = now
             updated = true
         end
-        if abs(something(advisory.published, DateTime(0)) - published) > Dates.Minute(10)
+        if isnothing(advisory.published) || abs(advisory.published - published) > Dates.Minute(5)
             @info "$file: Computed published ($published) is far away from existing $(advisory.published)"
-            advisory.published = published
+            advisory.published = now
             updated = true
         end
 
         if updated
             # TODO: we could do better by applying a git diff that only includes the semantically meaningful parts
-            @info "writing $(advisory.id)"
             open(path, "w") do io
                 print(io, advisory)
             end
