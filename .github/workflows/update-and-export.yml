@@ -7,7 +7,7 @@ on:
       - main
 
 concurrency:
-  group: ${{ github.ref == 'refs/heads/main' && 'main-deploy' || null }}
+  group: ${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
