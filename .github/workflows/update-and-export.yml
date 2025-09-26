@@ -57,7 +57,7 @@ jobs:
         fi
 
     - name: Push updated advisories (to main)
-      if: ${{ steps.assign.outputs.diff_changes && github.event_name == 'push' && github.ref_name == 'main' }}
+      if: ${{ steps.assign.outputs.diff_changes == 'true' && github.event_name == 'push' && github.ref_name == 'main' }}
       run: |
         git commit -m '${{ steps.assign.outputs.title }}'
         git push origin main
@@ -119,7 +119,7 @@ jobs:
         done
 
     - name: Push OSV branch (on main)
-      if: ${{ steps.prepare_osv.outputs.changs == 'true' && github.event_name == 'push' && github.ref_name == 'main' }}
+      if: ${{ steps.prepare_osv.outputs.changes == 'true' && github.event_name == 'push' && github.ref_name == 'main' }}
       env:
         GITHUB_BRANCH: ${{ github.ref_name }}
         COMMIT: ${{ steps.prepare_osv.outputs.COMMIT }}
