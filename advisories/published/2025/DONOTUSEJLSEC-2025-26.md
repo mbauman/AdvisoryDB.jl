@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-26"
-modified = 2025-09-25T18:01:22.000Z
+modified = 2025-09-26T13:32:05.000Z
 published = 2025-09-23T14:07:03.688Z
 upstream = ["CVE-2023-22742"]
 references = ["http://www.openwall.com/lists/oss-security/2023/11/06/5", "https://github.com/libgit2/libgit2/commit/42e5db98b963ae503229c63e44e06e439df50e56", "https://github.com/libgit2/libgit2/commit/cd6f679af401eda1f172402006ef8265f8bd58ea", "https://github.com/libgit2/libgit2/releases/tag/v1.4.5", "https://github.com/libgit2/libgit2/releases/tag/v1.5.1", "https://github.com/libgit2/libgit2/security/advisories/GHSA-8643-3wh5-rmjq", "https://www.libssh2.org", "http://www.openwall.com/lists/oss-security/2023/11/06/5", "https://github.com/libgit2/libgit2/commit/42e5db98b963ae503229c63e44e06e439df50e56", "https://github.com/libgit2/libgit2/commit/cd6f679af401eda1f172402006ef8265f8bd58ea", "https://github.com/libgit2/libgit2/releases/tag/v1.4.5", "https://github.com/libgit2/libgit2/releases/tag/v1.5.1", "https://github.com/libgit2/libgit2/security/advisories/GHSA-8643-3wh5-rmjq", "https://www.libssh2.org"]
