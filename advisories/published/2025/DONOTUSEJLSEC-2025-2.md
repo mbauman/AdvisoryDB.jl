@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-2"
-modified = 2025-09-26T17:16:58.363Z
+modified = 2000-09-26T18:39:59Z
 published = 2025-09-23T14:07:00.538Z
 upstream = ["CVE-2024-32002"]
 references = ["http://www.openwall.com/lists/oss-security/2024/05/14/2", "https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---recurse-submodulesltpathspecgt", "https://git-scm.com/docs/git-config#Documentation/git-config.txt-coresymlinks", "https://github.com/git/git/commit/97065761333fd62db1912d81b489db938d8c991d", "https://github.com/git/git/security/advisories/GHSA-8h77-4q3w-gfgv", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S4CK4IYTXEOBZTEM5K3T6LWOIZ3S44AR/", "http://www.openwall.com/lists/oss-security/2024/05/14/2", "https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---recurse-submodulesltpathspecgt", "https://git-scm.com/docs/git-config#Documentation/git-config.txt-coresymlinks", "https://github.com/git/git/commit/97065761333fd62db1912d81b489db938d8c991d", "https://github.com/git/git/security/advisories/GHSA-8h77-4q3w-gfgv", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/S4CK4IYTXEOBZTEM5K3T6LWOIZ3S44AR/"]

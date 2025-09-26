@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-11"
-modified = 2025-09-26T17:16:58.363Z
+modified = 2000-09-26T18:39:59Z
 published = 2025-09-23T14:07:03.648Z
 upstream = ["CVE-2022-24975"]
 references = ["https://github.com/git/git/blob/2dc94da3744bfbbf145eca587a0f5ff480cc5867/Documentation/git-clone.txt#L185-L191", "https://lore.kernel.org/git/xmqq4k14qe9g.fsf%40gitster.g/", "https://www.aquasec.com/blog/undetected-hard-code-secrets-expose-corporations/", "https://wwws.nightwatchcybersecurity.com/2022/02/11/gitbleed/", "https://github.com/git/git/blob/2dc94da3744bfbbf145eca587a0f5ff480cc5867/Documentation/git-clone.txt#L185-L191", "https://www.aquasec.com/blog/undetected-hard-code-secrets-expose-corporations/", "https://wwws.nightwatchcybersecurity.com/2022/02/11/gitbleed/"]
