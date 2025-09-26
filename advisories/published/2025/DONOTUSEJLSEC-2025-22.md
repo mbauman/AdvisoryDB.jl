@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-22"
-modified = 2025-09-26T13:32:05.000Z
+modified = 2025-09-26T19:24:29.391Z
 published = 2025-09-23T14:07:03.678Z
 upstream = ["CVE-2023-29007"]
 references = ["https://github.com/git/git/blob/9ce9dea4e1c2419cca126d29fa7730baa078a11b/Documentation/RelNotes/2.30.9.txt", "https://github.com/git/git/commit/528290f8c61222433a8cf02fb7cfffa8438432b4", "https://github.com/git/git/security/advisories/GHSA-v48j-4xgg-4844", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PI7FZ4NNR5S5J5K6AMVQBH2JFP6NE4L7/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/RKOXOAZ42HLXHXTW6JZI4L5DAIYDTYCU/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/YFZWGQKB6MM5MNF2DLFTD7KS2KWPICKL/", "https://security.gentoo.org/glsa/202312-15", "https://github.com/git/git/blob/9ce9dea4e1c2419cca126d29fa7730baa078a11b/Documentation/RelNotes/2.30.9.txt", "https://github.com/git/git/commit/528290f8c61222433a8cf02fb7cfffa8438432b4", "https://github.com/git/git/security/advisories/GHSA-v48j-4xgg-4844", "https://lists.debian.org/debian-lts-announce/2024/06/msg00018.html", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PI7FZ4NNR5S5J5K6AMVQBH2JFP6NE4L7/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/RKOXOAZ42HLXHXTW6JZI4L5DAIYDTYCU/", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/YFZWGQKB6MM5MNF2DLFTD7KS2KWPICKL/", "https://security.gentoo.org/glsa/202312-15"]

@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-5"
-modified = 2025-09-26T13:32:05.000Z
+modified = 2025-09-26T19:24:29.391Z
 published = 2025-09-23T14:07:03.370Z
 upstream = ["CVE-2019-1348"]
 references = ["http://lists.opensuse.org/opensuse-security-announce/2020-01/msg00056.html", "http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00003.html", "https://access.redhat.com/errata/RHSA-2020:0228", "https://lore.kernel.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/T/#u", "https://public-inbox.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/", "https://security.gentoo.org/glsa/202003-30", "https://security.gentoo.org/glsa/202003-42", "https://support.apple.com/kb/HT210729", "http://lists.opensuse.org/opensuse-security-announce/2020-01/msg00056.html", "http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00003.html", "https://access.redhat.com/errata/RHSA-2020:0228", "https://lore.kernel.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/T/#u", "https://public-inbox.org/git/xmqqr21cqcn9.fsf%40gitster-ct.c.googlers.com/", "https://security.gentoo.org/glsa/202003-30", "https://security.gentoo.org/glsa/202003-42", "https://support.apple.com/kb/HT210729"]

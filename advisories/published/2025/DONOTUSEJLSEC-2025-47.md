@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-47"
-modified = 2025-09-26T13:32:05.000Z
+modified = 2025-09-26T19:24:29.391Z
 published = 2025-09-23T22:07:20.290Z
 upstream = ["CVE-2022-4304"]
 references = ["https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt", "https://security.gentoo.org/glsa/202402-08", "https://www.openssl.org/news/secadv/20230207.txt"]

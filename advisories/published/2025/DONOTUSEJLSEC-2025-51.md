@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-51"
-modified = 2025-09-26T13:32:05.000Z
+modified = 2025-09-26T19:24:29.391Z
 published = 2025-09-23T22:07:20.364Z
 upstream = ["CVE-2023-0464"]
 references = ["https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2017771e2db3e2b96f89bbe8766c3209f6a99545", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2dcd4f1e3115f38cefa43e3efbe9b801c27e642e", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=879f7080d7e141f415c79eaa3a8ac4a3dad0348b", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=959c59c7a0164117e7f8366466a32bb1f8d77ff1", "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html", "https://security.gentoo.org/glsa/202402-08", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.couchbase.com/alerts/", "https://www.debian.org/security/2023/dsa-5417", "https://www.openssl.org/news/secadv/20230322.txt", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2017771e2db3e2b96f89bbe8766c3209f6a99545", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=2dcd4f1e3115f38cefa43e3efbe9b801c27e642e", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=879f7080d7e141f415c79eaa3a8ac4a3dad0348b", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=959c59c7a0164117e7f8366466a32bb1f8d77ff1", "https://lists.debian.org/debian-lts-announce/2023/06/msg00011.html", "https://security.gentoo.org/glsa/202402-08", "https://security.netapp.com/advisory/ntap-20230406-0006/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.couchbase.com/alerts/", "https://www.debian.org/security/2023/dsa-5417", "https://www.openssl.org/news/secadv/20230322.txt"]

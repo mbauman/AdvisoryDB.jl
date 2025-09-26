@@ -45,19 +45,22 @@ jobs:
       id: assign
       run: |
         julia --project=. scripts/assign_ids_and_dates.jl
-
-    - name: Push updated advisories to main
-      if: ${{ steps.assign.outputs.changes && github.event_name == 'push' && github.ref_name == 'main' }}
-      run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add advisories
-        if git diff --cached --quiet; then
+        git diff -w -U0 --cached
+        if git diff -w --cached --quiet; then
           echo "No changes to commit."
+          echo "diff_changes=false" >> $GITHUB_OUTPUT
         else
-          git commit -m '${{ steps.assign.outputs.title }}'
-          git push origin main
+          echo "diff_changes=true" >> $GITHUB_OUTPUT
         fi
+
+    - name: Push updated advisories (to main)
+      if: ${{ steps.assign.outputs.diff_changes == 'true' && github.event_name == 'push' && github.ref_name == 'main' }}
+      run: |
+        git commit -m '${{ steps.assign.outputs.title }}'
+        git push origin main
 
     - name: Export OSV
       id: export
@@ -74,22 +77,54 @@ jobs:
           exit 1
         fi
 
-    - name: Publish OSV data
-      if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    - name: Prepare OSV branch
+      id: prepare_osv
       env:
         GITHUB_BRANCH: ${{ github.ref_name }}
-        GITHUB_SHA: ${{ github.sha }}
       run: |
         DATA_DIR=$PWD/osv
-        BRANCH=generated/osv
-        REF=refs/remotes/origin/$BRANCH
+        REF=refs/remotes/origin/generated/osv
         export GIT_WORK_TREE=$DATA_DIR
         git read-tree "$REF"
         git add --all --intent-to-add
-        git diff --quiet && exit
-        git add --all
-        TREE=$(git write-tree)
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        COMMIT=$(git commit-tree "$TREE" -p "$REF" -m "[automated] export ($GITHUB_BRANCH)@($GITHUB_SHA)")
-        git push origin $COMMIT:$BRANCH
+        git diff -w -U0
+        if git diff -w --quiet; then
+          echo "No changes to commit."
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+          git add --all
+          TREE=$(git write-tree)
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          COMMIT=$(git commit-tree "$TREE" -p "$REF" -m "[automated] export $GITHUB_BRANCH@$GITHUB_SHA")
+          echo "COMMIT=$COMMIT" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Confirm OSV modified timestamps
+      run: |
+        for json_file in $(find ./osv -name "*.json" -type f); do
+          json_time=$(jq -r '.modified' "$json_file")
+          git_path=${json_file#./osv/}
+          git_time=$(git log -1 --format="%cd" --date=iso-strict ${{ steps.prepare_osv.outputs.COMMIT }} -- "$git_path")
+
+          json_epoch=$(date -d "$json_time" +%s)
+          git_epoch=$(date -d "$git_time" +%s)
+          diff_minutes=$(( (json_epoch - git_epoch) / 60 ))
+          abs_diff=${diff_minutes#-}
+
+          if [[ $abs_diff -gt 5 ]]; then
+            echo "${json_file}: json: ${json_time} -> ${json_epoch}"
+            echo "${json_file}:  git: ${git_time} -> ${git_epoch}"
+            echo "${json_file}: diff: ${diff_minutes} minutes"
+            exit 1
+          fi
+        done
+
+    - name: Push OSV branch (on main)
+      if: ${{ steps.prepare_osv.outputs.changes == 'true' && github.event_name == 'push' && github.ref_name == 'main' }}
+      env:
+        GITHUB_BRANCH: ${{ github.ref_name }}
+        COMMIT: ${{ steps.prepare_osv.outputs.COMMIT }}
+      run: |
+        git push origin $COMMIT:generated/osv
