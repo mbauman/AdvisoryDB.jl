@@ -97,13 +97,15 @@ jobs:
           TREE=$(git write-tree)
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          COMMIT=$(git commit-tree "$TREE" -p "$REF" -m "[automated] export ($GITHUB_BRANCH)@($GITHUB_SHA)")
+          COMMIT=$(git commit-tree "$TREE" -p "$REF" -m "[automated] export $GITHUB_BRANCH@$GITHUB_SHA")
           echo "COMMIT=$COMMIT" >> $GITHUB_OUTPUT
         fi
 
     - name: Confirm OSV timestamps
       run: |
-        for json_file in $(find osv -name "*.json" -type f); do
+        DATA_DIR=$PWD/osv
+        export GIT_WORK_TREE=$DATA_DIR
+        for json_file in $(find $DATA_DIR -name "*.json" -type f); do
           json_time=$(jq -r '.modified' "$json_file")
           git_time=$(git log -1 --format="%cd" --date=iso-strict -- "$json_file")
 
