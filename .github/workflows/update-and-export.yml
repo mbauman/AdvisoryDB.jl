@@ -101,13 +101,13 @@ jobs:
           echo "COMMIT=$COMMIT" >> $GITHUB_OUTPUT
         fi
 
-    - name: Confirm OSV timestamps
+    - name: Confirm OSV modified timestamps
       run: |
         DATA_DIR=$PWD/osv
-        export GIT_WORK_TREE=$DATA_DIR
-        for json_file in $(find $DATA_DIR -name "*.json" -type f); do
+        cd $DATA_DIR
+        for json_file in $(find . -name "*.json" -type f); do
           json_time=$(jq -r '.modified' "$json_file")
-          git_time=$(git log -1 --format="%cd" --date=iso-strict -- "$json_file")
+          git_time=$(git log -1 --format="%cd" --date=iso-strict ${{ steps.prepare_osv.outputs.COMMIT }} -- "$json_file")
 
           json_epoch=$(date -d "$json_time" +%s)
           git_epoch=$(date -d "$git_time" +%s)
@@ -115,10 +115,9 @@ jobs:
           abs_diff=${diff_minutes#-}
 
           if [[ $abs_diff -gt 5 ]]; then
-            echo "❌ $json_file"
-            echo "❌ json: ${json_time} -> ${json_epoch}"
-            echo "❌  git: ${git_time} -> ${git_epoch}"
-            echo "❌ diff: ${diff_minutes} minutes"
+            echo "${json_file}: json: ${json_time} -> ${json_epoch}"
+            echo "${json_file}:  git: ${git_time} -> ${git_epoch}"
+            echo "${json_file}: diff: ${diff_minutes} minutes"
             exit 1
           fi
         done
