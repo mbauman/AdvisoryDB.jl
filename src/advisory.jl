@@ -268,14 +268,18 @@ end
 
 function Base.print(io::IO, vuln::Advisory)
     frontmatter = sprint(TOML.print, to_toml_frontmatter(vuln))
+    # I don't think it's possible for TOML.print to output ``` on a line, but just in case:
     nticks = maximum(x->length(x.captures[1])+1, eachmatch(r"^\s*(`+)\s*$", frontmatter), init=3)
-    println(io, repeat("`", nticks), "toml")
-    print(io, frontmatter)
-    println(io, repeat("`", nticks))
-    println(io)
-    is_populated(vuln.summary) && println(io, "# ", replace(vuln.summary, r"\s+"=>" "), "\n\n")
-    is_populated(vuln.details) && println(io, vuln.details)
-    return nothing
+    buf = IOBuffer()
+    println(buf, repeat("`", nticks), "toml")
+    print(buf, frontmatter)
+    println(buf, repeat("`", nticks))
+    println(buf)
+    is_populated(vuln.summary) && println(buf, "# ", replace(vuln.summary, r"\s+"=>" "), "\n\n")
+    is_populated(vuln.details) && println(buf, vuln.details)
+    seekstart(buf)
+    # Roundtrip through the parser to standardize some syntaxes and avoid churn from subsequent parse/prints
+    println(io, CommonMark.markdown(CommonMark.Parser()(buf)))
 end
 
 # Use the TOML/Markdown as the display:
@@ -294,10 +298,10 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
     summary = if isdefined(doc.first_child, :t) && doc.first_child.t isa CommonMark.Heading
         s = strip(chopprefix(CommonMark.markdown(doc.first_child), r"^#+"))
         doc.first_child = doc.first_child.nxt
-        s * "\n"
+        s
     end
     remainder = strip(CommonMark.markdown(doc))
-    details = isempty(remainder) ? nothing : remainder * "\n"
+    details = isempty(remainder) ? nothing : remainder
 
     # return try
         Advisory(; Dict(Symbol(k)=>v for (k,v) in frontmatter)..., summary, details)
