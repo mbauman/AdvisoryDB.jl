@@ -303,11 +303,11 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
     remainder = strip(CommonMark.markdown(doc))
     details = isempty(remainder) ? nothing : remainder
 
-    # return try
+    return try
         Advisory(; Dict(Symbol(k)=>v for (k,v) in frontmatter)..., summary, details)
-    # catch _
-    #     nothing
-    # end
+    catch _
+        nothing
+    end
 end
 
 """
