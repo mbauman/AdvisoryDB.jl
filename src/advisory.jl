@@ -1,6 +1,6 @@
 using DataStructures: OrderedDict
 using Dates: Dates, DateTime
-using Markdown: Markdown
+using CommonMark: CommonMark
 
 """
     PackageVulnerability(; pkgs, ranges, source_type=nothing, source_mapping=nothing)
@@ -268,39 +268,41 @@ end
 
 function Base.print(io::IO, vuln::Advisory)
     frontmatter = sprint(TOML.print, to_toml_frontmatter(vuln))
-    nticks = maximum(x->length(x.captures[1])+1, eachmatch(r"(`+)", frontmatter), init=3)
+    nticks = maximum(x->length(x.captures[1])+1, eachmatch(r"^\s*(`+)\s*$", frontmatter), init=3)
     println(io, repeat("`", nticks), "toml")
     print(io, frontmatter)
     println(io, repeat("`", nticks))
     println(io)
-    is_populated(vuln.summary) && println(io, Markdown.parse(string("# ", vuln.summary, "\n")))
-    is_populated(vuln.details) && println(io, Markdown.parse(vuln.details))
+    is_populated(vuln.summary) && println(io, "# ", replace(vuln.summary, r"\s+"=>" "), "\n\n")
+    is_populated(vuln.details) && println(io, vuln.details)
     return nothing
 end
 
 # Use the TOML/Markdown as the display:
-Base.show(io::IO, mime::MIME"text/plain", vuln::Advisory) = show(io, mime, Markdown.parse(string(vuln)))
+Base.show(io::IO, mime::MIME"text/plain", vuln::Advisory) = show(io, mime, CommonMark.Parser()(string(vuln)))
 Base.show(io::IO, vuln::Advisory) = print(io, vuln)
 
 ####### Read a Markdown/TOML advisory
 parsefile(filename) = something(open(io->tryparse(Advisory, io), filename))
 function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
-    m = Markdown.parse(s).content
-    (length(m) >= 1 && m[1] isa Markdown.Code && m[1].language == "toml") || return nothing
-    frontmatter = TOML.tryparse(m[1].code)
+    doc = (CommonMark.Parser())(s)
+    toml = doc.first_child
+    isdefined(toml, :t) && toml.t isa CommonMark.CodeBlock && toml.t.info == "toml" || return nothing
+    frontmatter = TOML.tryparse(toml.literal)
     frontmatter === nothing && return nothing
-    summary = if length(m) >= 2 && m[2] isa Markdown.Header
-        chopprefix(Markdown.plain(m[2]), r"^#+\s+")
+    doc.first_child = toml.nxt
+    summary = if isdefined(doc.first_child, :t) && doc.first_child.t isa CommonMark.Heading
+        strip(chopprefix(CommonMark.markdown(doc.first_child), r"^#+"))
+        doc.first_child = doc.first_child.nxt
     end
-    details = if length(m) >= 2+!isnothing(summary)
-        Markdown.plain(m[2+!isnothing(summary):end])
-    end
+    remainder = strip(CommonMark.markdown(doc))
+    details = isempty(remainder) ? nothing : remainder
 
-    # return try
+    return try
         Advisory(; Dict(Symbol(k)=>v for (k,v) in frontmatter)..., summary, details)
-    # catch _
-    #     nothing
-    # end
+    catch _
+        nothing
+    end
 end
 
 """
