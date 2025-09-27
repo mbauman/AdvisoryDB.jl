@@ -292,8 +292,9 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
     frontmatter === nothing && return nothing
     doc.first_child = toml.nxt
     summary = if isdefined(doc.first_child, :t) && doc.first_child.t isa CommonMark.Heading
-        strip(chopprefix(CommonMark.markdown(doc.first_child), r"^#+"))
+        s = strip(chopprefix(CommonMark.markdown(doc.first_child), r"^#+"))
         doc.first_child = doc.first_child.nxt
+        s                             
     end
     remainder = strip(CommonMark.markdown(doc))
     details = isempty(remainder) ? nothing : remainder
