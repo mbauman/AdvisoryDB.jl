@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-70"
-modified = 2025-09-26T20:17:45.145Z
+modified = 2000-01-01T00:00:00.000Z
 published = 2025-09-26T20:17:45.145Z
 aliases = ["GHSA-589r-g8hf-xx59", "CVE-2025-52483"]
 
@@ -22,11 +22,11 @@ html_url = "https://github.com/JuliaRegistries/Registrator.jl/security/advisorie
 
 ### Impact
 
-If the clone URL returned by GitHub is malicious (or can be injected using upstream vulnerabilities), a shell script injection can occur within the `withpasswd()` function.  This can then lead to a potential RCE. 
+If the clone URL returned by GitHub is malicious (or can be injected using upstream vulnerabilities), a shell script injection can occur within the `withpasswd()` function.  This can then lead to a potential RCE.
 
 ### Patches
 
-Users should upgrade immediately to v1.9.5. All prior versions are vulnerable. 
+Users should upgrade immediately to v1.9.5. All prior versions are vulnerable.
 
 ### Workarounds
 
