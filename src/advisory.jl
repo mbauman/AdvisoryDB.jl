@@ -294,10 +294,10 @@ function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
     summary = if isdefined(doc.first_child, :t) && doc.first_child.t isa CommonMark.Heading
         s = strip(chopprefix(CommonMark.markdown(doc.first_child), r"^#+"))
         doc.first_child = doc.first_child.nxt
-        s                             
+        s * "\n"
     end
     remainder = strip(CommonMark.markdown(doc))
-    details = isempty(remainder) ? nothing : remainder
+    details = isempty(remainder) ? nothing : remainder * "\n"
 
     # return try
         Advisory(; Dict(Symbol(k)=>v for (k,v) in frontmatter)..., summary, details)
