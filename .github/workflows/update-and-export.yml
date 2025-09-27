@@ -97,7 +97,7 @@ jobs:
           TREE=$(git write-tree)
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          COMMIT=$(git commit-tree "$TREE" -p "$REF" -m "[automated] export $GITHUB_BRANCH@$GITHUB_SHA")
+          COMMIT=$(git commit-tree "$TREE" -p "$REF" -m "[automated] export $GITHUB_BRANCH@($GITHUB_SHA)")
           echo "COMMIT=$COMMIT" >> $GITHUB_OUTPUT
         fi
 
