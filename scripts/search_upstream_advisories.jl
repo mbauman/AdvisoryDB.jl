@@ -99,7 +99,7 @@ function main()
             advisory = SecurityAdvisories.update(existing, advisory)
         end
         @info "JLSEC for $id: $(advisory.id)"
-        dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(year(advisory))))
+        dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(SecurityAdvisories.year(advisory))))
         file = joinpath(dir, advisory.id * ".md")
         n_modified += isfile(file)
         open(file, "w") do io
