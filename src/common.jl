@@ -437,20 +437,21 @@ function all_jlls()
     filter(endswith("_jll")∘first, pkgs)
 end
 """
-    corresponding_jlsec_path(id, aliases=String[])
+    find_existing_jlsec(id, aliases=String[])
 
-Given an upstream advisory id and an (optional) list of its own aliases,
-return the path to the corresponding JLSEC advisory if it exists and `nothing` otherwise.
+Given an advisory id and an (optional) list of its own aliases, return the published
+JLSEC advisory corresponding to it or nothing none correspond.
 """
-function corresponding_jlsec_path(id, aliases=String[])
+function find_existing_jlsec(id, aliases=String[]; path=joinpath(@__DIR__, "..", "advisories", "published"))
+    startswith(id, string(PREFIX, "-2")) && return id # lol y3k problems
     isdir(path) || return nothing
     ids = Set(Iterators.flatten((id, aliases)))
-    for (root, _, files) in walkdir(path)
+    for (root, _, files) in walkdir(joinpath(@__DIR__, "..", "advisories"))
         for file in joinpath.(root, files)
-            is_jlsec_advisory_path_path(file) || continue
+            is_jlsec_advisory_path(file) || continue
             candidate = parsefile(file)
             for alias in Iterators.flatten((candidate.id, candidate.aliases, candidate.upstream))
-                alias in ids && return file
+                alias in ids && return parsefile(file)
             end
         end
     end

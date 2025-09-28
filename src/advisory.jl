@@ -193,19 +193,24 @@ function update(original::Advisory, updates::Advisory)
         id = original.id,
         modified = original.modified, # This may or may not get overwritten later
         published = original.published,
-        withdrawn = something(original.withdrawn, new.withdrawn, Some(nothing)),
-        ## All other fields are directly taken from the new advisory
-        aliases = new.aliases,
-        upstream = new.upstream,
-        related = new.related,
-        summary = new.summary,
-        details = new.details,
-        severity = new.severity,
-        affected = new.affected,
-        references = new.references,
-        credits = new.credits,
-        sources = new.sources,
+        withdrawn = something(original.withdrawn, updates.withdrawn, Some(nothing)),
+        ## All other fields are directly taken from the updated advisory
+        aliases = updates.aliases,
+        upstream = updates.upstream,
+        related = updates.related,
+        summary = updates.summary,
+        details = updates.details,
+        severity = updates.severity,
+        affected = updates.affected,
+        references = updates.references,
+        credits = updates.credits,
+        jlsec_sources = updates.jlsec_sources,
     )
+end
+
+function year(advisory::Advisory)
+    yyyy = tryparse(Int, split(advisory.id, "-")[2])
+    isnothing(yyyy) || yyyy == 0 ? Dates.year(Dates.now(Dates.UTC)) : yyyy
 end
 
 #### IO and serialization ####

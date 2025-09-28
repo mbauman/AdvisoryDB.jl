@@ -94,8 +94,12 @@ function main()
     # Now create or update the found advisories:
     n_modified = 0
     for (id, advisory) in advisories
-        @info "JLSEC for $id"
-        dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(Dates.year(Dates.now(Dates.UTC)))))
+        existing = find_existing_jlsec(advisory.id, vcat(advisory.upstream, advisory.aliases))
+        if !isnothing(existing)
+            advisory = update(existing, advisory)
+        end
+        @info "JLSEC for $id: $(advisory.id)"
+        dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(year(advisory))))
         file = joinpath(dir, advisory.id * ".md")
         n_modified += isfile(file)
         open(file, "w") do io
