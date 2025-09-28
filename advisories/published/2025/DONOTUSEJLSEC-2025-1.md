@@ -14,7 +14,7 @@ ranges = ["< 1.6.0"]
 
 [[jlsec_sources]]
 id = "GHSA-4g68-4pxg-mw93"
-imported = 2025-09-23T02:06:09.198Z
+imported = 2025-09-28T02:48:31.179Z
 modified = 2025-06-24T23:01:25.000Z
 published = 2025-06-24T23:01:25.000Z
 url = "https://api.github.com/repos/JuliaWeb/HTTP.jl/security-advisories/GHSA-4g68-4pxg-mw93"
