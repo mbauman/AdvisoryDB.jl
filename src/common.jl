@@ -445,13 +445,13 @@ JLSEC advisory corresponding to it or nothing none correspond.
 function find_existing_jlsec(id, aliases=String[]; path=joinpath(@__DIR__, "..", "advisories", "published"))
     startswith(id, string(PREFIX, "-2")) && return id # lol y3k problems
     isdir(path) || return nothing
-    ids = Set(Iterators.flatten((id, aliases)))
+    ids = Set(Iterators.flatten(([id], aliases)))
     @info "looking for $ids in existing jlsecs"
     for (root, _, files) in walkdir(joinpath(@__DIR__, "..", "advisories"))
         for file in joinpath.(root, files)
             is_jlsec_advisory_path(file) || continue
             candidate = parsefile(file)
-            for alias in Iterators.flatten((candidate.id, candidate.aliases, candidate.upstream))
+            for alias in Iterators.flatten(([candidate.id], candidate.aliases, candidate.upstream))
                 if alias in ids
                     @info "found $alias"
                     return candidate
