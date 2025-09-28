@@ -3,73 +3,26 @@ schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-1"
 modified = 2000-01-01T00:00:00.000Z
 published = 2025-09-23T02:23:16.095Z
-aliases = ["GHSA-4g68-4pxg-mw93", "CVE-2025-52479"]
+upstream = ["CVE-2021-3712"]
+references = ["http://www.openwall.com/lists/oss-security/2021/08/26/2", "https://cert-portal.siemens.com/productcert/pdf/ssa-244969.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=94d23fcff9b2a7a8368dfe52214d5c2569882c11", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=ccb0a11145ee72b042d10593a64eaf9e8a55ec12", "https://kc.mcafee.com/corporate/index?page=content&id=SB10366", "https://lists.apache.org/thread.html/r18995de860f0e63635f3008fd2a6aca82394249476d21691e7c59c9e%40%3Cdev.tomcat.apache.org%3E", "https://lists.apache.org/thread.html/rad5d9f83f0d11fb3f8bb148d179b8a9ad7c6a17f18d70e5805a713d1%40%3Cdev.tomcat.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2021/09/msg00014.html", "https://lists.debian.org/debian-lts-announce/2021/09/msg00021.html", "https://security.gentoo.org/glsa/202209-02", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20210827-0010/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.debian.org/security/2021/dsa-4963", "https://www.openssl.org/news/secadv/20210824.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujan2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://www.tenable.com/security/tns-2021-16", "https://www.tenable.com/security/tns-2022-02", "http://www.openwall.com/lists/oss-security/2021/08/26/2", "https://cert-portal.siemens.com/productcert/pdf/ssa-244969.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=94d23fcff9b2a7a8368dfe52214d5c2569882c11", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=ccb0a11145ee72b042d10593a64eaf9e8a55ec12", "https://kc.mcafee.com/corporate/index?page=content&id=SB10366", "https://lists.apache.org/thread.html/r18995de860f0e63635f3008fd2a6aca82394249476d21691e7c59c9e%40%3Cdev.tomcat.apache.org%3E", "https://lists.apache.org/thread.html/rad5d9f83f0d11fb3f8bb148d179b8a9ad7c6a17f18d70e5805a713d1%40%3Cdev.tomcat.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2021/09/msg00014.html", "https://lists.debian.org/debian-lts-announce/2021/09/msg00021.html", "https://security.gentoo.org/glsa/202209-02", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20210827-0010/", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.debian.org/security/2021/dsa-4963", "https://www.openssl.org/news/secadv/20210824.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujan2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://www.tenable.com/security/tns-2021-16", "https://www.tenable.com/security/tns-2022-02"]
 
 [[affected]]
-pkg = "HTTP"
-ranges = ["<= 1.10.16"]
+pkg = "OpenSSL_jll"
+ranges = ["< 1.1.13+0"]
 [[affected]]
-pkg = "URIs"
-ranges = ["< 1.6.0"]
+pkg = "Openresty_jll"
+ranges = ["< 1.19.9+0"]
 
 [[jlsec_sources]]
-id = "GHSA-4g68-4pxg-mw93"
-imported = 2025-09-23T02:06:09.198Z
-modified = 2025-06-24T23:01:25.000Z
-published = 2025-06-24T23:01:25.000Z
-url = "https://api.github.com/repos/JuliaWeb/HTTP.jl/security-advisories/GHSA-4g68-4pxg-mw93"
-html_url = "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-4g68-4pxg-mw93"
+id = "CVE-2021-3712"
+imported = 2025-09-28T03:04:32.142Z
+modified = 2024-11-21T06:22:13.290Z
+published = 2021-08-24T15:15:09.533Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-3712"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-3712"
 ```
 
-# CR/LF injection in URIs.jl (also affects HTTP.jl)
+# ASN.1 strings are represented internally within OpenSSL as an ASN1_STRING structure which contains a...
 
-### Description
-
-The URIs.jl and HTTP.jl packages allowed the construction of URIs containing CR/LF characters. If user input was not otherwise escaped or protected, this can lead to a CRLF injection attack.
-
-With this simple Julia code, you can inject a custom header named `Foo` with the value `bar`:
-
-```julia
-import HTTP
-
-HTTP.get("http://localhost:1337/ HTTP/1.1\r\nFoo: bar\r\nbaz:")
-```
-
-The server will receive the request like this:
-
-```
-➜ ncat -klp 1337
-GET / HTTP/1.1
-Foo: bar <-- injected header!
-baz: HTTP/1.1
-Host: locahost:1337
-Accept: */*
-User-Agent: HTTP.jl/1.11.5
-Content-Length: 0
-Accept-Encoding: gzip
-```
-
-### Impact
-
-Inject headers or inject data to the request body and cause “HTTP response splitting”.
-
-### Patches
-
-Users of HTTP.jl should upgrade immediately to HTTP.jl v1.10.17. All prior versions are vulnerable.
-
-Users of URIs.jl should upgrade immediately to URIs.jl v1.6.0. All prior versions are vulnerable.
-
-The check for valid URIs is now in the URI.jl package, and the latest version of HTTP.jl incorporates that fix.
-
-### Workarounds
-
-Manually validate any URIs before passing them on to functions in this package.
-
-### References
-
-Fixed by: https://github.com/JuliaWeb/URIs.jl/pull/66 (which is available in URIs.jl v1.6.0).
-
-### Credits
-
-Thanks to *splitline* from the DEVCORE Research Team for reporting this issue.
+ASN.1 strings are represented internally within OpenSSL as an ASN1_STRING structure which contains a buffer holding the string data and a field holding the buffer length. This contrasts with normal C strings which are repesented as a buffer for the string data which is terminated with a NUL (0) byte. Although not a strict requirement, ASN.1 strings that are parsed using OpenSSL's own "d2i" functions (and other similar parsing functions) as well as any string whose value has been set with the ASN1_STRING_set() function will additionally NUL terminate the byte array in the ASN1_STRING structure. However, it is possible for applications to directly construct valid ASN1_STRING structures which do not NUL terminate the byte array by directly setting the "data" and "length" fields in the ASN1_STRING array. This can also happen by using the ASN1_STRING_set0() function. Numerous OpenSSL functions that print ASN.1 data have been found to assume that the ASN1_STRING byte array will be NUL terminated, even though this is not guaranteed for strings that have been directly constructed. Where an application requests an ASN.1 structure to be printed, and where that ASN.1 structure contains ASN1_STRINGs that have been directly constructed by the application without NUL terminating the "data" field, then a read buffer overrun can occur. The same thing can also occur during name constraints processing of certificates (for example if a certificate has been directly constructed by the application instead of loading it via the OpenSSL parsing functions, and the certificate contains non NUL terminated ASN1_STRING structures). It can also occur in the X509_get1_email(), X509_REQ_get1_email() and X509_get1_ocsp() functions. If a malicious actor can cause an application to directly construct an ASN1_STRING and then process it through one of the affected OpenSSL functions then this issue could be hit. This might result in a crash (causing a Denial of Service attack). It could also result in the disclosure of private memory contents (such as private keys, or sensitive plaintext). Fixed in OpenSSL 1.1.1l (Affected 1.1.1-1.1.1k). Fixed in OpenSSL 1.0.2za (Affected 1.0.2-1.0.2y).
 
