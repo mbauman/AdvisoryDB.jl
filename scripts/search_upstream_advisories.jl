@@ -94,9 +94,9 @@ function main()
     # Now create or update the found advisories:
     n_modified = 0
     for (id, advisory) in advisories
-        existing = find_existing_jlsec(advisory.id, vcat(advisory.upstream, advisory.aliases))
+        existing = SecurityAdvisories.find_existing_jlsec(advisory.id, vcat(advisory.upstream, advisory.aliases))
         if !isnothing(existing)
-            advisory = update(existing, advisory)
+            advisory = SecurityAdvisories.update(existing, advisory)
         end
         @info "JLSEC for $id: $(advisory.id)"
         dir = mkpath(joinpath(@__DIR__, "..", "advisories", "published", string(year(advisory))))
