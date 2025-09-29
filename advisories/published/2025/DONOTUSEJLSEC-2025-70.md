@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-70"
-modified = 2000-01-01T00:00:00.000Z
+modified = 2025-09-29T02:51:33.558Z
 published = 2025-09-26T20:17:45.145Z
 aliases = ["GHSA-589r-g8hf-xx59", "CVE-2025-52483"]
 

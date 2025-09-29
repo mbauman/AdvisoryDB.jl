@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-16"
-modified = 2000-01-01T00:00:00.000Z
+modified = 2025-09-29T02:51:33.558Z
 published = 2025-09-23T14:07:03.662Z
 upstream = ["CVE-2022-41953"]
 references = ["https://github.com/git-for-windows/git/commit/7360767e8dfc1895a932324079f7d45d7791d39f", "https://github.com/git-for-windows/git/pull/4219", "https://github.com/git-for-windows/git/security/advisories/GHSA-v4px-mx59-w99c", "https://www.tcl.tk/man/tcl8.6/TclCmd/exec.html#M23", "https://github.com/git-for-windows/git/commit/7360767e8dfc1895a932324079f7d45d7791d39f", "https://github.com/git-for-windows/git/pull/4219", "https://github.com/git-for-windows/git/security/advisories/GHSA-v4px-mx59-w99c", "https://www.tcl.tk/man/tcl8.6/TclCmd/exec.html#M23"]
