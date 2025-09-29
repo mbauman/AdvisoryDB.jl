@@ -106,7 +106,7 @@ jobs:
         for json_file in $(find ./osv -name "*.json" -type f); do
           json_time=$(jq -r '.modified' "$json_file")
           git_path=${json_file#./osv/}
-          git_time=$(git log -1 --format="%cd" --date=iso-strict ${{ steps.prepare_osv.outputs.COMMIT }} -- "$git_path")
+          git_time=$(git log -1 --format="%cd" --date=iso-strict ${{ steps.prepare_osv.outputs.COMMIT || 'generated/osv' }} -- "$git_path")
 
           json_epoch=$(date -d "$json_time" +%s)
           git_epoch=$(date -d "$git_time" +%s)

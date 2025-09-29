@@ -385,7 +385,7 @@ function affected_julia_packages(description, vendorproductversions)
         end
         advisory_type = "alias"
     end
-    @info collect(pkgs)
+
     # return pkgs
     vulns = PackageVulnerability[]
     for (pkg, source_mapping) in pkgs
