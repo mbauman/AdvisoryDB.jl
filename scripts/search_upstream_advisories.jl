@@ -124,23 +124,34 @@ function main()
 
     divide(f, x) = return (filter(f, x), filter(!f, x))
 
-    # Now break the identified advisories into three sections.  First, advisories for which failed to parse the upstream version:
-    failed_advisories, advisories = divide(((_,v),)->any(isnothing, (tryparse(SecurityAdvisories.VersionRange, r) for entry in v.affected for (_,source_map) in entry.source_mapping for (r, _) in source_map)), advisories)
-    !isempty(failed_advisories) && println(io, "### $(length(failed_advisories)) advisories failed to parse the source version range\n\nThese advisories seem to apply to a Julia package but had trouble identifying exactly how and at which versions.")
-    for (id, adv) in sort(failed_advisories)
+
+    function print_advisory_package_version_details(io, id, adv)
         pkgs = SecurityAdvisories.vulnerable_packages(adv)
         affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
         html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
         println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
-            println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Failures include:")
+            println(io, "    * **", entry.pkg, "** computed `", entry.ranges, "`")
+            # Look to see if any troubles were found
             for (source, version_map) in entry.source_mapping
-                for (v, _) in version_map
-                    isnothing(tryparse(SecurityAdvisories.VersionRange, v)) || continue
-                    println(io, "        * `", source, "` version `", v, "`")
+                for (v, r) in version_map
+                    if isnothing(tryparse(SecurityAdvisories.VersionRange, v))
+                        println(io, "        * `", source, "` at `", v, "` failed to parse")
+                    elseif r == [VersionRange{VersionNumber}("*")]
+                        println(io, "        * `", source, "` at `", v, "` is unbounded")
+                    elseif !all(SecurityAdvisories.has_upper_bound, r)
+                        println(io, "        * `", source, "` at `", v, "` mapped to `[", join(string.(r), ", "), "]`")
+                    end
                 end
             end
         end
+    end
+
+    # Now break the identified advisories into three sections.  First, advisories which failed to parse the upstream version:
+    failed_advisories, advisories = divide(((_,v),)->any(isnothing, (tryparse(SecurityAdvisories.VersionRange, r) for entry in v.affected for (_,source_map) in entry.source_mapping for (r, _) in source_map)), advisories)
+    !isempty(failed_advisories) && println(io, "### $(length(failed_advisories)) advisories failed to parse the source version range\n\nThese advisories seem to apply to a Julia package but had trouble identifying exactly how and at which versions.")
+    for (id, adv) in sort(failed_advisories)
+        print_advisory_package_version_details(io, id, adv)
     end
     !isempty(failed_advisories) && println(io)
 
@@ -148,19 +159,7 @@ function main()
     star_advisories, advisories = divide(((_,x),)->any(entry->entry.ranges==[VersionRange{VersionNumber}("*")], x.affected), advisories)
     !isempty(star_advisories) && println(io, "### $(length(star_advisories)) advisories apply to all registered versions of a package\n\nThese advisories had no obvious failures but computed a range without bounds.")
     for (id, adv) in sort(star_advisories)
-        pkgs = SecurityAdvisories.vulnerable_packages(adv)
-        affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
-        html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
-        println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
-        for entry in adv.affected
-            println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Unbounded mappings are:")
-            for (source, version_map) in entry.source_mapping
-                for (v, r) in version_map
-                    r == [VersionRange{VersionNumber}("*")] || continue
-                    println(io, "        * `", source, "` version `", v, "`")
-                end
-            end
-        end
+        print_advisory_package_version_details(io, id, adv)
     end
     !isempty(star_advisories) && println(io)
 
@@ -168,32 +167,14 @@ function main()
     unbounded_advisories, advisories = divide(((_,x),)->any(entry->any(!SecurityAdvisories.has_upper_bound, entry.ranges), x.affected), advisories)
     !isempty(unbounded_advisories) && println(io, "### $(length(unbounded_advisories)) advisories apply to the latest version of a package and do not have a patch")
     for (id, adv) in sort(unbounded_advisories)
-        pkgs = SecurityAdvisories.vulnerable_packages(adv)
-        affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
-        html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
-        println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
-        for entry in adv.affected
-            println(io, "    * **$(entry.pkg)**, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`. Unbounded mappings are:")
-            for (source, version_map) in entry.source_mapping
-                for (v, r) in version_map
-                    all(SecurityAdvisories.has_upper_bound, r) && continue
-                    println(io, "        * `", source, "` version `", v, "` mapped to `[", join(string.(r), ", "), "]`")
-                end
-            end
-        end
+        print_advisory_package_version_details(io, id, adv)
     end
     !isempty(unbounded_advisories) && println(io)
 
     # And finally all remaining advisories.
     !isempty(advisories) && println(io, "### $(length(advisories)) advisories found concrete vulnerable ranges\n\n")
     for (id, adv) in sort(advisories)
-        pkgs = SecurityAdvisories.vulnerable_packages(adv)
-        affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
-        html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
-        println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
-        for entry in adv.affected
-            println(io, "    * **$(entry.pkg)** at `[$(join('"'.*string.(entry.ranges).*'"', ", "))]`, matching `", join(keys(entry.source_mapping), "`, `", "`, and `"), "`")
-        end
+        print_advisory_package_version_details(io, id, adv)
     end
     !isempty(advisories) && println(io)
 
