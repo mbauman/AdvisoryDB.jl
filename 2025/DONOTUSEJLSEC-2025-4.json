@@ -1,13 +1,13 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-4",
-    "modified": "2025-09-26T19:46:16.213Z",
+    "modified": "2025-09-29T02:51:33.558Z",
     "published": "2025-09-23T14:07:03.367Z",
     "upstream": [
         "CVE-2019-1387"
     ],
-    "summary": "Git recursive clones could allow remote code execution\n",
-    "details": "An issue was found in Git before v2.24.1, v2.23.1, v2.22.2, v2.21.1, v2.20.2, v2.19.3, v2.18.2, v2.17.3, v2.16.6, v2.15.4, and v2.14.6. Recursive clones are currently affected by a vulnerability that is caused by too-lax validation of submodule names, allowing very targeted attacks via remote code execution in recursive clones.\n",
+    "summary": "Git recursive clones could allow remote code execution",
+    "details": "An issue was found in Git before v2.24.1, v2.23.1, v2.22.2, v2.21.1, v2.20.2, v2.19.3, v2.18.2, v2.17.3, v2.16.6, v2.15.4, and v2.14.6. Recursive clones are currently affected by a vulnerability that is caused by too-lax validation of submodule names, allowing very targeted attacks via remote code execution in recursive clones.",
     "affected": [
         {
             "ranges": [

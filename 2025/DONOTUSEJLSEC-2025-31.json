@@ -1,13 +1,13 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-31",
-    "modified": "2025-09-26T19:46:16.213Z",
+    "modified": "2025-09-29T02:51:33.558Z",
     "published": "2025-09-23T22:07:20.228Z",
     "upstream": [
         "CVE-2019-1563"
     ],
-    "summary": "In situations where an attacker receives automated notification of the success or failure of a decry...\n",
-    "details": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to the CMS*decrypt or PKCS7*decrypt functions to select the correct recipient info to decrypt. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).\n",
+    "summary": "In situations where an attacker receives automated notification of the success or failure of a decry...",
+    "details": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to the CMS*decrypt or PKCS7*decrypt functions to select the correct recipient info to decrypt. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
     "affected": [
         {
             "ranges": [

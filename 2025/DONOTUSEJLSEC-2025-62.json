@@ -1,13 +1,13 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-62",
-    "modified": "2025-09-26T19:46:16.213Z",
+    "modified": "2025-09-29T02:51:33.558Z",
     "published": "2025-09-23T22:07:20.415Z",
     "upstream": [
         "CVE-2024-0727"
     ],
-    "summary": "Issue summary: Processing a maliciously formatted PKCS12 file may lead OpenSSL to crash leading to a...\n",
-    "details": "Issue summary: Processing a maliciously formatted PKCS12 file may lead OpenSSL to crash leading to a potential Denial of Service attack\n\nImpact summary: Applications loading files in the PKCS12 format from untrusted sources might terminate abruptly.\n\nA file in PKCS12 format can contain certificates and keys and may come from an untrusted source. The PKCS12 specification allows certain fields to be NULL, but OpenSSL does not correctly check for this case. This can lead to a NULL pointer dereference that results in OpenSSL crashing. If an application processes PKCS12 files from an untrusted source using the OpenSSL APIs then that application will be vulnerable to this issue.\n\nOpenSSL APIs that are vulnerable to this are: PKCS12*parse(), PKCS12*unpack*p7data(), PKCS12*unpack*p7encdata(), PKCS12*unpack*authsafes() and PKCS12*newpass().\n\nWe have also fixed a similar issue in SMIME*write*PKCS7(). However since this function is related to writing data we do not consider it security significant.\n\nThe FIPS modules in 3.2, 3.1 and 3.0 are not affected by this issue.\n",
+    "summary": "Issue summary: Processing a maliciously formatted PKCS12 file may lead OpenSSL to crash leading to a...",
+    "details": "Issue summary: Processing a maliciously formatted PKCS12 file may lead OpenSSL to crash leading to a potential Denial of Service attack\n\nImpact summary: Applications loading files in the PKCS12 format from untrusted sources might terminate abruptly.\n\nA file in PKCS12 format can contain certificates and keys and may come from an untrusted source. The PKCS12 specification allows certain fields to be NULL, but OpenSSL does not correctly check for this case. This can lead to a NULL pointer dereference that results in OpenSSL crashing. If an application processes PKCS12 files from an untrusted source using the OpenSSL APIs then that application will be vulnerable to this issue.\n\nOpenSSL APIs that are vulnerable to this are: PKCS12*parse(), PKCS12*unpack*p7data(), PKCS12*unpack*p7encdata(), PKCS12*unpack*authsafes() and PKCS12*newpass().\n\nWe have also fixed a similar issue in SMIME*write*PKCS7(). However since this function is related to writing data we do not consider it security significant.\n\nThe FIPS modules in 3.2, 3.1 and 3.0 are not affected by this issue.",
     "affected": [
         {
             "ranges": [

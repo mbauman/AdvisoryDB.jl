@@ -1,13 +1,13 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-40",
-    "modified": "2025-09-26T19:46:16.213Z",
+    "modified": "2025-09-29T02:51:33.558Z",
     "published": "2025-09-23T22:07:20.273Z",
     "upstream": [
         "CVE-2021-3711"
     ],
-    "summary": "In order to decrypt SM2 encrypted data an application is expected to call the API function EVP*PKEY*...\n",
-    "details": "In order to decrypt SM2 encrypted data an application is expected to call the API function EVP*PKEY*decrypt(). Typically an application will call this function twice. The first time, on entry, the \"out\" parameter can be NULL and, on exit, the \"outlen\" parameter is populated with the buffer size required to hold the decrypted plaintext. The application can then allocate a sufficiently sized buffer and call EVP*PKEY*decrypt() again, but this time passing a non-NULL value for the \"out\" parameter. A bug in the implementation of the SM2 decryption code means that the calculation of the buffer size required to hold the plaintext returned by the first call to EVP*PKEY*decrypt() can be smaller than the actual size required by the second call. This can lead to a buffer overflow when EVP*PKEY*decrypt() is called by the application a second time with a buffer that is too small. A malicious attacker who is able present SM2 content for decryption to an application could cause attacker chosen data to overflow the buffer by up to a maximum of 62 bytes altering the contents of other data held after the buffer, possibly changing application behaviour or causing the application to crash. The location of the buffer is application dependent but is typically heap allocated. Fixed in OpenSSL 1.1.1l (Affected 1.1.1-1.1.1k).\n",
+    "summary": "In order to decrypt SM2 encrypted data an application is expected to call the API function EVP*PKEY*...",
+    "details": "In order to decrypt SM2 encrypted data an application is expected to call the API function EVP*PKEY*decrypt(). Typically an application will call this function twice. The first time, on entry, the \"out\" parameter can be NULL and, on exit, the \"outlen\" parameter is populated with the buffer size required to hold the decrypted plaintext. The application can then allocate a sufficiently sized buffer and call EVP*PKEY*decrypt() again, but this time passing a non-NULL value for the \"out\" parameter. A bug in the implementation of the SM2 decryption code means that the calculation of the buffer size required to hold the plaintext returned by the first call to EVP*PKEY*decrypt() can be smaller than the actual size required by the second call. This can lead to a buffer overflow when EVP*PKEY*decrypt() is called by the application a second time with a buffer that is too small. A malicious attacker who is able present SM2 content for decryption to an application could cause attacker chosen data to overflow the buffer by up to a maximum of 62 bytes altering the contents of other data held after the buffer, possibly changing application behaviour or causing the application to crash. The location of the buffer is application dependent but is typically heap allocated. Fixed in OpenSSL 1.1.1l (Affected 1.1.1-1.1.1k).",
     "affected": [
         {
             "ranges": [

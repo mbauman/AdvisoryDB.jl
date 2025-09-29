@@ -1,13 +1,13 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-44",
-    "modified": "2025-09-26T19:46:16.213Z",
+    "modified": "2025-09-29T02:51:33.558Z",
     "published": "2025-09-23T22:07:20.283Z",
     "upstream": [
         "CVE-2022-1292"
     ],
-    "summary": "The c_rehash script does not properly sanitise shell metacharacters to prevent command injection\n",
-    "details": "The c*rehash script does not properly sanitise shell metacharacters to prevent command injection. This script is distributed by some operating systems in a manner where it is automatically executed. On such operating systems, an attacker could execute arbitrary commands with the privileges of the script. Use of the c*rehash script is considered obsolete and should be replaced by the OpenSSL rehash command line tool. Fixed in OpenSSL 3.0.3 (Affected 3.0.0,3.0.1,3.0.2). Fixed in OpenSSL 1.1.1o (Affected 1.1.1-1.1.1n). Fixed in OpenSSL 1.0.2ze (Affected 1.0.2-1.0.2zd).\n",
+    "summary": "The c_rehash script does not properly sanitise shell metacharacters to prevent command injection",
+    "details": "The c*rehash script does not properly sanitise shell metacharacters to prevent command injection. This script is distributed by some operating systems in a manner where it is automatically executed. On such operating systems, an attacker could execute arbitrary commands with the privileges of the script. Use of the c*rehash script is considered obsolete and should be replaced by the OpenSSL rehash command line tool. Fixed in OpenSSL 3.0.3 (Affected 3.0.0,3.0.1,3.0.2). Fixed in OpenSSL 1.1.1o (Affected 1.1.1-1.1.1n). Fixed in OpenSSL 1.0.2ze (Affected 1.0.2-1.0.2zd).",
     "affected": [
         {
             "ranges": [

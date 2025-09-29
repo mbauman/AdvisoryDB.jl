@@ -1,14 +1,14 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-27",
-    "modified": "2025-09-26T19:46:16.213Z",
+    "modified": "2025-09-29T02:51:33.558Z",
     "published": "2025-09-23T22:02:34.047Z",
     "aliases": [
         "GHSA-w8jv-rg3h-fc68",
         "CVE-2025-52480"
     ],
-    "summary": "Argument injection in `gettreesha()` function in Registrator.jl\n",
-    "details": "### Impact\n\nIf the clone URL returned by GitHub is malicious (or can be injected using upstream vulnerabilities), an argument injection is possible in the `gettreesha()` function. This can then lead to a potential RCE.\n\n### Patches\n\nUsers should upgrade immediately to v1.9.5. All prior versions are vulnerable.\n\n### Workarounds\n\nNone\n\n### References\n\nFixed by: https://github.com/JuliaRegistries/Registrator.jl/pull/449 (which is available in v1.9.5).\n\n### Credits\n\nThanks to *splitline* from the DEVCORE Research Team for reporting this issue.\n",
+    "summary": "Argument injection in `gettreesha()` function in Registrator.jl",
+    "details": "### Impact\n\nIf the clone URL returned by GitHub is malicious (or can be injected using upstream vulnerabilities), an argument injection is possible in the `gettreesha()` function. This can then lead to a potential RCE.\n\n### Patches\n\nUsers should upgrade immediately to v1.9.5. All prior versions are vulnerable.\n\n### Workarounds\n\nNone\n\n### References\n\nFixed by: https://github.com/JuliaRegistries/Registrator.jl/pull/449 (which is available in v1.9.5).\n\n### Credits\n\nThanks to *splitline* from the DEVCORE Research Team for reporting this issue.",
     "affected": [
         {
             "ranges": [
