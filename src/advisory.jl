@@ -1,6 +1,6 @@
 using DataStructures: OrderedDict
 using Dates: Dates, DateTime
-using Markdown: Markdown
+using CommonMark: CommonMark
 
 """
     PackageVulnerability(; pkgs, ranges, source_type=nothing, source_mapping=nothing)
@@ -193,19 +193,24 @@ function update(original::Advisory, updates::Advisory)
         id = original.id,
         modified = original.modified, # This may or may not get overwritten later
         published = original.published,
-        withdrawn = something(original.withdrawn, new.withdrawn, Some(nothing)),
-        ## All other fields are directly taken from the new advisory
-        aliases = new.aliases,
-        upstream = new.upstream,
-        related = new.related,
-        summary = new.summary,
-        details = new.details,
-        severity = new.severity,
-        affected = new.affected,
-        references = new.references,
-        credits = new.credits,
-        sources = new.sources,
+        withdrawn = something(original.withdrawn, updates.withdrawn, Some(nothing)),
+        ## All other fields are directly taken from the updated advisory
+        aliases = updates.aliases,
+        upstream = updates.upstream,
+        related = updates.related,
+        summary = updates.summary,
+        details = updates.details,
+        severity = updates.severity,
+        affected = updates.affected,
+        references = updates.references,
+        credits = updates.credits,
+        jlsec_sources = updates.jlsec_sources,
     )
+end
+
+function year(advisory::Advisory)
+    yyyy = tryparse(Int, split(advisory.id, "-")[2])
+    isnothing(yyyy) || yyyy == 0 ? Dates.year(Dates.now(Dates.UTC)) : yyyy
 end
 
 #### IO and serialization ####
@@ -268,39 +273,46 @@ end
 
 function Base.print(io::IO, vuln::Advisory)
     frontmatter = sprint(TOML.print, to_toml_frontmatter(vuln))
-    nticks = maximum(x->length(x.captures[1])+1, eachmatch(r"(`+)", frontmatter), init=3)
-    println(io, repeat("`", nticks), "toml")
-    print(io, frontmatter)
-    println(io, repeat("`", nticks))
-    println(io)
-    is_populated(vuln.summary) && println(io, Markdown.parse(string("# ", vuln.summary, "\n")))
-    is_populated(vuln.details) && println(io, Markdown.parse(vuln.details))
-    return nothing
+    # I don't think it's possible for TOML.print to output ``` on a line, but just in case:
+    nticks = maximum(x->length(x.captures[1])+1, eachmatch(r"^\s*(`+)\s*$", frontmatter), init=3)
+    buf = IOBuffer()
+    println(buf, repeat("`", nticks), "toml")
+    print(buf, frontmatter)
+    println(buf, repeat("`", nticks))
+    println(buf)
+    is_populated(vuln.summary) && println(buf, "# ", replace(vuln.summary, r"\s+"=>" "), "\n\n")
+    is_populated(vuln.details) && println(buf, vuln.details)
+    seekstart(buf)
+    # Roundtrip through the parser to standardize some syntaxes and avoid churn from subsequent parse/prints
+    println(io, CommonMark.markdown(CommonMark.Parser()(buf)))
 end
 
 # Use the TOML/Markdown as the display:
-Base.show(io::IO, mime::MIME"text/plain", vuln::Advisory) = show(io, mime, Markdown.parse(string(vuln)))
+Base.show(io::IO, mime::MIME"text/plain", vuln::Advisory) = show(io, mime, CommonMark.Parser()(string(vuln)))
 Base.show(io::IO, vuln::Advisory) = print(io, vuln)
 
 ####### Read a Markdown/TOML advisory
 parsefile(filename) = something(open(io->tryparse(Advisory, io), filename))
 function Base.tryparse(::Type{Advisory}, s::Union{AbstractString, IO})
-    m = Markdown.parse(s).content
-    (length(m) >= 1 && m[1] isa Markdown.Code && m[1].language == "toml") || return nothing
-    frontmatter = TOML.tryparse(m[1].code)
+    doc = (CommonMark.Parser())(s)
+    toml = doc.first_child
+    isdefined(toml, :t) && toml.t isa CommonMark.CodeBlock && toml.t.info == "toml" || return nothing
+    frontmatter = TOML.tryparse(toml.literal)
     frontmatter === nothing && return nothing
-    summary = if length(m) >= 2 && m[2] isa Markdown.Header
-        chopprefix(Markdown.plain(m[2]), r"^#+\s+")
+    doc.first_child = toml.nxt
+    summary = if isdefined(doc.first_child, :t) && doc.first_child.t isa CommonMark.Heading
+        s = strip(chopprefix(CommonMark.markdown(doc.first_child), r"^#+"))
+        doc.first_child = doc.first_child.nxt
+        s
     end
-    details = if length(m) >= 2+!isnothing(summary)
-        Markdown.plain(m[2+!isnothing(summary):end])
-    end
+    remainder = strip(CommonMark.markdown(doc))
+    details = isempty(remainder) ? nothing : remainder
 
-    # return try
+    return try
         Advisory(; Dict(Symbol(k)=>v for (k,v) in frontmatter)..., summary, details)
-    # catch _
-    #     nothing
-    # end
+    catch _
+        nothing
+    end
 end
 
 """
