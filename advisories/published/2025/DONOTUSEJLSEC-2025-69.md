@@ -18,7 +18,7 @@ ranges = ["*"]
 
 [[jlsec_sources]]
 id = "CVE-2021-4048"
-imported = 2025-09-24T14:36:01.885Z
+imported = 2025-09-29T14:21:03.317Z
 modified = 2024-11-21T06:36:47.820Z
 published = 2021-12-08T22:15:10.220Z
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-4048"
