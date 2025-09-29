@@ -131,7 +131,7 @@ function main()
         html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
         println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
-            println(io, "    * **", entry.pkg, "** computed `[", join(string.(entry.ranges), ", "), "]`")
+            println(io, "    * **", entry.pkg, "** computed `[", join(repr.(string.(entry.ranges)), ", "), "]`")
             # Look to see if any troubles were found
             for (source, version_map) in entry.source_mapping
                 for (v, r) in version_map
