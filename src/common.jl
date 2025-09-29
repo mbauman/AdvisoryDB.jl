@@ -381,13 +381,11 @@ function affected_julia_packages(description, vendorproductversions)
         @warn "failed to match the mentioned packages to a product with a version"
         @warn "assuming that all mentioned products are vulnerable at all versions"
         for pkg in jlpkgs_mentioned
-            for (vendor, product, version) in unique(vendorproductversions)
-                pkgs[pkg]["$vendor:$product"][version] = [VersionRange{VersionNumber}("*")]
-            end
+            pkgs[pkg]["mentioned in details"]["*"] = [VersionRange{VersionNumber}("*")]
         end
         advisory_type = "alias"
     end
-
+    @info collect(pkgs)
     # return pkgs
     vulns = PackageVulnerability[]
     for (pkg, source_mapping) in pkgs
