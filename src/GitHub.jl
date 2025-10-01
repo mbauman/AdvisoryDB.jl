@@ -10,10 +10,10 @@ using ..SecurityAdvisories: SecurityAdvisories, exists, VersionRange, VersionStr
 const GITHUB_API_BASE = "https://api.github.com"
 const DEFAULT_HOURS = 25
 
-function build_headers()
+function build_headers(; content_type="application/vnd.github+json")
     headers = [
-        "Accept" => "application/vnd.github+json",
-        "User-Agent" => "Julia-Advisory-Fetcher/1.0"
+        "Accept" => content_type,
+        "User-Agent" => "Julia-Advisory-Fetcher/1.0",
     ]
 
     if haskey(ENV, "GITHUB_TOKEN")
@@ -128,6 +128,16 @@ function fetch_advisories(hours::Int = DEFAULT_HOURS)
     println("Fetched $(length(all_advisories)) total advisories across all pages")
 
     return all_advisories
+end
+
+function fetch_file(owner, repo, path)
+    headers = build_headers(content_type = "application/vnd.github.raw+json")
+    response = HTTP.get(string(GITHUB_API_BASE, "/repos/", owner, "/", repo, "/contents/", path), headers)
+    if response.status != 200
+        error("Failed to fetch $owner/$repo/$path: HTTP $(response.status)")
+    end
+
+    return String(response.body)
 end
 
 """
