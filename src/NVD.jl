@@ -67,8 +67,6 @@ function getmostspecific(dict::AbstractDict{CPE}, cpe::CPE)
     return dict[argmax(x->NVD.matchcount(cpe, x), keys(dict))]
 end
 
-const CPE_MAP = Dict{CPE,String}() # CPE(k) => v for (k,v) in TOML.parsefile(joinpath(@__DIR__, "..", "cpe_equivalents.toml")))
-
 function build_nvd_headers()
     headers = [
         "Accept" => "application/json",

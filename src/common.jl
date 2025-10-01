@@ -224,11 +224,31 @@ end
 # The two primary datastructures for connecting packages with upstream projects
 const PACKAGE_COMPONENTS = Ref{Dict{String,Any}}()
 package_components() = isassigned(PACKAGE_COMPONENTS) ? PACKAGE_COMPONENTS[] :
-    (PACKAGE_COMPONENTS[] = TOML.parsefile(joinpath(@__DIR__, "..", "package_components.toml")))
+    (PACKAGE_COMPONENTS[] = TOML.parse(GitHub.fetch_file("mbauman","GeneralMetadata.jl","package_components.toml")))
 
 const UPSTREAM_PROJECTS = Ref{Dict{String,Any}}()
-upstream_projects() = isassigned(UPSTREAM_PROJECTS) ? UPSTREAM_PROJECTS[] :
-    (UPSTREAM_PROJECTS[] = TOML.parsefile(joinpath(@__DIR__, "..", "upstream_project_info.toml")))
+function upstream_projects()
+    isassigned(UPSTREAM_PROJECTS) && return UPSTREAM_PROJECTS[]
+    info = TOML.parse(GitHub.fetch_file("mbauman","GeneralMetadata.jl","repology_info.toml"))
+    extra = TOML.parse(GitHub.fetch_file("mbauman","GeneralMetadata.jl","additional_info.toml"))
+    projects = unique(Iterators.flatten(keys.(Iterators.flatten(values.(values(package_components()))))))
+    relevant_info = filter(in(projects)∘first, info)
+    # Assume the extras are all relevant
+    for (proj, projinfo) in extra
+        if !haskey(relevant_info, proj)
+            relevant_info[proj] = projinfo
+        else
+            for (k, v) in projinfo
+                if !haskey(relevant_info[proj], k)
+                    relevant_info[proj][k] = v
+                else
+                    append!(relevant_info[proj][k], v)
+                end
+            end
+        end
+    end
+    return UPSTREAM_PROJECTS[] = relevant_info
+end
 
 # A computed dictionary that maps a (vendor, product) tuple to a known upstream project name
 const UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT = Ref{Dict{Tuple{String,String}, String}}()
@@ -236,10 +256,8 @@ function upstream_projects_by_vendor_product()
     isassigned(UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT) && return UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[]
     d = Dict{Tuple{String,String}, String}()
     for (project, deets) in upstream_projects()
-        products = unique(skipmissing(vcat(project, get(split(get(deets, "cpe", ""), ":"), 5, missing))))
-        vendors = unique(skipmissing(vcat(get(deets, "vendors", String[]), get(split(get(deets, "cpe", ""), ":"), 4, missing))))
-        for v in vendors, p in products
-            haskey(d, (lowercase(v),lowercase(p))) && d[(lowercase(v),lowercase(p))] != project && error("every vendor/product pair must uniquely identify (case-insensitive) one upstream projects")
+        for cpe in get(deets, "cpes", [])
+            v, p = split(cpe, ":", limit=2)
             d[(lowercase(v),lowercase(p))] = project
         end
     end
@@ -254,10 +272,9 @@ end
 
 function upstream_versions_used_by_cpe(cpe)
     # First find the projects that match the CPE:
-    upstream_projects = TOML.parsefile(joinpath(@__DIR__, "..", "upstream_project_info.toml"))
-    matched_projects = [k for (k,v) in upstream_projects if cpe == get(v, "cpe", nothing)]
+    matched_projects = [k for (k,v) in upstream_projects() if cpe in get(v, "cpes", [])]
     # Then the _upstream_ versions of that project that are used by JLLs
-    upstream_components = TOML.parsefile(joinpath(@__DIR__, "..", "package_components.toml"))
+    upstream_components = package_components()
     versions = []
     for (_, pkgversions) in upstream_components
         for (_, components) in pkgversions
