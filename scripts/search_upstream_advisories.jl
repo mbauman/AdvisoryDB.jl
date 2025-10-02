@@ -1,6 +1,6 @@
 # The goal here is to find relevant upstream advisories that have been published in an upstream
 # database: GitHub's GHSA, NIST/NVD's CVE, or ESINA's EUVD.
-using SecurityAdvisories: SecurityAdvisories, NVD, EUVD, GitHub, VersionRange
+using SecurityAdvisories: SecurityAdvisories, NVD, EUVD, GitHub, VersionRange, package_components
 using TOML: TOML
 using Dates: Dates
 
