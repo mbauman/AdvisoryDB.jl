@@ -131,16 +131,23 @@ function main()
         html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
         println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
-            println(io, "    * **", entry.pkg, "** computed `[", join(repr.(string.(entry.ranges)), ", "), "]`")
-            # Look to see if any troubles were found
+            print(io, "    * **", entry.pkg, "** computed `[", join(repr.(string.(entry.ranges)), ", "), "]`")
+            if haskey(package_components(), entry.pkg)
+                pkg_components = package_components()[entry.pkg]
+                maxv = maximum(keys(pkg_components))
+                maxv_components = pkg_components[maxv]
+                print(io, " Its latest version (", maxv, ") has components ")
+                TOML.print(io, maxv_components, inline_tables=IdSet{AbstractDict}([maxv_components]))
+            end
+            println(io)
             for (source, version_map) in entry.source_mapping
                 for (v, r) in version_map
                     if isnothing(tryparse(SecurityAdvisories.VersionRange, v))
                         println(io, "        * `", source, "` at `", v, "` failed to parse")
                     elseif r == [VersionRange{VersionNumber}("*")]
-                        println(io, "        * `", source, "` at `", v, "` is unbounded")
+                        println(io, "        * `", source, "` at `", v, "` includes all versions")
                     elseif !all(SecurityAdvisories.has_upper_bound, r)
-                        println(io, "        * `", source, "` at `", v, "` mapped to `[", join(string.(r), ", "), "]`")
+                        println(io, "        * `", source, "` at `", v, "` mapped to `[", join(string.(r), ", "), "], includes the latest version`")
                     end
                 end
             end

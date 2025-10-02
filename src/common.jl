@@ -296,7 +296,12 @@ end
 Convert the vulnerable range from an upstream project's version numbers to the Julia packages,
 using the pkg_project_map.
 
-In practice, this uses the `package_components.toml` table and a vulnerable range from an upstream advisory.
+In practice, this uses the GeneralMetadata.jl's `package_components.toml` table and a vulnerable range from an upstream advisory.
+
+Unknown component versions — those identified by "*" — intentionally have an asymmetric behavior, depending upon the known
+versions around it.
+  - If the "*" is not followed by any newer versions with known values, it matches all versions (including those less than a previous version, if any)
+  - Otherwise, the "*" is bounded by the known versions around it
 """
 function convert_versions(pkg_project_map, vulnerable_range)
     versionmap = sort([VersionNumber(k) => v for (k,v) in pkg_project_map], by=first)
@@ -307,9 +312,9 @@ function convert_versions(pkg_project_map, vulnerable_range)
     # There are two hard things we need to support in the pkg_project_map:
     #   * Unknown versions are marked by "*" — we assume they're any versions between the known bounds
     #   * There may be more than one upstream version on varying platforms. It may be String or String[]
-    first_vulnerable = v"0-"
+    first_vulnerable = typemin(VersionNumber)
     last_vulnerable = nothing
-    last_known_ver = VersionString("")
+    last_known_ver = typemin(VersionString)
     last_unknown = nothing
     skipped_unknowns = false
     for (pkgver, ver) in versionmap
@@ -337,7 +342,7 @@ function convert_versions(pkg_project_map, vulnerable_range)
         last_known_ver = ver isa AbstractString ? VersionString(ver) : isempty(ver) ? VersionString("") : minimum(VersionString.(ver))
         skipped_unknowns = false
     end
-    if first_vulnerable !== nothing && last_vulnerable !== nothing || (skipped_unknowns && overlaps(vulnerable_range, VersionRange(last_known_ver, typemax(VersionString), true, true)))
+    if first_vulnerable !== nothing || (skipped_unknowns && overlaps(vulnerable_range, VersionRange(last_known_ver, typemax(VersionString), true, true)))
         push!(versions, VersionRange(first_vulnerable, v"∞", true, true))
     end
     versions
