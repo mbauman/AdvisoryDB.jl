@@ -131,12 +131,19 @@ function main()
         html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
         println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
         for entry in adv.affected
-            print(io, "    * **", entry.pkg, "** computed `[", join(repr.(string.(entry.ranges)), ", "), "]`")
+            if isempty(entry.ranges)
+                print(io, "    * **", entry.pkg, "** has no vulnerable versions")
+                if !isempty(keys(entry.source_mapping))
+                    print(io, "; some versions contain vulnerable ", join("`".*keys(entry.source_mapping).*"`", ", ", ", and "), ".")
+                end
+            else
+                print(io, "    * **", entry.pkg, "** computed `[", join(repr.(string.(entry.ranges)), ", "), "]`.")
+            end
             if haskey(package_components(), entry.pkg)
                 pkg_components = package_components()[entry.pkg]
                 maxv = maximum(keys(pkg_components))
                 maxv_components = pkg_components[maxv]
-                print(io, " Its latest version (", maxv, ") has components ")
+                print(io, " Its latest version (", maxv, ") has components: ")
                 TOML.print(io, maxv_components, inline_tables=IdSet{AbstractDict}([maxv_components]))
             end
             println(io)
