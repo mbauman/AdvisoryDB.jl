@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-63"
-modified = 2025-09-29T02:51:33.558Z
+modified = 2025-10-03T10:34:06.773Z
 published = 2025-09-23T22:07:20.418Z
 upstream = ["CVE-2024-6119"]
 references = ["https://github.com/openssl/openssl/commit/05f360d9e849a1b277db628f1f13083a7f8dd04f", "https://github.com/openssl/openssl/commit/06d1dc3fa96a2ba5a3e22735a033012aadc9f0d6", "https://github.com/openssl/openssl/commit/621f3729831b05ee828a3203eddb621d014ff2b2", "https://github.com/openssl/openssl/commit/7dfcee2cd2a63b2c64b9b4b0850be64cb695b0a0", "https://openssl-library.org/news/secadv/20240903.txt", "http://www.openwall.com/lists/oss-security/2024/09/03/4", "https://lists.freebsd.org/archives/freebsd-security/2024-September/000303.html", "https://security.netapp.com/advisory/ntap-20240912-0001/"]

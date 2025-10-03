@@ -165,7 +165,11 @@ There is just one place where we differ:
     jlsec_sources::Vector{AdvisorySource} = AdvisorySource[]
 end
 osv_fieldnames(::Type{Advisory}) = filter(!startswith("jlsec_")∘string, fieldnames(Advisory))
+osv_pairs(adv::Advisory) = [string(f)=>getproperty(adv, f) for f in osv_fieldnames(typeof(adv))]
 database_specific_fieldnames(::Type{Advisory}) = filter(startswith("jlsec_")∘string, fieldnames(Advisory))
+database_specific_pairs(adv::Advisory) =
+    [chopprefix(string(f), "jlsec_")=>getproperty(adv, f) for f in database_specific_fieldnames(typeof(adv))]
+
 # Advisory identity is purely determined by the serialization format
 function Base.:(==)(a::Advisory, b::Advisory)
     return to_toml_frontmatter(a) == to_toml_frontmatter(b) && a.summary == b.summary && a.details == b.details
@@ -330,10 +334,13 @@ function to_osv_dict(a::Union{Severity, Reference, Credit, AdvisorySource})
     return OrderedDict(string(f) => to_osv_dict(getproperty(a, f)) for f in fieldnames(typeof(a)) if is_populated(getproperty(a, f)))
 end
 function to_osv_dict(a::Advisory)
-    # The only special thing we need to do here is collect the database_specific fields
-    d = OrderedDict(string(f) => to_osv_dict(getproperty(a, f)) for f in osv_fieldnames(Advisory) if is_populated(getproperty(a, f)))
-    if any(is_populated, (getproperty(a, f) for f in database_specific_fieldnames(Advisory)))
-        d["database_specific"] = OrderedDict(chopprefix(string(f), "jlsec_") => to_osv_dict(getproperty(a, f)) for f in database_specific_fieldnames(Advisory))
+    # The only special thing we need to is `database_specific`
+    d = OrderedDict(k => to_osv_dict(v) for (k,v) in osv_pairs(a) if is_populated(v))
+    d["database_specific"] = OrderedDict{String,Any}("license" => "CC-BY-4.0")
+    for (k,v) in database_specific_pairs(a)
+        is_populated(v) || continue
+        k == "license" && error("license may not be separately specified")
+        d["database_specific"][k] = to_osv_dict(v)
     end
     return d
 end
