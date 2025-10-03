@@ -32,7 +32,7 @@ using SecurityAdvisories: VersionRange as VR, merge_ranges
     @test merge_ranges(VR{VersionNumber}.(["1 < 2", "> 2, <= 5", "3 < 5"])) == [VR{VersionNumber}("1 < 2"), VR{VersionNumber}(">2, <=5")]
 end
 
-## Matching; this should ideally be more isolated from the state of package_components.toml
+# Matching; this should ideally be more isolated from GeneralMetadata.jl's package components data
 @testset "CVE-2021-4048 — applicable packages and ranges" begin
     desc = "An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack through version 3.10.0, as also used in OpenBLAS before version 0.3.18. Specially crafted inputs passed to these functions could cause an application using lapack to crash or possibly disclose portions of its memory."
     vpv = [("lapack_project", "lapack", "<= 3.10.0"), ("openblas_project", "openblas", "< 0.3.18"), ("julialang", "julia", "<= 1.6.3"), ("julialang", "julia", "= 1.7.0-beta1"), ("julialang", "julia", "= 1.7.0-beta2"), ("julialang", "julia", "= 1.7.0-beta3"), ("julialang", "julia", "= 1.7.0-beta4"), ("julialang", "julia", "= 1.7.0-rc1"), ("redhat", "ceph_storage", "= 2.0"), ("redhat", "ceph_storage", "= 3.0"), ("redhat", "ceph_storage", "= 4.0"), ("redhat", "ceph_storage", "= 5.0"), ("redhat", "openshift_container_storage", "= 4.0"), ("redhat", "openshift_data_foundation", "= 4.0"), ("redhat", "enterprise_linux", "= 8.0"), ("fedoraproject", "fedora", "= 34"), ("fedoraproject", "fedora", "= 35")]
@@ -62,6 +62,31 @@ using SecurityAdvisories: convert_versions, VersionRange
     @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.5","3.4.7"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3")
     @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.4","3.4.5"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3")
     @test only(convert_versions(["1.2.2" => ["3.4.3","3.4.4"], "1.2.3" => "*", "1.2.4" => ["3.4.4","3.4.7"]], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")
+
+    @test only(convert_versions(["1.2.2" => "*", "1.2.3" => "*", "1.2.4" => "*"], VersionRange("= 3.4.5"))) == VersionRange{VersionNumber}("*")
+    @test only(convert_versions(["1.2.2" => "*", "1.2.3" => "*", "1.2.4" => "*"], VersionRange("< 3.4.5"))) == VersionRange{VersionNumber}("*")
+
+    # Note that there's an intentional asymmetry here — we assume that "old" *s are capped by newer good data
+    # but "new" *s are completely unknown.
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => "*"], VersionRange("< 1.2.3")) == [VersionRange{VersionNumber}("< 1.2.3"),  VersionRange{VersionNumber}(">= 1.2.4")]
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => "*"], VersionRange("= 1.2.4")) == [VersionRange{VersionNumber}(">= 1.2.4")]
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => "*"], VersionRange("= 1.2.3")) == [VersionRange{VersionNumber}("*")]
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => "*"], VersionRange("= 1.2.2")) == [VersionRange{VersionNumber}("< 1.2.3"),  VersionRange{VersionNumber}(">= 1.2.4")]
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => "*"], VersionRange("> 1.2.3")) == [VersionRange{VersionNumber}(">= 1.2.4")]
+
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => []], VersionRange("< 1.2.3")) == [VersionRange{VersionNumber}("< 1.2.3")]
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => []], VersionRange("= 1.2.4")) == []
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => []], VersionRange("= 1.2.3")) == [VersionRange{VersionNumber}("< 1.2.4")]
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => []], VersionRange("= 1.2.2")) == [VersionRange{VersionNumber}("< 1.2.3")]
+    @test convert_versions(["1.2.2" => "*", "1.2.3" => "1.2.3", "1.2.4" => []], VersionRange("> 1.2.3")) == []
+
+    @test convert_versions(["1.2.2" => "1.2.2", "1.2.3" => "*", "1.2.4" => "1.2.4"], VersionRange("< 1.2.3")) == [VersionRange{VersionNumber}("< 1.2.4")]
+    @test convert_versions(["1.2.2" => "1.2.2", "1.2.3" => "*", "1.2.4" => "1.2.4"], VersionRange("= 1.2.5")) == []
+    @test convert_versions(["1.2.2" => "1.2.2", "1.2.3" => "*", "1.2.4" => "1.2.4"], VersionRange("= 1.2.4")) == [VersionRange{VersionNumber}(">= 1.2.3")]
+    @test convert_versions(["1.2.2" => "1.2.2", "1.2.3" => "*", "1.2.4" => "1.2.4"], VersionRange("= 1.2.3")) == [VersionRange{VersionNumber}(">= 1.2.3, < 1.2.4")]
+    @test convert_versions(["1.2.2" => "1.2.2", "1.2.3" => "*", "1.2.4" => "1.2.4"], VersionRange("= 1.2.2")) == [VersionRange{VersionNumber}("< 1.2.4")]
+    @test convert_versions(["1.2.2" => "1.2.2", "1.2.3" => "*", "1.2.4" => "1.2.4"], VersionRange("= 1.2.1")) == []
+    @test convert_versions(["1.2.2" => "1.2.2", "1.2.3" => "*", "1.2.4" => "1.2.4"], VersionRange("> 1.2.3")) == [VersionRange{VersionNumber}(">= 1.2.3")]
 end
 
 # Specific support for re-interpreting GitHub's patched field:
