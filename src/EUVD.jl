@@ -169,7 +169,7 @@ function advisory(vuln)
         # credits -- not structured
         jlsec_sources = [AdvisorySource(;
             id = vuln.id,
-            modified = if exists(vuln, :dateUpdated) parse_euvd_datetime(vuln.dateUpdated) end,
+            modified = parse_euvd_datetime(vuln.dateUpdated),
             published = if exists(vuln, :datePublished) parse_euvd_datetime(vuln.datePublished) end,
             imported = Dates.now(Dates.UTC),
             url = string(API_BASE, "/enisaid?id=", vuln.id),

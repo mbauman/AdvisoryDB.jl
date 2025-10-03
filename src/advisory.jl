@@ -127,7 +127,7 @@ end
     id::String
     imported::DateTime
     modified::DateTime
-    published::DateTime
+    published::Union{Nothing, DateTime}
     url::String
     html_url::String
     fields::Vector{String} = String[] # An optional subset of fields that were updated by this source (excepting alias/upstream)
