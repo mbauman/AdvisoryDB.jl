@@ -492,6 +492,23 @@ function is_jlsec_advisory_path(path)
     return startswith(file, PREFIX) && ext == ".md"
 end
 
+function bump_all_modified_timestamps!(path=joinpath(@__DIR__, "..", "advisories", "published"))
+    n = 0
+    for (root, _, files) in walkdir(path)
+        for file in joinpath.(root, files)
+            is_jlsec_advisory_path(file) || continue
+            adv = SecurityAdvisories.parsefile(file)
+            adv.modified = Dates.now(Dates.UTC)
+            open(file, "w") do io
+                SecurityAdvisories.print(io, adv)
+            end
+            n+=1
+        end
+    end
+    return n
+end
+
+
 function fetch_advisory(advisory_id)
     if startswith(advisory_id, "CVE-")
         vuln = NVD.fetch_cve(advisory_id)
