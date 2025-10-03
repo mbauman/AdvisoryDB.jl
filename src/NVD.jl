@@ -31,11 +31,11 @@ struct CPE
         part in ("a","h","o","*") || throw(ArgumentError("Unsupported part identifier $part"))
         return new(part, vendor, product, version, update, edition, language, sw_edition, target_sw, target_hw, other)
     end
-    CPE(s::AbstractString) = cpe_by_parts(split(s, ':'; keepempty=false)...)
+    CPE(s::AbstractString) = cpe_by_parts(replace.(split(s, r"(?<!\\):"; keepempty=false), ("\\:"=>":",))...)
 end
 Base.Broadcast.broadcastable(cpe::CPE) = Ref(cpe)
 parts(cpe::CPE) = getproperty.(cpe, fieldnames(CPE))
-Base.string(cpe::CPE) = string("cpe:2.3:", join(parts(cpe), ":"))
+Base.string(cpe::CPE) = string("cpe:2.3:", join(replace.(parts(cpe), (":"=>"\\:",)), ":"))
 Base.convert(::Type{CPE}, s::String) = CPE(s)
 Base.convert(::Type{String}, cpe::CPE) = string(cpe)
 Base.show(io::IO, cpe::CPE) = show(io, string(cpe))
