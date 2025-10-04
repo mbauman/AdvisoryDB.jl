@@ -18,7 +18,7 @@ function main()
         # many vulns as possible with these higher-level searches before going one-by-one due to API limits
         if startswith(input, "--project")
             _, proj= split(input, [' ','='])
-            vendorproducts = [k for (k,v) in SecurityAdvisories.upstream_projects_by_vendor_product() if v == proj]
+            vendorproducts = split.(SecurityAdvisories.upstream_projects()[proj]["cpes"], ":", limit=2)
             nvds = []
             euvds = []
             for (vendor, product) in vendorproducts
@@ -127,6 +127,9 @@ function main()
 
     function print_advisory_package_version_details(io, id, adv)
         pkgs = SecurityAdvisories.vulnerable_packages(adv)
+        cpes = unique(Iterators.flatten(keys(entry.source_mapping) for entry in adv.affected if !isnothing(entry.source_mapping)))
+        ambiguous_cpes = filter(>(1)∘length∘SecurityAdvisories.upstream_projects_by_cpe, cpes)
+
         affectedsrcidx = something(findlast(x->"affected" in x.fields, adv.jlsec_sources), 1)
         html_url = get(adv.jlsec_sources, affectedsrcidx, (;html_url="")).html_url
         println(io, "* [$id]($html_url) for packages: ", join("**" .* pkgs .* "**", ", ", ", and "))
@@ -157,6 +160,10 @@ function main()
                         println(io, "        * `", source, "` at `", v, "` mapped to `[", join(string.(r), ", "), "], includes the latest version`")
                     end
                 end
+            end
+            ambiguous_sources = filter(in(ambiguous_cpes), keys(entry.source_mapping))
+            for amib in ambiguous_sources
+                println(io, "        * ⚠ `", amib, "` might mean a different project; it could be one of ", join("`" .* SecurityAdvisories.upstream_projects_by_cpe(ambig) .* "`", ", ", " or "))
             end
         end
     end

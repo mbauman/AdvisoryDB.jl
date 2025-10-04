@@ -250,40 +250,25 @@ function upstream_projects()
     return UPSTREAM_PROJECTS[] = relevant_info
 end
 
-# A computed dictionary that maps a (vendor, product) tuple to a known upstream project name
-const UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT = Ref{Dict{Tuple{String,String}, String}}()
-function upstream_projects_by_vendor_product()
-    isassigned(UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT) && return UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[]
-    d = Dict{Tuple{String,String}, String}()
-    for (project, deets) in upstream_projects()
-        for cpe in get(deets, "cpes", [])
-            v, p = split(cpe, ":", limit=2)
-            d[(lowercase(v),lowercase(p))] = project
+# A computed dictionary that maps a (vendor, product) tuple to known upstream project names
+const UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT = Ref{Dict{Tuple{String,String}, Vector{String}}}()
+function upstream_projects_by_vendor_product(vendor, product)
+    if !isassigned(UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT)
+        d = Dict{Tuple{String,String}, Vector{String}}()
+        for (project, deets) in upstream_projects()
+            for cpe in get(deets, "cpes", [])
+                v, p = split(cpe, ":", limit=2)
+                union!(get!(Vector{String}, d, (lowercase(v),lowercase(p))), (project,))
+            end
         end
+        UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[] = d
     end
-    UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[] = d
+    return get(UPSTREAM_PROJECTS_BY_VENDOR_PRODUCT[], (lowercase(vendor),lowercase(product)), String[])
 end
+upstream_projects_by_cpe(vendorproduct) = upstream_projects_by_vendor_product(split(vendorproduct, ":", limit=2)...)
 
 function packages_with_project(proj)
     return [pkgname for (pkgname,versioninfo) in package_components() if any(v->haskey(v,proj), values(versioninfo))]
-end
-
-
-
-function upstream_versions_used_by_cpe(cpe)
-    # First find the projects that match the CPE:
-    matched_projects = [k for (k,v) in upstream_projects() if cpe in get(v, "cpes", [])]
-    # Then the _upstream_ versions of that project that are used by JLLs
-    upstream_components = package_components()
-    versions = []
-    for (_, pkgversions) in upstream_components
-        for (_, components) in pkgversions
-            for (k, v) in components
-                k in matched_projects && push!(versions, v)
-            end
-        end
-    end
-    return unique(versions)
 end
 
 function package_project_version_map(pkg, proj)
@@ -348,12 +333,19 @@ function convert_versions(pkg_project_map, vulnerable_range)
     versions
 end
 
+"""
+    affected_julia_packages(description, vendorproductversions)
+
+Given some advisory's description an an array of 3-tuples (vendor, product, versionrange)
+for which the vulnerability applies, return the vector of the corresponding Julia `PackageVulnerability`s.
+"""
 function affected_julia_packages(description, vendorproductversions)
     pkgs = DefaultDict{String, Any}(()->DefaultDict{String, Any}(()->OrderedDict{String, Any}()))
-    # There are three reasons why this might return a ["*"] range
+    # There are four reasons why this might return a ["*"] range
     # 1. That's the correct answer
     # 2. It's pessimistically returned because we failed to parse the versions reported in the advisory
     # 3. It's pessimistically returned because we failed to match a mentioned Julia package to a product
+    # 4. The upstream component version is unknown — itself a "*" — at the latest Julia package version
     julia_like_pkgs_mentioned = union((m.captures[1] for m in eachmatch(r"\b(\w+)\.jl\b", description)),
                                       (m.captures[1]*"_jll" for m in eachmatch(r"\b(\w+)_jll\b", description)))
     jlpkgs_mentioned = filter(registry_has_package, julia_like_pkgs_mentioned)
@@ -361,18 +353,20 @@ function affected_julia_packages(description, vendorproductversions)
     advisory_type = nothing
     for (vendor, product, version) in unique(vendorproductversions)
         # First check for a known **NON-JULIA-PACKAGE** CPE:
-        if haskey(upstream_projects_by_vendor_product(), (lowercase(vendor), lowercase(product)))
-            matched_project = upstream_projects_by_vendor_product()[(lowercase(vendor), lowercase(product))]
-            found_match = true
+        upstream_projects = upstream_projects_by_vendor_product(vendor, product)
+        if !isempty(upstream_projects)
             # We have an upstream component! Compute the remapped version range if we can.
-            matched_pkgs = packages_with_project(matched_project)
-            r = tryparse(VersionRange, version)
-            for pkg in matched_pkgs
-                pkgs[pkg]["$vendor:$product"][version] = isnothing(r) ?
-                    [VersionRange{VersionNumber}("*")] : convert_versions(package_project_version_map(pkg, matched_project), r)
+            found_match = true
+            for matched_project in upstream_projects
+                matched_pkgs = packages_with_project(matched_project)
+                r = tryparse(VersionRange, version)
+                for pkg in matched_pkgs
+                    pkgs[pkg]["$vendor:$product"][version] = isnothing(r) ?
+                        [VersionRange{VersionNumber}("*")] : convert_versions(package_project_version_map(pkg, matched_project), r)
+                end
+                isnothing(advisory_type) || @assert(advisory_type == "upstream", "advisory directly lists $pkg, but it also finds upstream components")
+                advisory_type = "upstream"
             end
-            isnothing(advisory_type) || @assert(advisory_type == "upstream", "advisory directly lists $pkg, but it also finds upstream components")
-            advisory_type = "upstream"
         else
             if (contains(lowercase(vendor), "julia") || endswith(product, ".jl")) && registry_has_package(chopsuffix(product, ".jl"))
                 # A vendor or package _looks_ really julia-ish and is in the registry
