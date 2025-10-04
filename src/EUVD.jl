@@ -131,7 +131,7 @@ function fetch_vulnerabilities()
     return fetch_all_pages(string(API_BASE, "/search"), headers, params)
 end
 
-affected_julia_packages(vuln) = SecurityAdvisories.affected_julia_packages(vuln.description, vendor_product_versions(vuln))
+affected_julia_packages(vuln) = SecurityAdvisories.affected_julia_packages(get(vuln, :description, ""), vendor_product_versions(vuln))
 
 function filter_julia_vulnerabilities(vulnerabilities)
     julia_vulnerabilities = []
