@@ -162,8 +162,8 @@ function main()
                 end
             end
             ambiguous_sources = filter(in(ambiguous_cpes), keys(entry.source_mapping))
-            for amib in ambiguous_sources
-                println(io, "        * ⚠ `", amib, "` might mean a different project; it could be one of ", join("`" .* SecurityAdvisories.upstream_projects_by_cpe(ambig) .* "`", ", ", " or "))
+            for ambig in ambiguous_sources
+                println(io, "        * ⚠ `", ambig, "` might mean a different project; it could be one of ", join("`" .* SecurityAdvisories.upstream_projects_by_cpe(ambig) .* "`", ", ", " or "))
             end
         end
     end
