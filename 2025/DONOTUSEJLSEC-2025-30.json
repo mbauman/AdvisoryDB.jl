@@ -1,7 +1,7 @@
 {
     "schema_version": "1.7.3",
     "id": "DONOTUSEJLSEC-2025-30",
-    "modified": "2025-09-29T02:51:33.558Z",
+    "modified": "2025-10-06T13:10:23.999Z",
     "published": "2025-09-23T22:07:20.225Z",
     "upstream": [
         "CVE-2019-1547"
@@ -313,6 +313,7 @@
         }
     ],
     "database_specific": {
+        "license": "CC-BY-4.0",
         "sources": [
             {
                 "id": "CVE-2019-1547",
