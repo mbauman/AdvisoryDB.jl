@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-60"
-modified = 2025-09-29T02:51:33.558Z
+modified = 2025-10-03T10:34:06.768Z
 published = 2025-09-23T22:07:20.410Z
 upstream = ["CVE-2023-5678"]
 references = ["https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=34efaef6c103d636ab507a0cc34dca4d3aecc055", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=710fee740904b6290fef0dd5536fbcedbc38ff0c", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=db925ae2e65d0d925adef429afc37f75bd1c2017", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=ddeb4b6c6d527e54ce9a99cba785c0f7776e54b6", "https://www.openssl.org/news/secadv/20231106.txt", "http://www.openwall.com/lists/oss-security/2024/03/11/1", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=34efaef6c103d636ab507a0cc34dca4d3aecc055", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=710fee740904b6290fef0dd5536fbcedbc38ff0c", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=db925ae2e65d0d925adef429afc37f75bd1c2017", "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=ddeb4b6c6d527e54ce9a99cba785c0f7776e54b6", "https://security.netapp.com/advisory/ntap-20231130-0010/", "https://www.openssl.org/news/secadv/20231106.txt"]
