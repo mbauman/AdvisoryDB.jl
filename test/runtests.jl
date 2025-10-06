@@ -130,6 +130,7 @@ end
     @test_throws "no UUID" SecurityAdvisories.purl("ThisPackageDoesHopefullyNotExist")
 end
 
+using JSON3: JSON3
 @testset "sometimes EUVD has no description" begin
     vuln = JSON3.read(joinpath(@__DIR__, "EUVD-2025-32379.json"))
     @test EUVD.advisory(vuln) isa SecurityAdvisories.Advisory
