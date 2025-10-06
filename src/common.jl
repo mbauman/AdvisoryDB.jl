@@ -7,7 +7,7 @@ using DataStructures: OrderedDict, DefaultDict
 using Dates: Dates
 using TimeZones: TimeZones
 
-const PREFIX="DONOTUSEJLSEC"
+const PREFIX="JLSEC"
 
 exists(advisory, key) = haskey(advisory, key) && is_populated(advisory[key])
 exists(advisory, key, keys...) = exists(advisory, key) && exists(advisory, keys...)
