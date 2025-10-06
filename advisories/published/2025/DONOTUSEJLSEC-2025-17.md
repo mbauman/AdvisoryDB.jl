@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-17"
-modified = 2025-10-03T10:34:06.733Z
+modified = 2025-10-06T13:10:23.999Z
 published = 2025-09-23T14:07:03.665Z
 upstream = ["CVE-2022-23521"]
 references = ["https://github.com/git/git/commit/508386c6c5857b4faa2c3e491f422c98cc69ae76", "https://github.com/git/git/security/advisories/GHSA-c738-c5qq-xg89", "https://security.gentoo.org/glsa/202312-15", "https://github.com/git/git/commit/508386c6c5857b4faa2c3e491f422c98cc69ae76", "https://github.com/git/git/security/advisories/GHSA-c738-c5qq-xg89", "https://security.gentoo.org/glsa/202312-15"]

@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-68"
-modified = 2025-10-03T10:34:06.776Z
+modified = 2025-10-06T13:10:23.999Z
 published = 2025-09-23T22:07:20.591Z
 aliases = ["CVE-2024-4603"]
 references = ["https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397", "https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e", "https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d", "https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740", "https://www.openssl.org/news/secadv/20240516.txt", "http://www.openwall.com/lists/oss-security/2024/05/16/2", "https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397", "https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e", "https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d", "https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740", "https://security.netapp.com/advisory/ntap-20240621-0001/", "https://www.openssl.org/news/secadv/20240516.txt"]

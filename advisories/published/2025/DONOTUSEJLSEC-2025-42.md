@@ -1,7 +1,7 @@
 ```toml
 schema_version = "1.7.3"
 id = "DONOTUSEJLSEC-2025-42"
-modified = 2025-10-03T10:34:06.758Z
+modified = 2025-10-06T13:10:23.999Z
 published = 2025-09-23T22:07:20.278Z
 upstream = ["CVE-2021-4160"]
 references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=3bf7b73ea7123045b8f972badc67ed6878e6c37f", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6fc1aaaf303185aa5e483e06bdfae16daa9193a7", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.debian.org/security/2022/dsa-5103", "https://www.openssl.org/news/secadv/20220128.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=3bf7b73ea7123045b8f972badc67ed6878e6c37f", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=6fc1aaaf303185aa5e483e06bdfae16daa9193a7", "https://git.openssl.org/gitweb/?p=openssl.git%3Ba=commitdiff%3Bh=e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb", "https://security.gentoo.org/glsa/202210-02", "https://security.netapp.com/advisory/ntap-20240621-0006/", "https://www.debian.org/security/2022/dsa-5103", "https://www.openssl.org/news/secadv/20220128.txt", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html"]
