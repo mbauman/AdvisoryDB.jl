@@ -6,7 +6,7 @@ aliases = ["GHSA-4g68-4pxg-mw93", "CVE-2025-52479"]
 
 [[affected]]
 pkg = "HTTP"
-ranges = ["<= 1.10.16"]
+ranges = ["< 1.10.17"]
 [[affected]]
 pkg = "URIs"
 ranges = ["< 1.6.0"]
