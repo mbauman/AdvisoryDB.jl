@@ -11,7 +11,7 @@ ranges = ["<= 1.9.4"]
 
 [[jlsec_sources]]
 id = "GHSA-589r-g8hf-xx59"
-imported = 2025-09-26T20:12:36.942Z
+imported = 2025-10-07T01:50:28.816Z
 modified = 2025-06-24T23:01:34.000Z
 published = 2025-06-24T23:01:34.000Z
 url = "https://api.github.com/repos/JuliaRegistries/Registrator.jl/security-advisories/GHSA-589r-g8hf-xx59"
