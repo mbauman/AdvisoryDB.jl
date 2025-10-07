@@ -28,7 +28,7 @@ pkg = "OpenBLAS32_jll"
 ranges = ["< 0.3.20+0"]
 [[affected]]
 pkg = "libjulia_jll"
-ranges = ["*"]
+ranges = ["< 1.8.0+1"]
 [[affected]]
 pkg = "SLICOT_jll"
 ranges = ["*"]
