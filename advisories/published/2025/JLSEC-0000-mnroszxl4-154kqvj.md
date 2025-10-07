@@ -6,7 +6,7 @@ aliases = ["GHSA-jg9p-c3wh-q83x", "CVE-2025-52569"]
 
 [[affected]]
 pkg = "GitHub"
-ranges = ["<= 5.9.0"]
+ranges = ["< 5.9.1"]
 
 [[jlsec_sources]]
 id = "GHSA-jg9p-c3wh-q83x"
