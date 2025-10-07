@@ -6,7 +6,7 @@ aliases = ["GHSA-w8jv-rg3h-fc68", "CVE-2025-52480"]
 
 [[affected]]
 pkg = "Registrator"
-ranges = ["<= 1.9.4"]
+ranges = ["< 1.9.5"]
 
 [[jlsec_sources]]
 id = "GHSA-w8jv-rg3h-fc68"
