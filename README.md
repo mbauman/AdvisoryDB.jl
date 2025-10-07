@@ -16,7 +16,7 @@ There are four key goals of this repository:
 
 ### Scope
 
-This database only supports advisories against packages in the "Julia" ecosystem. The packages in the "Julia" ecosystem are defined to be those in the default [General registry](https://github.com/JuliaRegistries/General), the Julia standard libraries (even if not separately registered), and the dedicated `julia` identifier for the standard distribution of Julia itself.
+This database only supports advisories against packages in the "Julia" ecosystem. The packages in the "Julia" ecosystem are defined to be exactly those in the default [General registry](https://github.com/JuliaRegistries/General).
 
 This is a **security** advisory database; informational and other notices that are not security issues are out of scope.
 
