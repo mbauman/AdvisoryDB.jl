@@ -1,0 +1,45 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnroszxl4-154kqvj"
+modified = 2025-10-07T14:32:35.272Z
+aliases = ["GHSA-jg9p-c3wh-q83x", "CVE-2025-52569"]
+
+[[affected]]
+pkg = "GitHub"
+ranges = ["<= 5.9.0"]
+
+[[jlsec_sources]]
+id = "GHSA-jg9p-c3wh-q83x"
+imported = 2025-10-07T14:32:35.253Z
+modified = 2025-06-24T23:01:49.000Z
+published = 2025-06-24T23:01:49.000Z
+url = "https://api.github.com/repos/JuliaWeb/GitHub.jl/security-advisories/GHSA-jg9p-c3wh-q83x"
+html_url = "https://github.com/JuliaWeb/GitHub.jl/security/advisories/GHSA-jg9p-c3wh-q83x"
+```
+
+# Lack of validation for user-provided fields in GitHub.jl
+
+There is a lack of input validation for user-provided values in certain functions.
+
+In the `GitHub.repo()` function, the user can provide any string for the `repo_name` field. These inputs are not validated or safely encoded and are sent directly to the server.
+
+### Impact
+
+This means a user can add path traversal patterns like `../` in the input to access any other endpoints on `api.github.com` that were not intended.
+
+### Patches
+
+Users should upgrade immediately to v5.9.1 or later. All prior versions are vulnerable. We recommend users upgrade to v5.10.0
+
+### Workarounds
+
+None
+
+### References
+
+Fixed by: https://github.com/JuliaWeb/GitHub.jl/pull/224 (which is available in v5.9.1).
+
+### Credits
+
+*splitline* from the DEVCORE Research Team for reported similar issues in other packages. Audit of equivalent problems in this package resulted in this issue, found by Dilum Aluthge.
+
