@@ -14,6 +14,12 @@ There are four key goals of this repository:
 * Export the security advisories in standard format for downstream consumers.
 * Provide tooling to search, identify, and import applicable security advisories (*both* upstream and aliasing) from multiple independent advisory databases.
 
+### Scope
+
+This database only supports advisories against packages in the "Julia" ecosystem. The packages in the "Julia" ecosystem are defined to be exactly those in the default [General registry](https://github.com/JuliaRegistries/General).
+
+This is a **security** advisory database; informational and other notices that are not security issues are out of scope.
+
 ## The database
 
 Security advisories against packages in the [Julia General registry](https://github.com/JuliaRegistries/General) are published in the `advisories/published` directory of this repository, grouped by year, with filenames corresponding to their uniquely assigned identifier. All published advisories have an identifier of `JLSEC-YYYY-nnn`, and are stored as Markdown files with a TOML "front-matter" section with structured metadata.
