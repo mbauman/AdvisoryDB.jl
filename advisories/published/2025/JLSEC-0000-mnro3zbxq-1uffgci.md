@@ -6,7 +6,7 @@ aliases = ["GHSA-g2xx-229f-3qjm", "CVE-2025-50178"]
 
 [[affected]]
 pkg = "GitForge"
-ranges = ["<= 0.4.2"]
+ranges = ["< 0.4.3"]
 
 [[jlsec_sources]]
 id = "GHSA-g2xx-229f-3qjm"
