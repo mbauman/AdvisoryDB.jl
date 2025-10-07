@@ -144,7 +144,7 @@ function main()
             end
             if haskey(package_components(), entry.pkg)
                 pkg_components = package_components()[entry.pkg]
-                maxv = maximum(keys(pkg_components))
+                maxv = argmax(VersionNumber, keys(pkg_components))
                 maxv_components = pkg_components[maxv]
                 print(io, " Its latest version (", maxv, ") has components: ")
                 TOML.print(io, maxv_components, inline_tables=IdSet{AbstractDict}([maxv_components]))
