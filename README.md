@@ -65,9 +65,9 @@ The URIs.jl and HTTP.jl packages allowed the construction of URIs containing CR/
 
 ## Authoring, reviewing, and maintaining JLSEC advisories
 
-New JLSEC advisories are published through a typical pull request process on this repository. Create a new advisory Markdown file  in the appropriate `advisories/published/$year` directory. A an advisory filename that begin with `JLSEC-0000` will automatically be re-named to the next available identifier immediately (and automatically) after merging, and its `id` will correspondingly be updated. All timestamps will similarly be updated after merging to reflect the time at which the advisory was available. CI will ensure the TOML is valid and can be exported to a valid OSV.
+New JLSEC advisories are published through a typical pull request process on this repository; see [CONTRIBUTING.md](https://github.com/JuliaLang/SecurityAdvisories.jl/blob/main/CONTRIBUTING.md) for details.
 
-Once published, an advisory **shall not** be deleted. If it is determined to have been published in error, instead its `withdrawn` date should be set.
+Once published, an advisory **shall not** be deleted. If it is determined to have been published in error, its `withdrawn` date should be set.
 
 A particular advisory identifier may be reserved by creating an empty file in `advisories/reserved/` with the reserved ID.
 
