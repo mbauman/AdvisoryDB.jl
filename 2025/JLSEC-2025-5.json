@@ -1,0 +1,47 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-5",
+    "modified": "2025-10-08T17:41:37.190Z",
+    "published": "2025-10-08T17:41:37.190Z",
+    "aliases": [
+        "GHSA-jg9p-c3wh-q83x",
+        "CVE-2025-52569"
+    ],
+    "summary": "Lack of validation for user-provided fields in GitHub.jl",
+    "details": "There is a lack of input validation for user-provided values in certain functions.\n\nIn the `GitHub.repo()` function, the user can provide any string for the `repo_name` field. These inputs are not validated or safely encoded and are sent directly to the server.\n\n### Impact\n\nThis means a user can add path traversal patterns like `../` in the input to access any other endpoints on `api.github.com` that were not intended.\n\n### Patches\n\nUsers should upgrade immediately to v5.9.1 or later. All prior versions are vulnerable. We recommend users upgrade to v5.10.0\n\n### Workarounds\n\nNone\n\n### References\n\nFixed by: https://github.com/JuliaWeb/GitHub.jl/pull/224 (which is available in v5.9.1).\n\n### Credits\n\n*splitline* from the DEVCORE Research Team for reported similar issues in other packages. Audit of equivalent problems in this package resulted in this issue, found by Dilum Aluthge.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "5.9.1"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "GitHub",
+                "purl": "pkg:julia/GitHub?uuid=bc5e4493-9b4d-5f90-b8aa-2b2bcaad7a26"
+            }
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "GHSA-jg9p-c3wh-q83x",
+                "imported": "2025-10-07T14:32:35.253Z",
+                "modified": "2025-06-24T23:01:49Z",
+                "published": "2025-06-24T23:01:49Z",
+                "url": "https://api.github.com/repos/JuliaWeb/GitHub.jl/security-advisories/GHSA-jg9p-c3wh-q83x",
+                "html_url": "https://github.com/JuliaWeb/GitHub.jl/security/advisories/GHSA-jg9p-c3wh-q83x"
+            }
+        ]
+    }
+}

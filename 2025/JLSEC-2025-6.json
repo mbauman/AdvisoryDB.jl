@@ -1,14 +1,91 @@
 {
     "schema_version": "1.7.3",
-    "id": "DONOTUSEJLSEC-2025-69",
-    "modified": "2025-10-06T13:10:23.999Z",
-    "published": "2025-09-24T15:09:41.228Z",
+    "id": "JLSEC-2025-6",
+    "modified": "2025-10-08T17:41:37.190Z",
+    "published": "2025-10-08T17:41:37.190Z",
     "upstream": [
         "CVE-2021-4048"
     ],
     "summary": "An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack t...",
     "details": "An out-of-bounds read flaw was found in the CLARRV, DLARRV, SLARRV, and ZLARRV functions in lapack through version 3.10.0, as also used in OpenBLAS before version 0.3.18. Specially crafted inputs passed to these functions could cause an application using lapack to crash or possibly disclose portions of its memory.",
     "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.12.1+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "ReferenceBLAS32_jll",
+                "purl": "pkg:julia/ReferenceBLAS32_jll?uuid=9e84b91c-71b0-5f24-acdc-49dbe8049396"
+            }
+        },
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.10.1+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "LAPACK32_jll",
+                "purl": "pkg:julia/LAPACK32_jll?uuid=17f450c3-bd24-55df-bb84-8c51b4b939e3"
+            }
+        },
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "OpenBLASHighCoreCount_jll",
+                "purl": "pkg:julia/OpenBLASHighCoreCount_jll?uuid=3a2d25a1-7f54-53f7-aded-df035e2fc6f8"
+            }
+        },
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.10.1+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "LAPACK_jll",
+                "purl": "pkg:julia/LAPACK_jll?uuid=51474c39-65e3-53ba-86ba-03b1b862ec14"
+            }
+        },
         {
             "ranges": [
                 {
@@ -38,6 +115,26 @@
                             "introduced": "0"
                         },
                         {
+                            "fixed": "3.12.1+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "ReferenceBLAS_jll",
+                "purl": "pkg:julia/ReferenceBLAS_jll?uuid=ee697234-451c-51c9-b102-303d89a9c3a0"
+            }
+        },
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
                             "fixed": "0.3.20+0"
                         }
                     ]
@@ -56,14 +153,34 @@
                     "events": [
                         {
                             "introduced": "0"
+                        },
+                        {
+                            "fixed": "1.8.0+1"
                         }
                     ]
                 }
             ],
             "package": {
                 "ecosystem": "Julia",
-                "name": "OpenBLASHighCoreCount_jll",
-                "purl": "pkg:julia/OpenBLASHighCoreCount_jll?uuid=3a2d25a1-7f54-53f7-aded-df035e2fc6f8"
+                "name": "libjulia_jll",
+                "purl": "pkg:julia/libjulia_jll?uuid=5ad3ddd2-0711-543a-b040-befd59781bbf"
+            }
+        },
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "SLICOT_jll",
+                "purl": "pkg:julia/SLICOT_jll?uuid=545525a2-e20e-568b-b87f-b40a06098995"
             }
         }
     ],
@@ -146,7 +263,7 @@
         "sources": [
             {
                 "id": "CVE-2021-4048",
-                "imported": "2025-09-24T14:36:01.885Z",
+                "imported": "2025-10-07T15:10:16.258Z",
                 "modified": "2024-11-21T06:36:47.820Z",
                 "published": "2021-12-08T22:15:10.220Z",
                 "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-4048",
