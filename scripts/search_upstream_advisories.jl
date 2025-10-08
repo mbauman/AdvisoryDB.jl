@@ -157,7 +157,7 @@ function main()
                     elseif r == [VersionRange{VersionNumber}("*")]
                         println(io, "        * `", source, "` at `", v, "` includes all versions")
                     elseif !all(SecurityAdvisories.has_upper_bound, r)
-                        println(io, "        * `", source, "` at `", v, "` mapped to `[", join(string.(r), ", "), "], includes the latest version`")
+                        println(io, "        * `", source, "` at `", v, "` mapped to `[", join(string.(r), ", "), "]`, includes the latest version`")
                     end
                 end
             end
