@@ -1,17 +1,16 @@
 ```toml
 schema_version = "1.7.3"
-id = "DONOTUSEJLSEC-2025-27"
-modified = 2025-10-06T13:10:23.999Z
-published = 2025-09-23T22:02:34.047Z
+id = "JLSEC-0000-mnrosmzhm-en7t4"
+modified = 2025-10-07T14:22:31.210Z
 aliases = ["GHSA-w8jv-rg3h-fc68", "CVE-2025-52480"]
 
 [[affected]]
 pkg = "Registrator"
-ranges = ["<= 1.9.4"]
+ranges = ["< 1.9.5"]
 
 [[jlsec_sources]]
 id = "GHSA-w8jv-rg3h-fc68"
-imported = 2025-09-23T21:55:52.259Z
+imported = 2025-10-07T14:22:31.190Z
 modified = 2025-06-24T23:01:40.000Z
 published = 2025-06-24T23:01:40.000Z
 url = "https://api.github.com/repos/JuliaRegistries/Registrator.jl/security-advisories/GHSA-w8jv-rg3h-fc68"

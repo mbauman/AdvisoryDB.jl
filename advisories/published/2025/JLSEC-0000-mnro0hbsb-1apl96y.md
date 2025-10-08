@@ -1,20 +1,19 @@
 ```toml
 schema_version = "1.7.3"
-id = "DONOTUSEJLSEC-2025-1"
-modified = 2025-10-06T13:10:23.999Z
-published = 2025-09-23T02:23:16.095Z
+id = "JLSEC-0000-mnro0hbsb-1apl96y"
+modified = 2025-10-07T01:14:17.963Z
 aliases = ["GHSA-4g68-4pxg-mw93", "CVE-2025-52479"]
 
 [[affected]]
 pkg = "HTTP"
-ranges = ["<= 1.10.16"]
+ranges = ["< 1.10.17"]
 [[affected]]
 pkg = "URIs"
 ranges = ["< 1.6.0"]
 
 [[jlsec_sources]]
 id = "GHSA-4g68-4pxg-mw93"
-imported = 2025-09-23T02:06:09.198Z
+imported = 2025-10-07T01:14:17.940Z
 modified = 2025-06-24T23:01:25.000Z
 published = 2025-06-24T23:01:25.000Z
 url = "https://api.github.com/repos/JuliaWeb/HTTP.jl/security-advisories/GHSA-4g68-4pxg-mw93"

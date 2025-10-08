@@ -1,15 +1,12 @@
-# A Julia Security Advisory Database
-
-> [!CAUTION]
-> The advisories here are **in testing**, **are not valid**, and **will be deleted**. Do not import any advisories with the `DONOTUSEJLSEC-` prefix.
+# The Julia Security Advisory Database
 
 > [!WARNING]
-> Work in progress. Likely incorrect and definitely incomplete data.
+> Work in progress. The advisories here are imported on a best-effort basis and are known to be incomplete.
 
 ## Overview
 
 There are four key goals of this repository:
-* Be a database of security advisories that pertain to packages in the Julia ecosystem.
+* Be the database of security advisories that pertain to packages in the Julia ecosystem.
 * Provide the structure for authoring, reviewing, and maintaining these security advisories.
 * Export the security advisories in standard format for downstream consumers.
 * Provide tooling to search, identify, and import applicable security advisories (*both* upstream and aliasing) from multiple independent advisory databases.
