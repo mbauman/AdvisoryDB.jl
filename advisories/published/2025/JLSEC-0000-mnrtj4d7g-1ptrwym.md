@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d7g-1ptrwym"
+modified = 2025-10-10T21:54:56.860Z
+upstream = ["CVE-2024-28757"]
+references = ["http://www.openwall.com/lists/oss-security/2024/03/15/1", "https://github.com/libexpat/libexpat/issues/839", "https://github.com/libexpat/libexpat/pull/842", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FPLC6WDSRDUYS7F7JWAOVOHFNOUQ43DD/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/LKJ7V5F6LJCEQJXDBWGT27J7NAP3E3N7/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VK2O34GH43NTHBZBN7G5Y6YKJKPUCTBE/", "https://security.netapp.com/advisory/ntap-20240322-0001/", "http://www.openwall.com/lists/oss-security/2024/03/15/1", "https://github.com/libexpat/libexpat/issues/839", "https://github.com/libexpat/libexpat/pull/842", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FPLC6WDSRDUYS7F7JWAOVOHFNOUQ43DD/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/LKJ7V5F6LJCEQJXDBWGT27J7NAP3E3N7/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VK2O34GH43NTHBZBN7G5Y6YKJKPUCTBE/", "https://security.netapp.com/advisory/ntap-20240322-0001/"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.6.2+0"]
+
+[[jlsec_sources]]
+id = "CVE-2024-28757"
+imported = 2025-10-10T21:54:56.860Z
+modified = 2025-03-28T19:15:21.230Z
+published = 2024-03-10T05:15:06.570Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-28757"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-28757"
+```
+
+# libexpat through 2.6.1 allows an XML Entity Expansion attack when there is isolated use of external ...
+
+libexpat through 2.6.1 allows an XML Entity Expansion attack when there is isolated use of external parsers (created via XML_ExternalEntityParserCreate).
+
