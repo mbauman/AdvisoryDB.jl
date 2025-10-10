@@ -13,6 +13,19 @@ function main()
     if startswith(input, "CVE") || startswith(input, "EUVD") || endswith(input, r"GHSA-\w{4}-\w{4}-\w{4}")
         advisories[input] = SecurityAdvisories.fetch_advisory(input)
         push!(info["haystack_total"], "1 advisory ($input)")
+    elseif input == "--github"
+        # Search through all GitHub repos for any GHSAs they have published
+        for (uuid, url) in SecurityAdvisories.registry_repositories()
+            m = match(r"^https://github.com/([^/]+)/(.*)$", url)
+            isnothing(m) && continue
+            owner, repo = m.captures
+            # We have a rate limit of 5000/hour, and there are more than 5000 github repos
+            sleep((5000/3600)*1.5)
+            for adv in GitHub.fetch_repo_advisories(owner, chopsuffix(repo, ".git"))
+                advisories[adv.ghsa_id] = GitHub.advisory(adv)
+            end
+        end
+        push!(info["haystack_total"], "$(length(advisories)) advisories from GitHub packages")
     else
         # A larger joint EUVD/NVD search, either by vendor:product or time. It's helpful to gather as
         # many vulns as possible with these higher-level searches before going one-by-one due to API limits
