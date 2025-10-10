@@ -1,0 +1,45 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chwt-pftbwl"
+modified = 2025-10-10T14:33:22.349Z
+upstream = ["CVE-2023-38546"]
+references = ["http://seclists.org/fulldisclosure/2024/Jan/34", "http://seclists.org/fulldisclosure/2024/Jan/37", "http://seclists.org/fulldisclosure/2024/Jan/38", "https://curl.se/docs/CVE-2023-38546.html", "https://forum.vmssoftware.com/viewtopic.php?f=8&t=8868", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OGMXNRNSJ4ETDK6FRNU3J7SABXPWCHSQ/", "https://support.apple.com/kb/HT214036", "https://support.apple.com/kb/HT214057", "https://support.apple.com/kb/HT214058", "https://support.apple.com/kb/HT214063", "http://seclists.org/fulldisclosure/2024/Jan/34", "http://seclists.org/fulldisclosure/2024/Jan/37", "http://seclists.org/fulldisclosure/2024/Jan/38", "https://curl.se/docs/CVE-2023-38546.html", "https://forum.vmssoftware.com/viewtopic.php?f=8&t=8868", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OGMXNRNSJ4ETDK6FRNU3J7SABXPWCHSQ/", "https://support.apple.com/kb/HT214036", "https://support.apple.com/kb/HT214057", "https://support.apple.com/kb/HT214058", "https://support.apple.com/kb/HT214063"]
+
+[[affected]]
+pkg = "CURL_jll"
+ranges = ["< 8.5.0+0"]
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = ["< 8.4.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-38546"
+imported = 2025-10-10T14:33:22.349Z
+modified = 2025-02-13T17:16:48.027Z
+published = 2023-10-18T04:15:11.137Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-38546"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-38546"
+```
+
+# This flaw allows an attacker to insert cookies at will into a running program using libcurl, if the ...
+
+This flaw allows an attacker to insert cookies at will into a running program
+using libcurl, if the specific series of conditions are met.
+
+libcurl performs transfers. In its API, an application creates "easy handles"
+that are the individual handles for single transfers.
+
+libcurl provides a function call that duplicates en easy handle called
+[curl_easy_duphandle](https://curl.se/libcurl/c/curl_easy_duphandle.html).
+
+If a transfer has cookies enabled when the handle is duplicated, the
+cookie-enable state is also cloned - but without cloning the actual
+cookies. If the source handle did not read any cookies from a specific file on
+disk, the cloned version of the handle would instead store the file name as
+`none` (using the four ASCII letters, no quotes).
+
+Subsequent use of the cloned handle that does not explicitly set a source to
+load cookies from would then inadvertently load cookies from a file named
+`none` - if such a file exists and is readable in the current directory of the
+program using libcurl. And if using the correct file format of course.
+

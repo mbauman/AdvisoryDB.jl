@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chw2-1tef6hq"
+modified = 2025-10-10T14:33:22.322Z
+upstream = ["CVE-2023-27537"]
+references = ["https://hackerone.com/reports/1897203", "https://security.gentoo.org/glsa/202310-12", "https://security.netapp.com/advisory/ntap-20230420-0010/", "https://hackerone.com/reports/1897203", "https://security.gentoo.org/glsa/202310-12", "https://security.netapp.com/advisory/ntap-20230420-0010/"]
+
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = [">= 7.88.1+0, < 8.0.1+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-27537"
+imported = 2025-10-10T14:33:22.322Z
+modified = 2024-11-21T07:53:07.407Z
+published = 2023-03-30T20:15:07.617Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-27537"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-27537"
+```
+
+# A double free vulnerability exists in libcurl <8.0.0 when sharing HSTS data between separate "handle...
+
+A double free vulnerability exists in libcurl <8.0.0 when sharing HSTS data between separate "handles". This sharing was introduced without considerations for do this sharing across separate threads but there was no indication of this fact in the documentation. Due to missing mutexes or thread locks, two threads sharing the same HSTS data could end up doing a double-free or use-after-free.
+

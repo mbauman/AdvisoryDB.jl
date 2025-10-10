@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chvy-1k59drs"
+modified = 2025-10-10T14:33:22.318Z
+upstream = ["CVE-2021-22924"]
+references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-732250.pdf", "https://hackerone.com/reports/1223565", "https://lists.apache.org/thread.html/r61db8e7dcb56dc000a5387a88f7a473bacec5ee01b9ff3f55308aacc%40%3Cdev.kafka.apache.org%3E", "https://lists.apache.org/thread.html/r61db8e7dcb56dc000a5387a88f7a473bacec5ee01b9ff3f55308aacc%40%3Cusers.kafka.apache.org%3E", "https://lists.apache.org/thread.html/rbf4ce74b0d1fa9810dec50ba3ace0caeea677af7c27a97111c06ccb7%40%3Cdev.kafka.apache.org%3E", "https://lists.apache.org/thread.html/rbf4ce74b0d1fa9810dec50ba3ace0caeea677af7c27a97111c06ccb7%40%3Cusers.kafka.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2021/08/msg00017.html", "https://lists.debian.org/debian-lts-announce/2022/08/msg00017.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FRUCW2UVNYUDZF72DQLFQR4PJEC6CF7V/", "https://security.netapp.com/advisory/ntap-20210902-0003/", "https://www.debian.org/security/2022/dsa-5197", "https://www.oracle.com/security-alerts/cpujan2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://cert-portal.siemens.com/productcert/pdf/ssa-732250.pdf", "https://hackerone.com/reports/1223565", "https://lists.apache.org/thread.html/r61db8e7dcb56dc000a5387a88f7a473bacec5ee01b9ff3f55308aacc%40%3Cdev.kafka.apache.org%3E", "https://lists.apache.org/thread.html/r61db8e7dcb56dc000a5387a88f7a473bacec5ee01b9ff3f55308aacc%40%3Cusers.kafka.apache.org%3E", "https://lists.apache.org/thread.html/rbf4ce74b0d1fa9810dec50ba3ace0caeea677af7c27a97111c06ccb7%40%3Cdev.kafka.apache.org%3E", "https://lists.apache.org/thread.html/rbf4ce74b0d1fa9810dec50ba3ace0caeea677af7c27a97111c06ccb7%40%3Cusers.kafka.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2021/08/msg00017.html", "https://lists.debian.org/debian-lts-announce/2022/08/msg00017.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FRUCW2UVNYUDZF72DQLFQR4PJEC6CF7V/", "https://security.netapp.com/advisory/ntap-20210902-0003/", "https://www.debian.org/security/2022/dsa-5197", "https://www.oracle.com/security-alerts/cpujan2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html"]
+
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = ["< 7.81.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2021-22924"
+imported = 2025-10-10T14:33:22.318Z
+modified = 2025-06-09T15:15:24.403Z
+published = 2021-08-05T21:15:11.380Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-22924"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-22924"
+```
+
+# libcurl keeps previously used connections in a connection pool for subsequenttransfers to reuse, if ...
+
+libcurl keeps previously used connections in a connection pool for subsequenttransfers to reuse, if one of them matches the setup.Due to errors in the logic, the config matching function did not take 'issuercert' into account and it compared the involved paths *case insensitively*,which could lead to libcurl reusing wrong connections.File paths are, or can be, case sensitive on many systems but not all, and caneven vary depending on used file systems.The comparison also didn't include the 'issuer cert' which a transfer can setto qualify how to verify the server certificate.
+

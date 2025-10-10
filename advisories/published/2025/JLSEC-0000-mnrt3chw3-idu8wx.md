@@ -1,0 +1,27 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chw3-idu8wx"
+modified = 2025-10-10T14:33:22.323Z
+upstream = ["CVE-2023-27538"]
+references = ["https://hackerone.com/reports/1898475", "https://lists.debian.org/debian-lts-announce/2023/04/msg00025.html", "https://security.gentoo.org/glsa/202310-12", "https://security.netapp.com/advisory/ntap-20230420-0010/", "https://hackerone.com/reports/1898475", "https://lists.debian.org/debian-lts-announce/2023/04/msg00025.html", "https://security.gentoo.org/glsa/202310-12", "https://security.netapp.com/advisory/ntap-20230420-0010/"]
+
+[[affected]]
+pkg = "CURL_jll"
+ranges = ["< 8.5.0+0"]
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = ["< 8.0.1+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-27538"
+imported = 2025-10-10T14:33:22.323Z
+modified = 2025-06-09T15:15:29.150Z
+published = 2023-03-30T20:15:07.677Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-27538"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-27538"
+```
+
+# An authentication bypass vulnerability exists in libcurl prior to v8.0.0 where it reuses a previousl...
+
+An authentication bypass vulnerability exists in libcurl prior to v8.0.0 where it reuses a previously established SSH connection despite the fact that an SSH option was modified, which should have prevented reuse. libcurl maintains a pool of previously used connections to reuse them for subsequent transfers if the configurations match. However, two SSH settings were omitted from the configuration check, allowing them to match easily, potentially leading to the reuse of an inappropriate connection.
+
