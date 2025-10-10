@@ -21,8 +21,12 @@ function main()
             owner, repo = m.captures
             # We have a rate limit of 5000/hour, and there are more than 5000 github repos
             sleep((5000/3600)*1.5)
-            for adv in GitHub.fetch_repo_advisories(owner, chopsuffix(repo, ".git"))
-                advisories[adv.ghsa_id] = GitHub.advisory(adv)
+            try
+                for adv in GitHub.fetch_repo_advisories(owner, chopsuffix(repo, ".git"))
+                    advisories[adv.ghsa_id] = GitHub.advisory(adv)
+                end
+            catch ex
+                @warn "failed to fetch repo advisories for $owner/$repo" ex
             end
         end
         push!(info["haystack_total"], "$(length(advisories)) advisories from GitHub packages")
