@@ -1,0 +1,42 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chws-cnu1tr"
+modified = 2025-10-10T14:33:22.348Z
+upstream = ["CVE-2023-38545"]
+references = ["http://seclists.org/fulldisclosure/2024/Jan/34", "http://seclists.org/fulldisclosure/2024/Jan/37", "http://seclists.org/fulldisclosure/2024/Jan/38", "https://curl.se/docs/CVE-2023-38545.html", "https://forum.vmssoftware.com/viewtopic.php?f=8&t=8868", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OGMXNRNSJ4ETDK6FRNU3J7SABXPWCHSQ/", "https://security.netapp.com/advisory/ntap-20231027-0009/", "https://security.netapp.com/advisory/ntap-20240201-0005/", "https://support.apple.com/kb/HT214036", "https://support.apple.com/kb/HT214057", "https://support.apple.com/kb/HT214058", "https://support.apple.com/kb/HT214063", "https://www.secpod.com/blog/high-severity-heap-buffer-overflow-vulnerability/", "http://seclists.org/fulldisclosure/2024/Jan/34", "http://seclists.org/fulldisclosure/2024/Jan/37", "http://seclists.org/fulldisclosure/2024/Jan/38", "https://curl.se/docs/CVE-2023-38545.html", "https://forum.vmssoftware.com/viewtopic.php?f=8&t=8868", "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/OGMXNRNSJ4ETDK6FRNU3J7SABXPWCHSQ/", "https://security.netapp.com/advisory/ntap-20231027-0009/", "https://security.netapp.com/advisory/ntap-20240201-0005/", "https://support.apple.com/kb/HT214036", "https://support.apple.com/kb/HT214057", "https://support.apple.com/kb/HT214058", "https://support.apple.com/kb/HT214063", "https://www.secpod.com/blog/high-severity-heap-buffer-overflow-vulnerability/", "https://github.com/UTsweetyfish/CVE-2023-38545", "https://github.com/bcdannyboy/CVE-2023-38545", "https://github.com/dbrugman/CVE-2023-38545-POC"]
+
+[[affected]]
+pkg = "CURL_jll"
+ranges = ["< 8.5.0+0"]
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = [">= 7.70.0+0, < 8.4.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-38545"
+imported = 2025-10-10T14:33:22.324Z
+modified = 2025-02-13T17:16:47.823Z
+published = 2023-10-18T04:15:11.077Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-38545"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-38545"
+```
+
+# This flaw makes curl overflow a heap based buffer in the SOCKS5 proxy handshake.
+
+This flaw makes curl overflow a heap based buffer in the SOCKS5 proxy
+handshake.
+
+When curl is asked to pass along the host name to the SOCKS5 proxy to allow
+that to resolve the address instead of it getting done by curl itself, the
+maximum length that host name can be is 255 bytes.
+
+If the host name is detected to be longer, curl switches to local name
+resolving and instead passes on the resolved address only. Due to this bug,
+the local variable that means "let the host resolve the name" could get the
+wrong value during a slow SOCKS5 handshake, and contrary to the intention,
+copy the too long host name to the target buffer instead of copying just the
+resolved address there.
+
+The target buffer being a heap based buffer, and the host name coming from the
+URL that curl has been told to operate with.
+

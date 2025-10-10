@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chvx-i8o8e4"
+modified = 2025-10-10T14:33:22.317Z
+upstream = ["CVE-2021-22890"]
+references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://curl.se/docs/CVE-2021-22890.html", "https://hackerone.com/reports/1129529", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/2ZC5BMIOKLBQJSFCHEDN2G2C2SH274BP/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ITVWPVGLFISU5BJC2BXBRYSDXTXE2YGC/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KQUIOYX2KUU6FIUZVB5WWZ6JHSSYSQWJ/", "https://security.gentoo.org/glsa/202105-36", "https://security.netapp.com/advisory/ntap-20210521-0007/", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://curl.se/docs/CVE-2021-22890.html", "https://hackerone.com/reports/1129529", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/2ZC5BMIOKLBQJSFCHEDN2G2C2SH274BP/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ITVWPVGLFISU5BJC2BXBRYSDXTXE2YGC/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KQUIOYX2KUU6FIUZVB5WWZ6JHSSYSQWJ/", "https://security.gentoo.org/glsa/202105-36", "https://security.netapp.com/advisory/ntap-20210521-0007/", "https://www.oracle.com//security-alerts/cpujul2021.html"]
+
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = ["< 7.81.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2021-22890"
+imported = 2025-10-10T14:33:22.317Z
+modified = 2025-06-09T15:15:24.177Z
+published = 2021-04-01T18:15:12.917Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-22890"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-22890"
+```
+
+# curl 7.63.0 to and including 7.75.0 includes vulnerability that allows a malicious HTTPS proxy to MI...
+
+curl 7.63.0 to and including 7.75.0 includes vulnerability that allows a malicious HTTPS proxy to MITM a connection due to bad handling of TLS 1.3 session tickets. When using a HTTPS proxy and TLS 1.3, libcurl can confuse session tickets arriving from the HTTPS proxy but work as if they arrived from the remote server and then wrongly "short-cut" the host handshake. When confusing the tickets, a HTTPS proxy can trick libcurl to use the wrong session ticket resume for the host and thereby circumvent the server TLS certificate check and make a MITM attack to be possible to perform unnoticed. Note that such a malicious HTTPS proxy needs to provide a certificate that curl will accept for the MITMed server for an attack to work - unless curl has been told to ignore the server certificate check.
+

@@ -1,0 +1,35 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chww-1g2r75x"
+modified = 2025-10-10T14:33:22.352Z
+upstream = ["CVE-2024-7264"]
+references = ["http://www.openwall.com/lists/oss-security/2024/07/31/1", "https://curl.se/docs/CVE-2024-7264.html", "https://curl.se/docs/CVE-2024-7264.json", "https://hackerone.com/reports/2629968", "http://www.openwall.com/lists/oss-security/2024/07/31/1", "https://github.com/curl/curl/commit/27959ecce75cdb2809c0bdb3286e60e08fadb519", "https://security.netapp.com/advisory/ntap-20240828-0008/"]
+
+[[affected]]
+pkg = "CURL_jll"
+ranges = ["< 8.9.1+0"]
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = ["< 8.9.1+0"]
+
+[[jlsec_sources]]
+id = "CVE-2024-7264"
+imported = 2025-10-10T14:33:22.352Z
+modified = 2024-11-21T09:51:10.360Z
+published = 2024-07-31T08:15:02.657Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-7264"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-7264"
+```
+
+# libcurl's ASN1 parser code has the `GTime2str()` function, used for parsing an ASN.1 Generalized Tim...
+
+libcurl's ASN1 parser code has the `GTime2str()` function, used for parsing an
+ASN.1 Generalized Time field. If given an syntactically incorrect field, the
+parser might end up using -1 for the length of the *time fraction*, leading to
+a `strlen()` getting performed on a pointer to a heap buffer area that is not
+(purposely) null terminated.
+
+This flaw most likely leads to a crash, but can also lead to heap contents
+getting returned to the application when
+[CURLINFO_CERTINFO](https://curl.se/libcurl/c/CURLINFO_CERTINFO.html) is used.
+

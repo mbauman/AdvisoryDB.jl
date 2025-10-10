@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrt3chvu-18go702"
+modified = 2025-10-10T14:33:22.314Z
+upstream = ["CVE-2020-8285"]
+references = ["http://seclists.org/fulldisclosure/2021/Apr/51", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://curl.se/docs/CVE-2020-8285.html", "https://github.com/curl/curl/issues/6255", "https://hackerone.com/reports/1045844", "https://lists.apache.org/thread.html/r58af02e294bd07f487e2c64ffc0a29b837db5600e33b6e698b9d696b%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.apache.org/thread.html/rf4c02775860db415b4955778a131c2795223f61cb8c6a450893651e4%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2020/12/msg00029.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DAEHE2S2QLO4AO4MEEYL75NB7SAH5PSL/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/NZUVSQHN2ESHMJXNQ2Z7T2EELBB5HJXG/", "https://security.gentoo.org/glsa/202012-14", "https://security.netapp.com/advisory/ntap-20210122-0007/", "https://support.apple.com/kb/HT212325", "https://support.apple.com/kb/HT212326", "https://support.apple.com/kb/HT212327", "https://www.debian.org/security/2021/dsa-4881", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujan2022.html", "http://seclists.org/fulldisclosure/2021/Apr/51", "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf", "https://curl.se/docs/CVE-2020-8285.html", "https://github.com/curl/curl/issues/6255", "https://hackerone.com/reports/1045844", "https://lists.apache.org/thread.html/r58af02e294bd07f487e2c64ffc0a29b837db5600e33b6e698b9d696b%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.apache.org/thread.html/rf4c02775860db415b4955778a131c2795223f61cb8c6a450893651e4%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2020/12/msg00029.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DAEHE2S2QLO4AO4MEEYL75NB7SAH5PSL/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/NZUVSQHN2ESHMJXNQ2Z7T2EELBB5HJXG/", "https://security.gentoo.org/glsa/202012-14", "https://security.netapp.com/advisory/ntap-20210122-0007/", "https://support.apple.com/kb/HT212325", "https://support.apple.com/kb/HT212326", "https://support.apple.com/kb/HT212327", "https://www.debian.org/security/2021/dsa-4881", "https://www.oracle.com//security-alerts/cpujul2021.html", "https://www.oracle.com/security-alerts/cpuApr2021.html", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujan2022.html"]
+
+[[affected]]
+pkg = "LibCURL_jll"
+ranges = ["< 7.81.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2020-8285"
+imported = 2025-10-10T14:33:22.313Z
+modified = 2024-11-21T05:38:39.410Z
+published = 2020-12-14T20:15:13.983Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2020-8285"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2020-8285"
+```
+
+# curl 7.21.0 to and including 7.73.0 is vulnerable to uncontrolled recursion due to a stack overflow ...
+
+curl 7.21.0 to and including 7.73.0 is vulnerable to uncontrolled recursion due to a stack overflow issue in FTP wildcard match parsing.
+
