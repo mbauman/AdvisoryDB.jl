@@ -1,0 +1,96 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-20",
+    "modified": "2025-10-10T14:27:45.619Z",
+    "published": "2025-10-10T14:27:45.619Z",
+    "upstream": [
+        "CVE-2022-42011"
+    ],
+    "summary": "An issue was discovered in D-Bus before 1.12.24, 1.13.x and 1.14.x before 1.14.4, and 1.15.x before ...",
+    "details": "An issue was discovered in D-Bus before 1.12.24, 1.13.x and 1.14.x before 1.14.4, and 1.15.x before 1.15.2. An authenticated attacker can cause dbus-daemon and other programs that use libdbus to crash when receiving a message where an array length is inconsistent with the size of the element type.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "1.14.10+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "Dbus_jll",
+                "purl": "pkg:julia/Dbus_jll?uuid=ee1fde0b-3d02-5ea6-8484-8dfef6360eab"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "https://gitlab.freedesktop.org/dbus/dbus/-/issues/413"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/E4CO7N226I3X5FNBR2MACCH6TS764VJP/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ND74SKN56BCYL3QLEAAB6E64UUBRA5UG/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/SQCSLMCK2XGX23R2DKW2MSAICQAK6MT2/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202305-08"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.openwall.com/lists/oss-security/2022/10/06/1"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.freedesktop.org/dbus/dbus/-/issues/413"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/E4CO7N226I3X5FNBR2MACCH6TS764VJP/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ND74SKN56BCYL3QLEAAB6E64UUBRA5UG/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/SQCSLMCK2XGX23R2DKW2MSAICQAK6MT2/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202305-08"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.openwall.com/lists/oss-security/2022/10/06/1"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2022-42011",
+                "imported": "2025-10-10T13:32:22.004Z",
+                "modified": "2025-06-09T15:15:28.073Z",
+                "published": "2022-10-10T00:15:09.573Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-42011",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-42011"
+            }
+        ]
+    }
+}
