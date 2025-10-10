@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrs1qlh9-11zmn6u"
+modified = 2025-10-09T21:00:34.749Z
+upstream = ["CVE-2019-6461"]
+references = ["https://github.com/TeamSeri0us/pocs/tree/master/gerbv", "https://gitlab.freedesktop.org/cairo/cairo/issues/352", "https://lists.apache.org/thread.html/rf9fa47ab66495c78bb4120b0754dd9531ca2ff0430f6685ac9b07772%40%3Cdev.mina.apache.org%3E", "https://github.com/TeamSeri0us/pocs/tree/master/gerbv", "https://gitlab.freedesktop.org/cairo/cairo/issues/352", "https://lists.apache.org/thread.html/rf9fa47ab66495c78bb4120b0754dd9531ca2ff0430f6685ac9b07772%40%3Cdev.mina.apache.org%3E"]
+
+[[affected]]
+pkg = "Cairo_jll"
+ranges = [">= 1.16.0+0, < 1.18.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2019-6461"
+imported = 2025-10-09T21:00:34.749Z
+modified = 2024-11-21T04:46:29.910Z
+published = 2019-01-16T18:29:00.510Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2019-6461"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-6461"
+```
+
+# An issue was discovered in cairo 1.16.0
+
+An issue was discovered in cairo 1.16.0. There is an assertion problem in the function _cairo_arc_in_direction in the file cairo-arc.c.
+

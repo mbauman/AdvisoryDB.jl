@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrs1qlh8-1fkmu0c"
+modified = 2025-10-09T21:00:34.748Z
+upstream = ["CVE-2018-19876"]
+references = ["https://bugs.webkit.org/show_bug.cgi?id=191595", "https://gitlab.freedesktop.org/cairo/cairo/merge_requests/5", "https://bugs.webkit.org/show_bug.cgi?id=191595", "https://gitlab.freedesktop.org/cairo/cairo/merge_requests/5"]
+
+[[affected]]
+pkg = "Cairo_jll"
+ranges = [">= 1.16.0+0, < 1.18.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2018-19876"
+imported = 2025-10-09T21:00:34.748Z
+modified = 2024-11-21T03:58:44.027Z
+published = 2018-12-05T20:29:00.240Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2018-19876"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2018-19876"
+```
+
+# cairo 1.16.0, in cairo_ft_apply_variations() in cairo-ft-font.c, would free memory using a free func...
+
+cairo 1.16.0, in cairo_ft_apply_variations() in cairo-ft-font.c, would free memory using a free function incompatible with WebKit's fastMalloc, leading to an application crash with a "free(): invalid pointer" error.
+
