@@ -1,0 +1,200 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-25",
+    "modified": "2025-10-10T15:04:01.319Z",
+    "published": "2025-10-10T15:04:01.319Z",
+    "upstream": [
+        "CVE-2020-8286"
+    ],
+    "summary": "curl 7.41.0 through 7.73.0 is vulnerable to an improper check for certificate revocation due to insu...",
+    "details": "curl 7.41.0 through 7.73.0 is vulnerable to an improper check for certificate revocation due to insufficient verification of the OCSP response.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "7.81.0+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "LibCURL_jll",
+                "purl": "pkg:julia/LibCURL_jll?uuid=deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2021/Apr/50"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2021/Apr/51"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2021/Apr/54"
+        },
+        {
+            "type": "WEB",
+            "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-200951.pdf"
+        },
+        {
+            "type": "WEB",
+            "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
+        },
+        {
+            "type": "WEB",
+            "url": "https://curl.se/docs/CVE-2020-8286.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://hackerone.com/reports/1048457"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2020/12/msg00029.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DAEHE2S2QLO4AO4MEEYL75NB7SAH5PSL/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/NZUVSQHN2ESHMJXNQ2Z7T2EELBB5HJXG/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202012-14"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20210122-0007/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT212325"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT212326"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT212327"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2021/dsa-4881"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpuApr2021.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2021/Apr/50"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2021/Apr/51"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2021/Apr/54"
+        },
+        {
+            "type": "WEB",
+            "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-200951.pdf"
+        },
+        {
+            "type": "WEB",
+            "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf"
+        },
+        {
+            "type": "WEB",
+            "url": "https://curl.se/docs/CVE-2020-8286.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://hackerone.com/reports/1048457"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2020/12/msg00029.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DAEHE2S2QLO4AO4MEEYL75NB7SAH5PSL/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/NZUVSQHN2ESHMJXNQ2Z7T2EELBB5HJXG/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202012-14"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20210122-0007/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT212325"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT212326"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT212327"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2021/dsa-4881"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com//security-alerts/cpujul2021.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpuApr2021.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2020-8286",
+                "imported": "2025-10-10T14:33:22.315Z",
+                "modified": "2024-11-21T05:38:39.643Z",
+                "published": "2020-12-14T20:15:14.043Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2020-8286",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2020-8286"
+            }
+        ]
+    }
+}

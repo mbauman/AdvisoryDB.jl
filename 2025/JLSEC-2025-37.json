@@ -1,0 +1,84 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-37",
+    "modified": "2025-10-10T15:04:01.319Z",
+    "published": "2025-10-10T15:04:01.319Z",
+    "upstream": [
+        "CVE-2024-6874"
+    ],
+    "summary": "libcurl's URL API function [curl_url_get()](https://curl.se/libcurl/c/curl_url_get.html) offers puny...",
+    "details": "libcurl's URL API function\n[curl_url_get()](https://curl.se/libcurl/c/curl_url_get.html) offers punycode\nconversions, to and from IDN. Asking to convert a name that is exactly 256\nbytes, libcurl ends up reading outside of a stack based buffer when built to\nuse the *macidn* IDN backend. The conversion function then fills up the\nprovided buffer exactly - but does not null terminate the string.\n\nThis flaw can lead to stack contents accidently getting returned as part of\nthe converted string.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "8.8.0+0"
+                        },
+                        {
+                            "fixed": "8.9.0+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "LibCURL_jll",
+                "purl": "pkg:julia/LibCURL_jll?uuid=deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2024/07/24/2"
+        },
+        {
+            "type": "WEB",
+            "url": "https://curl.se/docs/CVE-2024-6874.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://curl.se/docs/CVE-2024-6874.json"
+        },
+        {
+            "type": "WEB",
+            "url": "https://hackerone.com/reports/2604391"
+        },
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2024/07/24/2"
+        },
+        {
+            "type": "WEB",
+            "url": "https://curl.se/docs/CVE-2024-6874.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://curl.se/docs/CVE-2024-6874.json"
+        },
+        {
+            "type": "WEB",
+            "url": "https://hackerone.com/reports/2604391"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20240822-0004/"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2024-6874",
+                "imported": "2025-10-10T14:33:22.351Z",
+                "modified": "2024-11-21T09:50:26.493Z",
+                "published": "2024-07-24T08:15:03.413Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-6874",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2024-6874"
+            }
+        ]
+    }
+}
