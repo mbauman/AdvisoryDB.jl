@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d7f-1li5kcn"
+modified = 2025-10-10T21:54:56.859Z
+upstream = ["CVE-2023-52425"]
+references = ["http://www.openwall.com/lists/oss-security/2024/03/20/5", "https://github.com/libexpat/libexpat/pull/789", "https://lists.debian.org/debian-lts-announce/2024/04/msg00006.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/PNRIHC7DVVRAIWFRGV23Y6UZXFBXSQDB/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/WNUBSGZFEZOBHJFTAD42SAN4ATW2VEMV/", "https://security.netapp.com/advisory/ntap-20240614-0003/", "http://www.openwall.com/lists/oss-security/2024/03/20/5", "https://github.com/libexpat/libexpat/pull/789", "https://lists.debian.org/debian-lts-announce/2024/04/msg00006.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/PNRIHC7DVVRAIWFRGV23Y6UZXFBXSQDB/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/WNUBSGZFEZOBHJFTAD42SAN4ATW2VEMV/", "https://security.netapp.com/advisory/ntap-20240614-0003/"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.6.2+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-52425"
+imported = 2025-10-10T21:54:56.859Z
+modified = 2024-11-21T08:39:43.393Z
+published = 2024-02-04T20:15:46.063Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-52425"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-52425"
+```
+
+# libexpat through 2.5.0 allows a denial of service (resource consumption) because many full reparsing...
+
+libexpat through 2.5.0 allows a denial of service (resource consumption) because many full reparsings are required in the case of a large token for which multiple buffer fills are needed.
+

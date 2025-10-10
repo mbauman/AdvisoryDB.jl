@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d7f-17hulwh"
+modified = 2025-10-10T21:54:56.859Z
+upstream = ["CVE-2023-52426"]
+references = ["https://cwe.mitre.org/data/definitions/776.html", "https://github.com/libexpat/libexpat/commit/0f075ec8ecb5e43f8fdca5182f8cca4703da0404", "https://github.com/libexpat/libexpat/pull/777", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/PNRIHC7DVVRAIWFRGV23Y6UZXFBXSQDB/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/WNUBSGZFEZOBHJFTAD42SAN4ATW2VEMV/", "https://security.netapp.com/advisory/ntap-20240307-0005/", "https://cwe.mitre.org/data/definitions/776.html", "https://github.com/libexpat/libexpat/commit/0f075ec8ecb5e43f8fdca5182f8cca4703da0404", "https://github.com/libexpat/libexpat/pull/777", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/PNRIHC7DVVRAIWFRGV23Y6UZXFBXSQDB/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/WNUBSGZFEZOBHJFTAD42SAN4ATW2VEMV/", "https://security.netapp.com/advisory/ntap-20240307-0005/"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.6.2+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-52426"
+imported = 2025-10-10T21:54:56.859Z
+modified = 2025-06-17T16:15:32.360Z
+published = 2024-02-04T20:15:46.120Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-52426"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-52426"
+```
+
+# libexpat through 2.5.0 allows recursive XML Entity Expansion if XML_DTD is undefined at compile time...
+
+libexpat through 2.5.0 allows recursive XML Entity Expansion if XML_DTD is undefined at compile time.
+

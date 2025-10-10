@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d6b-1s0z09p"
+modified = 2025-10-10T21:54:56.819Z
+upstream = ["CVE-2021-45960"]
+references = ["http://www.openwall.com/lists/oss-security/2022/01/17/3", "https://bugzilla.mozilla.org/show_bug.cgi?id=1217609", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/issues/531", "https://github.com/libexpat/libexpat/pull/534", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220121-0004/", "https://www.debian.org/security/2022/dsa-5073", "https://www.tenable.com/security/tns-2022-05", "http://www.openwall.com/lists/oss-security/2022/01/17/3", "https://bugzilla.mozilla.org/show_bug.cgi?id=1217609", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/issues/531", "https://github.com/libexpat/libexpat/pull/534", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220121-0004/", "https://www.debian.org/security/2022/dsa-5073", "https://www.tenable.com/security/tns-2022-05"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.4.4+0"]
+
+[[jlsec_sources]]
+id = "CVE-2021-45960"
+imported = 2025-10-10T21:54:56.819Z
+modified = 2025-05-05T17:17:28.457Z
+published = 2022-01-01T19:15:08.030Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45960"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-45960"
+```
+
+# In Expat (aka libexpat) before 2.4.3, a left shift by 29 (or more) places in the storeAtts function ...
+
+In Expat (aka libexpat) before 2.4.3, a left shift by 29 (or more) places in the storeAtts function in xmlparse.c can lead to realloc misbehavior (e.g., allocating too few bytes, or only freeing memory).
+
