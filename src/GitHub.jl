@@ -157,11 +157,7 @@ function fetch_ghsa(ghsa)
     m = match(r"([^/]+)/([^/]+)/(?:security[/-]advisories/)?(GHSA-\w{4}-\w{4}-\w{4})$", ghsa)
     isnothing(m) && throw(ArgumentError("unknown GHSA identifier $ghsa"))
     owner, repo, id = m.captures
-    # I don't fully understand, but this returns 401s with a valid read token:
     return fetch_repo_ghsa(owner, repo, id)
-    # And it sometimes seems to be more reliable to filter through all repo advisories:
-    # advisories = fetch_repo_advisories("$owner/$repo")
-    # return only(filter(x->x.ghsa_id == id, advisories))
 end
 
 function vuln_id(vuln, input=nothing)
@@ -195,8 +191,8 @@ function fetch_database_ghsa(ghsa)
     return only(all_advisories)
 end
 
-function fetch_repo_advisories(repo::String)
-    base_url = "$GITHUB_API_BASE/repos/$repo/security-advisories"
+function fetch_repo_advisories(owner, repo)
+    base_url = "$GITHUB_API_BASE/repos/$owner/$repo/security-advisories"
     headers = build_headers()
 
     params = [

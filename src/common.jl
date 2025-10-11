@@ -185,6 +185,16 @@ function get_registry(reg=Registry.RegistrySpec(name="General", uuid = "23338594
     return Registry.RegistryInstance(name)
 end
 
+function registry_repositories(reg=get_registry())
+    repos = Dict{Base.UUID, String}()
+    for (uuid, pkgentry) in reg
+        repo = Registry.registry_info(pkgentry).repo
+        isnothing(repo) && continue
+        repos[uuid] = repo
+    end
+    return repos
+end
+
 function uuids_from_name(name, reg=get_registry())
     name == "julia" && return Base.UUID[]
     Registry.uuids_from_name(reg, string(name))
