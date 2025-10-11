@@ -20,7 +20,7 @@ function main()
             isnothing(m) && continue
             owner, repo = m.captures
             # We have a rate limit of 5000/hour, and there are more than 5000 github repos
-            sleep((5000/3600)*1.5)
+            sleep((5000/3600))
             try
                 for adv in GitHub.fetch_repo_advisories(owner, chopsuffix(repo, ".git"))
                     advisories[adv.ghsa_id] = GitHub.advisory(adv)
