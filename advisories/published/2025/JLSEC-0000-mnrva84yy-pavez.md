@@ -1,0 +1,32 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrva84yy-pavez"
+modified = 2025-10-12T03:21:28.618Z
+aliases = ["CVE-2025-61689"]
+references = ["https://github.com/JuliaWeb/HTTP.jl/releases/tag/v1.10.19", "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-h3x8-ppwj-6vcj"]
+
+[[affected]]
+pkg = "HTTP"
+ranges = ["< 1.10.19"]
+
+[[jlsec_sources]]
+id = "CVE-2025-61689"
+imported = 2025-10-12T03:21:28.618Z
+modified = 2025-10-10T17:15:39.367Z
+published = 2025-10-10T17:15:39.367Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-61689"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2025-61689"
+[[jlsec_sources]]
+id = "EUVD-2025-33756"
+imported = 2025-10-12T03:21:28.618Z
+modified = 2025-10-10T19:12:55.000Z
+published = 2025-10-10T16:48:41.000Z
+url = "https://euvdservices.enisa.europa.eu/api/enisaid?id=EUVD-2025-33756"
+html_url = "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-33756"
+fields = ["affected"]
+```
+
+# HTTP.jl is an HTTP client and server functionality for the Julia programming language
+
+HTTP.jl is an HTTP client and server functionality for the Julia programming language. Prior to version 1.10.19, HTTP.jl did not validate header names/values for illegal characters, allowing CRLF-based header injection and response splitting. This enables HTTP response splitting and header injection, leading to cache poisoning, XSS, session fixation, and more. This issue is fixed in HTTP.jl  `v1.10.19`.
+
