@@ -6,7 +6,7 @@ aliases = ["GHSA-h3x8-ppwj-6vcj", "CVE-2025-61689"]
 
 [[affected]]
 pkg = "HTTP"
-ranges = ["<= 1.10.17"]
+ranges = ["< 1.10.19"]
 
 [[jlsec_sources]]
 id = "GHSA-h3x8-ppwj-6vcj"
