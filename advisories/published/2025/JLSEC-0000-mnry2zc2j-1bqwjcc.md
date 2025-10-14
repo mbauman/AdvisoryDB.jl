@@ -6,7 +6,7 @@ aliases = ["GHSA-3mj7-qxh9-6q4p", "CVE-2025-52561"]
 
 [[affected]]
 pkg = "HTMLSanitizer"
-ranges = ["<= 0.2.0"]
+ranges = ["< 0.2.1"]
 
 [[jlsec_sources]]
 id = "GHSA-3mj7-qxh9-6q4p"
