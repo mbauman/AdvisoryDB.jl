@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d7b-15ziwv5"
+modified = 2025-10-10T21:54:56.855Z
+upstream = ["CVE-2022-25314"]
+references = ["http://www.openwall.com/lists/oss-security/2022/02/19/1", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/560", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3UFRBA3UQVIQKXTBUQXDWQOVWNBKLERU/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y27XO3JMKAOMQZVPS3B4MJGEAHCZF5OM/", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220303-0008/", "https://www.debian.org/security/2022/dsa-5085", "https://www.oracle.com/security-alerts/cpuapr2022.html", "http://www.openwall.com/lists/oss-security/2022/02/19/1", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/560", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3UFRBA3UQVIQKXTBUQXDWQOVWNBKLERU/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y27XO3JMKAOMQZVPS3B4MJGEAHCZF5OM/", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220303-0008/", "https://www.debian.org/security/2022/dsa-5085", "https://www.oracle.com/security-alerts/cpuapr2022.html"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.4.8+0"]
+
+[[jlsec_sources]]
+id = "CVE-2022-25314"
+imported = 2025-10-10T21:54:56.855Z
+modified = 2025-05-05T17:18:01.450Z
+published = 2022-02-18T05:15:08.187Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-25314"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-25314"
+```
+
+# In Expat (aka libexpat) before 2.4.5, there is an integer overflow in copyString.
+
+In Expat (aka libexpat) before 2.4.5, there is an integer overflow in copyString.
+

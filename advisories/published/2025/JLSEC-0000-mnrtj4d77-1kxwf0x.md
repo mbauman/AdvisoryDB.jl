@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d77-1kxwf0x"
+modified = 2025-10-10T21:54:56.851Z
+upstream = ["CVE-2022-23852"]
+references = ["https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/550", "https://lists.debian.org/debian-lts-announce/2022/03/msg00007.html", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220217-0001/", "https://www.debian.org/security/2022/dsa-5073", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.tenable.com/security/tns-2022-05", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/550", "https://lists.debian.org/debian-lts-announce/2022/03/msg00007.html", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220217-0001/", "https://www.debian.org/security/2022/dsa-5073", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.tenable.com/security/tns-2022-05"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.4.4+0"]
+
+[[jlsec_sources]]
+id = "CVE-2022-23852"
+imported = 2025-10-10T21:54:56.851Z
+modified = 2025-05-05T17:17:58.757Z
+published = 2022-01-24T02:15:06.733Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-23852"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-23852"
+```
+
+# Expat (aka libexpat) before 2.4.4 has a signed integer overflow in XML_GetBuffer, for configurations...
+
+Expat (aka libexpat) before 2.4.4 has a signed integer overflow in XML_GetBuffer, for configurations with a nonzero XML_CONTEXT_BYTES.
+

@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d71-sh1ea4"
+modified = 2025-10-10T21:54:56.845Z
+upstream = ["CVE-2022-22822"]
+references = ["http://www.openwall.com/lists/oss-security/2022/01/17/3", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/539", "https://security.gentoo.org/glsa/202209-24", "https://www.debian.org/security/2022/dsa-5073", "https://www.tenable.com/security/tns-2022-05", "http://www.openwall.com/lists/oss-security/2022/01/17/3", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/539", "https://security.gentoo.org/glsa/202209-24", "https://www.debian.org/security/2022/dsa-5073", "https://www.tenable.com/security/tns-2022-05"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.4.4+0"]
+
+[[jlsec_sources]]
+id = "CVE-2022-22822"
+imported = 2025-10-10T21:54:56.820Z
+modified = 2025-05-05T17:17:52.380Z
+published = 2022-01-10T14:12:56.047Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-22822"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-22822"
+```
+
+# addBinding in xmlparse.c in Expat (aka libexpat) before 2.4.3 has an integer overflow.
+
+addBinding in xmlparse.c in Expat (aka libexpat) before 2.4.3 has an integer overflow.
+

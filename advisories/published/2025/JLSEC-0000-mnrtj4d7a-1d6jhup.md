@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mnrtj4d7a-1d6jhup"
+modified = 2025-10-10T21:54:56.854Z
+upstream = ["CVE-2022-25236"]
+references = ["http://packetstormsecurity.com/files/167238/Zoom-XMPP-Stanza-Smuggling-Remote-Code-Execution.html", "http://www.openwall.com/lists/oss-security/2022/02/19/1", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/561", "https://lists.debian.org/debian-lts-announce/2022/03/msg00007.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3UFRBA3UQVIQKXTBUQXDWQOVWNBKLERU/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y27XO3JMKAOMQZVPS3B4MJGEAHCZF5OM/", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220303-0008/", "https://www.debian.org/security/2022/dsa-5085", "https://www.oracle.com/security-alerts/cpuapr2022.html", "http://packetstormsecurity.com/files/167238/Zoom-XMPP-Stanza-Smuggling-Remote-Code-Execution.html", "http://www.openwall.com/lists/oss-security/2022/02/19/1", "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf", "https://github.com/libexpat/libexpat/pull/561", "https://lists.debian.org/debian-lts-announce/2022/03/msg00007.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3UFRBA3UQVIQKXTBUQXDWQOVWNBKLERU/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y27XO3JMKAOMQZVPS3B4MJGEAHCZF5OM/", "https://security.gentoo.org/glsa/202209-24", "https://security.netapp.com/advisory/ntap-20220303-0008/", "https://www.debian.org/security/2022/dsa-5085", "https://www.oracle.com/security-alerts/cpuapr2022.html"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.4.8+0"]
+
+[[jlsec_sources]]
+id = "CVE-2022-25236"
+imported = 2025-10-10T21:54:56.854Z
+modified = 2025-05-05T17:18:01.050Z
+published = 2022-02-16T01:15:07.650Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-25236"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-25236"
+```
+
+# xmlparse.c in Expat (aka libexpat) before 2.4.5 allows attackers to insert namespace-separator chara...
+
+xmlparse.c in Expat (aka libexpat) before 2.4.5 allows attackers to insert namespace-separator characters into namespace URIs.
+
