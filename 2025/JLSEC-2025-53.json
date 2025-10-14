@@ -1,0 +1,136 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-53",
+    "modified": "2025-10-14T15:35:41.198Z",
+    "published": "2025-10-14T15:35:41.198Z",
+    "upstream": [
+        "CVE-2022-25236"
+    ],
+    "summary": "xmlparse.c in Expat (aka libexpat) before 2.4.5 allows attackers to insert namespace-separator chara...",
+    "details": "xmlparse.c in Expat (aka libexpat) before 2.4.5 allows attackers to insert namespace-separator characters into namespace URIs.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.4.8+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "Expat_jll",
+                "purl": "pkg:julia/Expat_jll?uuid=2e619515-83b5-522b-bb60-26c02a35a201"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "http://packetstormsecurity.com/files/167238/Zoom-XMPP-Stanza-Smuggling-Remote-Code-Execution.html"
+        },
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2022/02/19/1"
+        },
+        {
+            "type": "WEB",
+            "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/pull/561"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2022/03/msg00007.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3UFRBA3UQVIQKXTBUQXDWQOVWNBKLERU/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y27XO3JMKAOMQZVPS3B4MJGEAHCZF5OM/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202209-24"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20220303-0008/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2022/dsa-5085"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+        },
+        {
+            "type": "WEB",
+            "url": "http://packetstormsecurity.com/files/167238/Zoom-XMPP-Stanza-Smuggling-Remote-Code-Execution.html"
+        },
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2022/02/19/1"
+        },
+        {
+            "type": "WEB",
+            "url": "https://cert-portal.siemens.com/productcert/pdf/ssa-484086.pdf"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/pull/561"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2022/03/msg00007.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3UFRBA3UQVIQKXTBUQXDWQOVWNBKLERU/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/Y27XO3JMKAOMQZVPS3B4MJGEAHCZF5OM/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202209-24"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20220303-0008/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2022/dsa-5085"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpuapr2022.html"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2022-25236",
+                "imported": "2025-10-10T21:54:56.854Z",
+                "modified": "2025-05-05T17:18:01.050Z",
+                "published": "2022-02-16T01:15:07.650Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-25236",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25236"
+            }
+        ]
+    }
+}

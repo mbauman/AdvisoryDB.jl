@@ -1,0 +1,168 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-58",
+    "modified": "2025-10-14T15:35:41.198Z",
+    "published": "2025-10-14T15:35:41.198Z",
+    "upstream": [
+        "CVE-2022-43680"
+    ],
+    "summary": "In libexpat through 2.4.9, there is a use-after free caused by overeager destruction of a shared DTD...",
+    "details": "In libexpat through 2.4.9, there is a use-after free caused by overeager destruction of a shared DTD in XML_ExternalEntityParserCreate in out-of-memory situations.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.5.0+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "Expat_jll",
+                "purl": "pkg:julia/Expat_jll?uuid=2e619515-83b5-522b-bb60-26c02a35a201"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2023/12/28/5"
+        },
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2024/01/03/5"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/issues/649"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/pull/616"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/pull/650"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2022/10/msg00033.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/AJ5VY2VYXE4WTRGQ6LMGLF6FV3SY37YE/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BY4OPSIB33ETNUXZY2UPZ4NGQ3OKDY4D/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DPQVIF6TOJNY2T3ZZETFKR4G34FFREBQ/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FFCOMBSOJKLIKCGCJWHLJXO4EVYBG7AR/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/IUJ2BULJTZ2BMSKQHB6US674P55UCWWS/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/XG5XOOB7CD55CEE6OJYKSACSIMQ4RWQ6/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202210-38"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20221118-0007/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2022/dsa-5266"
+        },
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2023/12/28/5"
+        },
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2024/01/03/5"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/issues/649"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/pull/616"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/pull/650"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2022/10/msg00033.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/AJ5VY2VYXE4WTRGQ6LMGLF6FV3SY37YE/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BY4OPSIB33ETNUXZY2UPZ4NGQ3OKDY4D/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/DPQVIF6TOJNY2T3ZZETFKR4G34FFREBQ/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FFCOMBSOJKLIKCGCJWHLJXO4EVYBG7AR/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/IUJ2BULJTZ2BMSKQHB6US674P55UCWWS/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/XG5XOOB7CD55CEE6OJYKSACSIMQ4RWQ6/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202210-38"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20221118-0007/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2022/dsa-5266"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2022-43680",
+                "imported": "2025-10-10T21:54:56.858Z",
+                "modified": "2025-05-30T20:15:31.250Z",
+                "published": "2022-10-24T14:15:53.323Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-43680",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-43680"
+            }
+        ]
+    }
+}
