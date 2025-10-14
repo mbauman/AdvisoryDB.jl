@@ -1,0 +1,47 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-39",
+    "modified": "2025-10-14T04:37:19.606Z",
+    "published": "2025-10-14T04:37:19.606Z",
+    "aliases": [
+        "GHSA-3mj7-qxh9-6q4p",
+        "CVE-2025-52561"
+    ],
+    "summary": "Possible XSS in HTMLSanitizer when using svg elements",
+    "details": "### Description\n\nWhen adding the style tag to the whitelist, content inside the tag is incorrectly unescaped, and closing tags injected as content are interpreted as real HTML, enabling tag injection and JavaScript execution.\n\nThis behavior is similar to the sanitization bypass described in CVE-2020-4054 (Sanitize for Ruby).\n\n```\nusing HTMLSanitizer\n\nuser_input = \"<svg><style>&lt;/style>&lt;img src onerror=alert(1)>\"\n\nwhitelist = deepcopy(HTMLSanitizer.WHITELIST)\nappend!(whitelist[:elements], [\"style\"])\nresult = sanitize(user_input, whitelist=whitelist)\nprint(result) # <style></style><img src onerror=alert(1)></style>\n```\n\n### Impact\n\nPossible XSS in any HTML that is sanitized with this library.\n\n### Patches\n\nUsers should upgrade to `v0.2.1` as soon as possible. In this version, `svg` and `math` tags are removed by default.\n\n### Workarounds\n\nAdd the `math` and `svg` elements to your whitelist manually via e.g.\n\n```\nwhitelist = deepcopy(HTMLSanitizer.WHITELIST)\nappend!(whitelist[:removed_elements], [\"math\", \"svg\"])\n```\n\nand pass this modified whitelist to `sanitize`:\n\n```\nsanitize(user_input, whitelist=whitelist)\n```\n\n### References\n\n[PR for fix](https://github.com/JuliaComputing/HTMLSanitizer.jl/pull/5)\n\n### Credits\n\nThanks to  Chen T for finding and reporting this issue.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "0.2.1"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "HTMLSanitizer",
+                "purl": "pkg:julia/HTMLSanitizer?uuid=9a15a9f4-ddd5-46ee-89fc-c219f813dd6f"
+            }
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "GHSA-3mj7-qxh9-6q4p",
+                "imported": "2025-10-14T02:21:59.106Z",
+                "modified": "2025-06-23T13:45:18Z",
+                "published": "2025-06-23T13:44:51Z",
+                "url": "https://api.github.com/repos/JuliaComputing/HTMLSanitizer.jl/security-advisories/GHSA-3mj7-qxh9-6q4p",
+                "html_url": "https://github.com/JuliaComputing/HTMLSanitizer.jl/security/advisories/GHSA-3mj7-qxh9-6q4p"
+            }
+        ]
+    }
+}
