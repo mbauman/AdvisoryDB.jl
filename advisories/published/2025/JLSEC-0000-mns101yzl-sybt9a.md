@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns101yzl-sybt9a"
+modified = 2025-10-16T03:23:21.825Z
+upstream = ["CVE-2024-50602"]
+references = ["https://github.com/libexpat/libexpat/pull/915", "https://lists.debian.org/debian-lts-announce/2025/04/msg00040.html", "https://security.netapp.com/advisory/ntap-20250404-0008/"]
+
+[[affected]]
+pkg = "Expat_jll"
+ranges = ["< 2.6.4+0"]
+
+[[jlsec_sources]]
+id = "CVE-2024-50602"
+imported = 2025-10-16T03:23:21.807Z
+modified = 2025-10-15T17:54:22.117Z
+published = 2024-10-27T05:15:04.090Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-50602"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-50602"
+```
+
+# An issue was discovered in libexpat before 2.6.4
+
+An issue was discovered in libexpat before 2.6.4. There is a crash within the XML_ResumeParser function because XML_StopParser can stop/suspend an unstarted parser.
+
