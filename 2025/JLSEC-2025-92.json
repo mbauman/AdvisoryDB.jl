@@ -1,0 +1,128 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-92",
+    "modified": "2025-10-17T22:31:47.919Z",
+    "published": "2025-10-17T22:31:47.919Z",
+    "upstream": [
+        "CVE-2022-34903"
+    ],
+    "summary": "GnuPG through 2.3.6, in unusual situations where an attacker possesses any secret-key information fr...",
+    "details": "GnuPG through 2.3.6, in unusual situations where an attacker possesses any secret-key information from a victim's keyring and other constraints (e.g., use of GPGME) are met, allows signature forgery via injection into the status line.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.4.7+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "GnuPG_jll",
+                "purl": "pkg:julia/GnuPG_jll?uuid=1522389b-45f8-5faa-af4d-a301b79c50ac"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2022/07/02/1"
+        },
+        {
+            "type": "WEB",
+            "url": "https://bugs.debian.org/1014157"
+        },
+        {
+            "type": "WEB",
+            "url": "https://dev.gnupg.org/T6027"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FRLWJQ76A4UKHI3Q36BKSJKS4LFLQO33/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/NPTAR76EIZY7NQFENSOZO7U473257OVZ/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VN63GBTMRWO36Y7BKA2WQHROAKCXKCBL/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VU64FUVG2PRZBSHFOQRSP7KDVEIZ23OS/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20220826-0005/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2022/dsa-5174"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.openwall.com/lists/oss-security/2022/06/30/1"
+        },
+        {
+            "type": "WEB",
+            "url": "http://www.openwall.com/lists/oss-security/2022/07/02/1"
+        },
+        {
+            "type": "WEB",
+            "url": "https://bugs.debian.org/1014157"
+        },
+        {
+            "type": "WEB",
+            "url": "https://dev.gnupg.org/T6027"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/FRLWJQ76A4UKHI3Q36BKSJKS4LFLQO33/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/NPTAR76EIZY7NQFENSOZO7U473257OVZ/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VN63GBTMRWO36Y7BKA2WQHROAKCXKCBL/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VU64FUVG2PRZBSHFOQRSP7KDVEIZ23OS/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20220826-0005/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.debian.org/security/2022/dsa-5174"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.openwall.com/lists/oss-security/2022/06/30/1"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2022-34903",
+                "imported": "2025-10-17T20:30:39.144Z",
+                "modified": "2024-11-21T07:10:24.240Z",
+                "published": "2022-07-01T22:15:08.120Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-34903",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34903"
+            }
+        ]
+    }
+}

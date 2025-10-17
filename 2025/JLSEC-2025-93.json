@@ -1,0 +1,108 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-93",
+    "modified": "2025-10-17T22:31:47.919Z",
+    "published": "2025-10-17T22:31:47.919Z",
+    "upstream": [
+        "CVE-2022-3515"
+    ],
+    "summary": "A vulnerability was found in the Libksba library due to an integer overflow within the CRL parser",
+    "details": "A vulnerability was found in the Libksba library due to an integer overflow within the CRL parser. The vulnerability can be exploited remotely for code execution on the target system by passing specially crafted data to the application, for example, a malicious S/MIME attachment.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.4.7+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "GnuPG_jll",
+                "purl": "pkg:julia/GnuPG_jll?uuid=1522389b-45f8-5faa-af4d-a301b79c50ac"
+            }
+        },
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "1.6.7+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "Libksba_jll",
+                "purl": "pkg:julia/Libksba_jll?uuid=52a58d30-3731-5a3f-8361-26ffb4f63669"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "https://access.redhat.com/security/cve/CVE-2022-3515"
+        },
+        {
+            "type": "WEB",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2135610"
+        },
+        {
+            "type": "WEB",
+            "url": "https://dev.gnupg.org/rK4b7d9cd4a018898d7714ce06f3faf2626c14582b"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20230706-0008/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.gnupg.org/blog/20221017-pepe-left-the-ksba.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://access.redhat.com/security/cve/CVE-2022-3515"
+        },
+        {
+            "type": "WEB",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2135610"
+        },
+        {
+            "type": "WEB",
+            "url": "https://dev.gnupg.org/rK4b7d9cd4a018898d7714ce06f3faf2626c14582b"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20230706-0008/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.gnupg.org/blog/20221017-pepe-left-the-ksba.html"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2022-3515",
+                "imported": "2025-10-17T20:30:39.146Z",
+                "modified": "2025-04-08T16:15:19.830Z",
+                "published": "2023-01-12T15:15:10.187Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-3515",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-3515"
+            }
+        ]
+    }
+}
