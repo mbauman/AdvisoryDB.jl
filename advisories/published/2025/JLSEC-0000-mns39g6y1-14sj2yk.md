@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g6y1-14sj2yk"
+modified = 2025-10-17T17:21:54.217Z
+upstream = ["CVE-2020-7595"]
+references = ["http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00047.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-292794.pdf", "https://gitlab.gnome.org/GNOME/libxml2/commit/0e1a49c89076", "https://lists.debian.org/debian-lts-announce/2020/09/msg00009.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/545SPOI3ZPPNPX4TFRIVE4JVRTJRKULL/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5R55ZR52RMBX24TQTWHCIWKJVRV6YAWI/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/JDPF3AAVKUAKDYFMFKSIQSVVS3EEFPQH/", "https://security.gentoo.org/glsa/202010-04", "https://security.netapp.com/advisory/ntap-20200702-0005/", "https://us-cert.cisa.gov/ics/advisories/icsa-21-103-08", "https://usn.ubuntu.com/4274-1/", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2020.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00047.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-292794.pdf", "https://gitlab.gnome.org/GNOME/libxml2/commit/0e1a49c89076", "https://lists.debian.org/debian-lts-announce/2020/09/msg00009.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/545SPOI3ZPPNPX4TFRIVE4JVRTJRKULL/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5R55ZR52RMBX24TQTWHCIWKJVRV6YAWI/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/JDPF3AAVKUAKDYFMFKSIQSVVS3EEFPQH/", "https://security.gentoo.org/glsa/202010-04", "https://security.netapp.com/advisory/ntap-20200702-0005/", "https://us-cert.cisa.gov/ics/advisories/icsa-21-103-08", "https://usn.ubuntu.com/4274-1/", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2020.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = [">= 2.9.10+0, < 2.9.12+0"]
+
+[[jlsec_sources]]
+id = "CVE-2020-7595"
+imported = 2025-10-17T17:21:54.217Z
+modified = 2024-11-21T05:37:26.453Z
+published = 2020-01-21T23:15:13.867Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2020-7595"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2020-7595"
+```
+
+# xmlStringLenDecodeEntities in parser.c in libxml2 2.9.10 has an infinite loop in a certain end-of-fi...
+
+xmlStringLenDecodeEntities in parser.c in libxml2 2.9.10 has an infinite loop in a certain end-of-file situation.
+

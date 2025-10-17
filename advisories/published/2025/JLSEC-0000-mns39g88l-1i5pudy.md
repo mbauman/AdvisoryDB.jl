@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g88l-1i5pudy"
+modified = 2025-10-17T17:21:55.893Z
+upstream = ["CVE-2025-9714"]
+references = ["https://gitlab.gnome.org/GNOME/libxml2/-/commit/677a42645ef22b5a50741bad5facf9d8a8bc6d21"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = ["< 2.10.3+0"]
+
+[[jlsec_sources]]
+id = "CVE-2025-9714"
+imported = 2025-10-17T17:21:55.893Z
+modified = 2025-09-17T21:13:10.787Z
+published = 2025-09-10T19:15:42.707Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-9714"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2025-9714"
+```
+
+# Uncontrolled recursion in XPath evaluation in libxml2 up to and including version 2.9.14 allows a lo...
+
+Uncontrolled recursion in XPath evaluation in libxml2 up to and including version 2.9.14 allows a local attacker to cause a stack overflow via crafted expressions. XPath processing functions `xmlXPathRunEval`, `xmlXPathCtxtCompile`, and `xmlXPathEvalExpr` were resetting recursion depth to zero before making potentially recursive calls. When such functions were called recursively this could allow for uncontrolled recursion and lead to a stack overflow. These functions now preserve recursion depth across recursive calls, allowing recursion depth to be controlled.
+
