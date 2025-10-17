@@ -1,0 +1,27 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns3g6xbe-1whauyd"
+modified = 2025-10-17T20:30:39.146Z
+upstream = ["CVE-2022-3515"]
+references = ["https://access.redhat.com/security/cve/CVE-2022-3515", "https://bugzilla.redhat.com/show_bug.cgi?id=2135610", "https://dev.gnupg.org/rK4b7d9cd4a018898d7714ce06f3faf2626c14582b", "https://security.netapp.com/advisory/ntap-20230706-0008/", "https://www.gnupg.org/blog/20221017-pepe-left-the-ksba.html", "https://access.redhat.com/security/cve/CVE-2022-3515", "https://bugzilla.redhat.com/show_bug.cgi?id=2135610", "https://dev.gnupg.org/rK4b7d9cd4a018898d7714ce06f3faf2626c14582b", "https://security.netapp.com/advisory/ntap-20230706-0008/", "https://www.gnupg.org/blog/20221017-pepe-left-the-ksba.html"]
+
+[[affected]]
+pkg = "GnuPG_jll"
+ranges = ["< 2.4.7+0"]
+[[affected]]
+pkg = "Libksba_jll"
+ranges = ["< 1.6.7+0"]
+
+[[jlsec_sources]]
+id = "CVE-2022-3515"
+imported = 2025-10-17T20:30:39.146Z
+modified = 2025-04-08T16:15:19.830Z
+published = 2023-01-12T15:15:10.187Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-3515"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2022-3515"
+```
+
+# A vulnerability was found in the Libksba library due to an integer overflow within the CRL parser
+
+A vulnerability was found in the Libksba library due to an integer overflow within the CRL parser. The vulnerability can be exploited remotely for code execution on the target system by passing specially crafted data to the application, for example, a malicious S/MIME attachment.
+
