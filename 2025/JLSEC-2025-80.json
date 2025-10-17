@@ -1,0 +1,86 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-80",
+    "modified": "2025-10-17T17:40:51.659Z",
+    "published": "2025-10-17T17:40:51.659Z",
+    "upstream": [
+        "CVE-2023-29469"
+    ],
+    "summary": "An issue was discovered in libxml2 before 2.10.4",
+    "details": "An issue was discovered in libxml2 before 2.10.4. When hashing empty dict strings in a crafted XML document, xmlDictComputeFastKey in dict.c can produce non-deterministic values, leading to various logic and memory errors, such as a double free. This behavior occurs because there is an attempt to use the first byte of an empty string, and any value is possible (not solely the '\\0' value).",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.10.4+0"
+                        },
+                        {
+                            "introduced": "2.11.5+0"
+                        },
+                        {
+                            "fixed": "2.12.0+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "XML2_jll",
+                "purl": "pkg:julia/XML2_jll?uuid=02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/issues/510"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.10.4"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2023/04/msg00031.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20230601-0006/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/issues/510"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.10.4"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2023/04/msg00031.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20230601-0006/"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2023-29469",
+                "imported": "2025-10-17T17:21:55.880Z",
+                "modified": "2025-02-04T21:15:23.447Z",
+                "published": "2023-04-24T21:15:09.230Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-29469",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2023-29469"
+            }
+        ]
+    }
+}

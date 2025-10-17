@@ -1,0 +1,200 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-74",
+    "modified": "2025-10-17T17:40:51.659Z",
+    "published": "2025-10-17T17:40:51.659Z",
+    "upstream": [
+        "CVE-2022-23308"
+    ],
+    "summary": "valid.c in libxml2 before 2.9.13 has a use-after-free of ID and IDREF attributes.",
+    "details": "valid.c in libxml2 before 2.9.13 has a use-after-free of ID and IDREF attributes.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.9.14+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "XML2_jll",
+                "purl": "pkg:julia/XML2_jll?uuid=02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/33"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/34"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/35"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/36"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/37"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/38"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/GNOME/libxml2/commit/652dd12a858989b14eed4e84e453059cd3ba340e"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.13/NEWS"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2022/04/msg00004.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/LA3MWWAYZADWJ5F6JOUBX65UZAMQB7RF/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202210-03"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20220331-0008/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213253"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213254"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213255"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213256"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213257"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213258"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpujul2022.html"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/33"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/34"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/35"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/36"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/37"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/May/38"
+        },
+        {
+            "type": "WEB",
+            "url": "https://github.com/GNOME/libxml2/commit/652dd12a858989b14eed4e84e453059cd3ba340e"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.13/NEWS"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2022/04/msg00004.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/LA3MWWAYZADWJ5F6JOUBX65UZAMQB7RF/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.gentoo.org/glsa/202210-03"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20220331-0008/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213253"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213254"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213255"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213256"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213257"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213258"
+        },
+        {
+            "type": "WEB",
+            "url": "https://www.oracle.com/security-alerts/cpujul2022.html"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2022-23308",
+                "imported": "2025-10-17T17:21:54.223Z",
+                "modified": "2025-05-05T17:17:56.523Z",
+                "published": "2022-02-26T05:15:08.280Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-23308",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-23308"
+            }
+        ]
+    }
+}

@@ -1,0 +1,152 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-77",
+    "modified": "2025-10-17T17:40:51.659Z",
+    "published": "2025-10-17T17:40:51.659Z",
+    "upstream": [
+        "CVE-2022-40303"
+    ],
+    "summary": "An issue was discovered in libxml2 before 2.10.3",
+    "details": "An issue was discovered in libxml2 before 2.10.3. When parsing a multi-gigabyte XML document with the XML_PARSE_HUGE parser option enabled, several integer counters can overflow. This results in an attempt to access an array at a negative 2GB offset, typically leading to a segmentation fault.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.10.3+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "XML2_jll",
+                "purl": "pkg:julia/XML2_jll?uuid=02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/21"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/24"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/25"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/26"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/27"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/c846986356fc149915a74972bf198abc266bc2c0"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/tags/v2.10.3"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20221209-0003/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213531"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213533"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213534"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213535"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213536"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/21"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/24"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/25"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/26"
+        },
+        {
+            "type": "WEB",
+            "url": "http://seclists.org/fulldisclosure/2022/Dec/27"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/commit/c846986356fc149915a74972bf198abc266bc2c0"
+        },
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/tags/v2.10.3"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20221209-0003/"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213531"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213533"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213534"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213535"
+        },
+        {
+            "type": "WEB",
+            "url": "https://support.apple.com/kb/HT213536"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2022-40303",
+                "imported": "2025-10-17T17:21:55.838Z",
+                "modified": "2025-04-29T05:15:43.693Z",
+                "published": "2022-11-23T00:15:11.007Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2022-40303",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-40303"
+            }
+        ]
+    }
+}

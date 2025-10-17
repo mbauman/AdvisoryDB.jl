@@ -1,0 +1,60 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-87",
+    "modified": "2025-10-17T17:40:51.659Z",
+    "published": "2025-10-17T17:40:51.659Z",
+    "upstream": [
+        "CVE-2025-24928"
+    ],
+    "summary": "libxml2 before 2.12.10 and 2.13.x before 2.13.6 has a stack-based buffer overflow in xmlSnprintfElem...",
+    "details": "libxml2 before 2.12.10 and 2.13.x before 2.13.6 has a stack-based buffer overflow in xmlSnprintfElements in valid.c. To exploit this, DTD validation must occur for an untrusted document or untrusted DTD. NOTE: this is similar to CVE-2017-9047.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.13.6+1"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "XML2_jll",
+                "purl": "pkg:julia/XML2_jll?uuid=02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "https://gitlab.gnome.org/GNOME/libxml2/-/issues/847"
+        },
+        {
+            "type": "WEB",
+            "url": "https://issues.oss-fuzz.com/issues/392687022"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20250321-0006/"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2025-24928",
+                "imported": "2025-10-17T17:21:55.888Z",
+                "modified": "2025-10-16T19:34:33.453Z",
+                "published": "2025-02-18T23:15:10.250Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-24928",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2025-24928"
+            }
+        ]
+    }
+}
