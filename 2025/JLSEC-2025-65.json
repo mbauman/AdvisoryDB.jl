@@ -1,0 +1,60 @@
+{
+    "schema_version": "1.7.3",
+    "id": "JLSEC-2025-65",
+    "modified": "2025-10-17T13:28:40.708Z",
+    "published": "2025-10-17T13:28:40.708Z",
+    "upstream": [
+        "CVE-2024-50602"
+    ],
+    "summary": "An issue was discovered in libexpat before 2.6.4",
+    "details": "An issue was discovered in libexpat before 2.6.4. There is a crash within the XML_ResumeParser function because XML_StopParser can stop/suspend an unstarted parser.",
+    "affected": [
+        {
+            "ranges": [
+                {
+                    "type": "SEMVER",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.6.4+0"
+                        }
+                    ]
+                }
+            ],
+            "package": {
+                "ecosystem": "Julia",
+                "name": "Expat_jll",
+                "purl": "pkg:julia/Expat_jll?uuid=2e619515-83b5-522b-bb60-26c02a35a201"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "WEB",
+            "url": "https://github.com/libexpat/libexpat/pull/915"
+        },
+        {
+            "type": "WEB",
+            "url": "https://lists.debian.org/debian-lts-announce/2025/04/msg00040.html"
+        },
+        {
+            "type": "WEB",
+            "url": "https://security.netapp.com/advisory/ntap-20250404-0008/"
+        }
+    ],
+    "database_specific": {
+        "license": "CC-BY-4.0",
+        "sources": [
+            {
+                "id": "CVE-2024-50602",
+                "imported": "2025-10-16T03:23:21.807Z",
+                "modified": "2025-10-15T17:54:22.117Z",
+                "published": "2024-10-27T05:15:04.090Z",
+                "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-50602",
+                "html_url": "https://nvd.nist.gov/vuln/detail/CVE-2024-50602"
+            }
+        ]
+    }
+}
