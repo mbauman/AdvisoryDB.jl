@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g6y4-12dpkdv"
+modified = 2025-10-17T17:21:54.220Z
+upstream = ["CVE-2021-3518"]
+references = ["http://seclists.org/fulldisclosure/2021/Jul/54", "http://seclists.org/fulldisclosure/2021/Jul/55", "http://seclists.org/fulldisclosure/2021/Jul/58", "http://seclists.org/fulldisclosure/2021/Jul/59", "https://bugzilla.redhat.com/show_bug.cgi?id=1954242", "https://lists.apache.org/thread.html/r58af02e294bd07f487e2c64ffc0a29b837db5600e33b6e698b9d696b%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.apache.org/thread.html/rf4c02775860db415b4955778a131c2795223f61cb8c6a450893651e4%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2021/05/msg00008.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BZOMV5J4PMZAORVT64BKLV6YIZAFDGX6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/QVM4UJ3376I6ZVOYMHBNX4GY3NIV52WV/", "https://security.gentoo.org/glsa/202107-05", "https://security.netapp.com/advisory/ntap-20210625-0002/", "https://support.apple.com/kb/HT212601", "https://support.apple.com/kb/HT212602", "https://support.apple.com/kb/HT212604", "https://support.apple.com/kb/HT212605", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "http://seclists.org/fulldisclosure/2021/Jul/54", "http://seclists.org/fulldisclosure/2021/Jul/55", "http://seclists.org/fulldisclosure/2021/Jul/58", "http://seclists.org/fulldisclosure/2021/Jul/59", "https://bugzilla.redhat.com/show_bug.cgi?id=1954242", "https://lists.apache.org/thread.html/r58af02e294bd07f487e2c64ffc0a29b837db5600e33b6e698b9d696b%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.apache.org/thread.html/rf4c02775860db415b4955778a131c2795223f61cb8c6a450893651e4%40%3Cissues.bookkeeper.apache.org%3E", "https://lists.debian.org/debian-lts-announce/2021/05/msg00008.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BZOMV5J4PMZAORVT64BKLV6YIZAFDGX6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/QVM4UJ3376I6ZVOYMHBNX4GY3NIV52WV/", "https://security.gentoo.org/glsa/202107-05", "https://security.netapp.com/advisory/ntap-20210625-0002/", "https://support.apple.com/kb/HT212601", "https://support.apple.com/kb/HT212602", "https://support.apple.com/kb/HT212604", "https://support.apple.com/kb/HT212605", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = ["< 2.9.12+0"]
+
+[[jlsec_sources]]
+id = "CVE-2021-3518"
+imported = 2025-10-17T17:21:54.220Z
+modified = 2024-11-21T06:21:44.453Z
+published = 2021-05-18T12:15:08.043Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-3518"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-3518"
+```
+
+# There's a flaw in libxml2 in versions before 2.9.11
+
+There's a flaw in libxml2 in versions before 2.9.11. An attacker who is able to submit a crafted file to be processed by an application linked with libxml2 could trigger a use-after-free. The greatest impact from this flaw is to confidentiality, integrity, and availability.
+

@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g6xx-lmvlox"
+modified = 2025-10-17T17:21:54.213Z
+upstream = ["CVE-2019-19956"]
+references = ["http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00047.html", "http://lists.opensuse.org/opensuse-security-announce/2020-06/msg00005.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-292794.pdf", "https://gitlab.gnome.org/GNOME/libxml2/commit/5a02583c7e683896d84878bd90641d8d9b0d0549", "https://lists.debian.org/debian-lts-announce/2019/12/msg00032.html", "https://lists.debian.org/debian-lts-announce/2020/09/msg00009.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5R55ZR52RMBX24TQTWHCIWKJVRV6YAWI/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/JDPF3AAVKUAKDYFMFKSIQSVVS3EEFPQH/", "https://security.netapp.com/advisory/ntap-20200114-0002/", "https://us-cert.cisa.gov/ics/advisories/icsa-21-103-08", "https://usn.ubuntu.com/4274-1/", "https://www.oracle.com/security-alerts/cpujul2020.html", "http://lists.opensuse.org/opensuse-security-announce/2020-05/msg00047.html", "http://lists.opensuse.org/opensuse-security-announce/2020-06/msg00005.html", "https://cert-portal.siemens.com/productcert/pdf/ssa-292794.pdf", "https://gitlab.gnome.org/GNOME/libxml2/commit/5a02583c7e683896d84878bd90641d8d9b0d0549", "https://lists.debian.org/debian-lts-announce/2019/12/msg00032.html", "https://lists.debian.org/debian-lts-announce/2020/09/msg00009.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/5R55ZR52RMBX24TQTWHCIWKJVRV6YAWI/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/JDPF3AAVKUAKDYFMFKSIQSVVS3EEFPQH/", "https://security.netapp.com/advisory/ntap-20200114-0002/", "https://us-cert.cisa.gov/ics/advisories/icsa-21-103-08", "https://usn.ubuntu.com/4274-1/", "https://www.oracle.com/security-alerts/cpujul2020.html"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = ["< 2.9.10+0"]
+
+[[jlsec_sources]]
+id = "CVE-2019-19956"
+imported = 2025-10-17T17:21:54.213Z
+modified = 2024-11-21T04:35:44.420Z
+published = 2019-12-24T16:15:11.450Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2019-19956"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2019-19956"
+```
+
+# xmlParseBalancedChunkMemoryRecover in parser.c in libxml2 before 2.9.10 has a memory leak related to...
+
+xmlParseBalancedChunkMemoryRecover in parser.c in libxml2 before 2.9.10 has a memory leak related to newDoc->oldNs.
+

@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g888-52blx"
+modified = 2025-10-17T17:21:55.880Z
+upstream = ["CVE-2023-29469"]
+references = ["https://gitlab.gnome.org/GNOME/libxml2/-/issues/510", "https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.10.4", "https://lists.debian.org/debian-lts-announce/2023/04/msg00031.html", "https://security.netapp.com/advisory/ntap-20230601-0006/", "https://gitlab.gnome.org/GNOME/libxml2/-/issues/510", "https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.10.4", "https://lists.debian.org/debian-lts-announce/2023/04/msg00031.html", "https://security.netapp.com/advisory/ntap-20230601-0006/"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = ["< 2.10.4+0", ">= 2.11.5+0, < 2.12.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-29469"
+imported = 2025-10-17T17:21:55.880Z
+modified = 2025-02-04T21:15:23.447Z
+published = 2023-04-24T21:15:09.230Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-29469"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-29469"
+```
+
+# An issue was discovered in libxml2 before 2.10.4
+
+An issue was discovered in libxml2 before 2.10.4. When hashing empty dict strings in a crafted XML document, xmlDictComputeFastKey in dict.c can produce non-deterministic values, leading to various logic and memory errors, such as a double free. This behavior occurs because there is an attempt to use the first byte of an empty string, and any value is possible (not solely the '\0' value).
+

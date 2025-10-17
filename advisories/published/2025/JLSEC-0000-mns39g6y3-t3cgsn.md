@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g6y3-t3cgsn"
+modified = 2025-10-17T17:21:54.219Z
+upstream = ["CVE-2021-3537"]
+references = ["https://bugzilla.redhat.com/show_bug.cgi?id=1956522", "https://lists.debian.org/debian-lts-announce/2021/05/msg00008.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BZOMV5J4PMZAORVT64BKLV6YIZAFDGX6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/QVM4UJ3376I6ZVOYMHBNX4GY3NIV52WV/", "https://security.gentoo.org/glsa/202107-05", "https://security.netapp.com/advisory/ntap-20210625-0002/", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html", "https://bugzilla.redhat.com/show_bug.cgi?id=1956522", "https://lists.debian.org/debian-lts-announce/2021/05/msg00008.html", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BZOMV5J4PMZAORVT64BKLV6YIZAFDGX6/", "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/QVM4UJ3376I6ZVOYMHBNX4GY3NIV52WV/", "https://security.gentoo.org/glsa/202107-05", "https://security.netapp.com/advisory/ntap-20210625-0002/", "https://www.oracle.com/security-alerts/cpuapr2022.html", "https://www.oracle.com/security-alerts/cpujul2022.html", "https://www.oracle.com/security-alerts/cpuoct2021.html"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = ["< 2.9.12+0"]
+
+[[jlsec_sources]]
+id = "CVE-2021-3537"
+imported = 2025-10-17T17:21:54.219Z
+modified = 2024-11-21T06:21:47.317Z
+published = 2021-05-14T20:15:16.553Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-3537"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2021-3537"
+```
+
+# A vulnerability found in libxml2 in versions before 2.9.11 shows that it did not propagate errors wh...
+
+A vulnerability found in libxml2 in versions before 2.9.11 shows that it did not propagate errors while parsing XML mixed content, causing a NULL dereference. If an untrusted XML document was parsed in recovery mode and post-validated, the flaw could be used to crash the application. The highest threat from this vulnerability is to system availability.
+

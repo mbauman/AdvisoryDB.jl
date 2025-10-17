@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g88b-15nw85f"
+modified = 2025-10-17T17:21:55.883Z
+upstream = ["CVE-2024-25062"]
+references = ["https://gitlab.gnome.org/GNOME/libxml2/-/issues/604", "https://gitlab.gnome.org/GNOME/libxml2/-/tags", "https://gitlab.gnome.org/GNOME/libxml2/-/issues/604", "https://gitlab.gnome.org/GNOME/libxml2/-/tags"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = ["< 2.12.5+0"]
+
+[[jlsec_sources]]
+id = "CVE-2024-25062"
+imported = 2025-10-17T17:21:55.883Z
+modified = 2025-05-09T18:16:03.707Z
+published = 2024-02-04T16:15:45.120Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-25062"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2024-25062"
+```
+
+# An issue was discovered in libxml2 before 2.11.7 and 2.12.x before 2.12.5
+
+An issue was discovered in libxml2 before 2.11.7 and 2.12.x before 2.12.5. When using the XML Reader interface with DTD validation and XInclude expansion enabled, processing crafted XML documents can lead to an xmlValidatePopElement use-after-free.
+

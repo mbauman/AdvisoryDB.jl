@@ -1,0 +1,24 @@
+```toml
+schema_version = "1.7.3"
+id = "JLSEC-0000-mns39g889-ru3ywt"
+modified = 2025-10-17T17:21:55.881Z
+upstream = ["CVE-2023-45322"]
+references = ["http://www.openwall.com/lists/oss-security/2023/10/06/5", "https://gitlab.gnome.org/GNOME/libxml2/-/issues/344", "https://gitlab.gnome.org/GNOME/libxml2/-/issues/583", "http://www.openwall.com/lists/oss-security/2023/10/06/5", "https://gitlab.gnome.org/GNOME/libxml2/-/issues/344", "https://gitlab.gnome.org/GNOME/libxml2/-/issues/583"]
+
+[[affected]]
+pkg = "XML2_jll"
+ranges = ["< 2.12.0+0"]
+
+[[jlsec_sources]]
+id = "CVE-2023-45322"
+imported = 2025-10-17T17:21:55.881Z
+modified = 2024-11-21T08:26:44.780Z
+published = 2023-10-06T22:15:11.660Z
+url = "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2023-45322"
+html_url = "https://nvd.nist.gov/vuln/detail/CVE-2023-45322"
+```
+
+# libxml2 through 2.11.5 has a use-after-free that can only occur after a certain memory allocation fa...
+
+libxml2 through 2.11.5 has a use-after-free that can only occur after a certain memory allocation fails. This occurs in xmlUnlinkNode in tree.c. NOTE: the vendor's position is "I don't think these issues are critical enough to warrant a CVE ID ... because an attacker typically can't control when memory allocations fail."
+
